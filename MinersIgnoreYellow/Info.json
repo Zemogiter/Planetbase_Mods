@@ -1,0 +1,14 @@
+{
+  "AssemblyName": "MinersIgnoreYellow.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Miners Ignore Yellow",
+  "EntryMethod": "MinersIgnoreYellow.MinersIgnoreYellow.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "MinersIgnoreYellow",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "0.2.0.2223"
+}

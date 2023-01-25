@@ -1,0 +1,14 @@
+{
+  "AssemblyName": "OneIsEnough.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "One Is Enough",
+  "EntryMethod": "OneIsEnough.OneIsEnough.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "OneIsEnough",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "0.2.0.2223"
+}

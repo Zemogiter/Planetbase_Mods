@@ -1,0 +1,183 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PlanetbaseModUtilities", "PlanetbaseModUtilities\PlanetbaseModUtilities.shproj", "{2A2596F6-59D3-4F92-A33B-6E9BB2372BEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterCam", "CharacterCam\CharacterCam.csproj", "{6F94447C-5A34-4759-A43C-215A6DE9E61B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EternalBots", "EternalBots\EternalBots.csproj", "{021003B9-D4FA-432C-97A3-35838F7CA298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastAirlock", "FastAirlock\FastAirlock.csproj", "{52A6E010-4378-4438-A5F9-3D5C4F2ACE43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreColonists", "MoreColonists\MoreColonists.csproj", "{99ACDFA2-8268-4614-A77D-F81E5633BE6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoIntruders", "NoIntruders\NoIntruders.csproj", "{90C29248-D03F-4B5B-86B0-D520B89DB0BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeBuilding", "FreeBuilding\FreeBuilding.csproj", "{566024A0-0481-4067-9ADF-7DC4B7661EB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterHours", "BetterHours\BetterHours.csproj", "{F0512735-204C-4EC9-B48B-D5793B57C618}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoAlerts", "AutoAlerts\AutoAlerts.csproj", "{E0143A72-527E-4623-B371-CC53A83E38B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExteriorO2Genereator", "ExteriorO2Genereator\ExteriorO2Genereator.csproj", "{BE90A61F-78E2-4196-A6C4-0B1896BBA55A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinersIgnoreYellow", "MinersIgnoreYellow\MinersIgnoreYellow.csproj", "{3B48152E-774C-451D-A343-0A9406A54580}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterGuards", "BetterGuards\BetterGuards.csproj", "{187BFAB8-C4B7-4E41-A0E5-80024ADA77F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreSpeed", "MoreSpeed\MoreSpeed.csproj", "{0263144F-B6F2-4B18-BA97-EA2754916272}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterAI", "BetterAI\BetterAI.csproj", "{1811783C-2853-4886-8E0B-5197D30F0BB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeFurnishing", "FreeFurnishing\FreeFurnishing.csproj", "{8BADF58E-54B7-4090-8A1A-6152FB267CF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LandingControl", "LandingControl\LandingControl.csproj", "{4EA21C07-7AA6-4D3E-AB43-2CB8E7746694}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneIsEnough", "OneIsEnough\OneIsEnough.csproj", "{C31285E4-BC3B-4745-BCFA-7C2CD05147DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDisableColonistShips", "AutoDisableColonistShips\AutoDisableColonistShips.csproj", "{6E9DC286-BC62-410F-9821-9688B2791BD2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotColonists", "BotColonist\BotColonists.csproj", "{A15DECF4-AC45-4787-AB6B-35D4DBA88FAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioReactor", "BioReactor\BioReactor.csproj", "{D5F0B474-FD08-444D-BCFD-82C107150330}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientTraders", "PatientTraders\PatientTraders.csproj", "{43A65104-4401-476A-AC8A-896C657D24DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnologyShip", "TechnologyShip\TechnologyShip.csproj", "{47BF8DB9-2C3B-4911-991D-079A71CDE2AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeSpeedDisplay", "TimeSpeedDisplay\TimeSpeedDisplay.csproj", "{F4E8CDCD-7278-4453-A727-11757B956CBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostNoSpares", "AlmostNoSpares\AlmostNoSpares.csproj", "{FB2E636C-2190-4972-846A-CDF1EC0FB64A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F94447C-5A34-4759-A43C-215A6DE9E61B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F94447C-5A34-4759-A43C-215A6DE9E61B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F94447C-5A34-4759-A43C-215A6DE9E61B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F94447C-5A34-4759-A43C-215A6DE9E61B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{021003B9-D4FA-432C-97A3-35838F7CA298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{021003B9-D4FA-432C-97A3-35838F7CA298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{021003B9-D4FA-432C-97A3-35838F7CA298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{021003B9-D4FA-432C-97A3-35838F7CA298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52A6E010-4378-4438-A5F9-3D5C4F2ACE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52A6E010-4378-4438-A5F9-3D5C4F2ACE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52A6E010-4378-4438-A5F9-3D5C4F2ACE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52A6E010-4378-4438-A5F9-3D5C4F2ACE43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99ACDFA2-8268-4614-A77D-F81E5633BE6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99ACDFA2-8268-4614-A77D-F81E5633BE6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99ACDFA2-8268-4614-A77D-F81E5633BE6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99ACDFA2-8268-4614-A77D-F81E5633BE6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90C29248-D03F-4B5B-86B0-D520B89DB0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90C29248-D03F-4B5B-86B0-D520B89DB0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90C29248-D03F-4B5B-86B0-D520B89DB0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90C29248-D03F-4B5B-86B0-D520B89DB0BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{566024A0-0481-4067-9ADF-7DC4B7661EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{566024A0-0481-4067-9ADF-7DC4B7661EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{566024A0-0481-4067-9ADF-7DC4B7661EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{566024A0-0481-4067-9ADF-7DC4B7661EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0512735-204C-4EC9-B48B-D5793B57C618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0512735-204C-4EC9-B48B-D5793B57C618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0512735-204C-4EC9-B48B-D5793B57C618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0512735-204C-4EC9-B48B-D5793B57C618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0143A72-527E-4623-B371-CC53A83E38B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0143A72-527E-4623-B371-CC53A83E38B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0143A72-527E-4623-B371-CC53A83E38B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0143A72-527E-4623-B371-CC53A83E38B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE90A61F-78E2-4196-A6C4-0B1896BBA55A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE90A61F-78E2-4196-A6C4-0B1896BBA55A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE90A61F-78E2-4196-A6C4-0B1896BBA55A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE90A61F-78E2-4196-A6C4-0B1896BBA55A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B48152E-774C-451D-A343-0A9406A54580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B48152E-774C-451D-A343-0A9406A54580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B48152E-774C-451D-A343-0A9406A54580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B48152E-774C-451D-A343-0A9406A54580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{187BFAB8-C4B7-4E41-A0E5-80024ADA77F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{187BFAB8-C4B7-4E41-A0E5-80024ADA77F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{187BFAB8-C4B7-4E41-A0E5-80024ADA77F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{187BFAB8-C4B7-4E41-A0E5-80024ADA77F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0263144F-B6F2-4B18-BA97-EA2754916272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0263144F-B6F2-4B18-BA97-EA2754916272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0263144F-B6F2-4B18-BA97-EA2754916272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0263144F-B6F2-4B18-BA97-EA2754916272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1811783C-2853-4886-8E0B-5197D30F0BB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1811783C-2853-4886-8E0B-5197D30F0BB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1811783C-2853-4886-8E0B-5197D30F0BB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1811783C-2853-4886-8E0B-5197D30F0BB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BADF58E-54B7-4090-8A1A-6152FB267CF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BADF58E-54B7-4090-8A1A-6152FB267CF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BADF58E-54B7-4090-8A1A-6152FB267CF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BADF58E-54B7-4090-8A1A-6152FB267CF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EA21C07-7AA6-4D3E-AB43-2CB8E7746694}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA21C07-7AA6-4D3E-AB43-2CB8E7746694}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA21C07-7AA6-4D3E-AB43-2CB8E7746694}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA21C07-7AA6-4D3E-AB43-2CB8E7746694}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C31285E4-BC3B-4745-BCFA-7C2CD05147DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C31285E4-BC3B-4745-BCFA-7C2CD05147DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C31285E4-BC3B-4745-BCFA-7C2CD05147DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C31285E4-BC3B-4745-BCFA-7C2CD05147DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E9DC286-BC62-410F-9821-9688B2791BD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E9DC286-BC62-410F-9821-9688B2791BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E9DC286-BC62-410F-9821-9688B2791BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E9DC286-BC62-410F-9821-9688B2791BD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A15DECF4-AC45-4787-AB6B-35D4DBA88FAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A15DECF4-AC45-4787-AB6B-35D4DBA88FAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A15DECF4-AC45-4787-AB6B-35D4DBA88FAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A15DECF4-AC45-4787-AB6B-35D4DBA88FAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F0B474-FD08-444D-BCFD-82C107150330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F0B474-FD08-444D-BCFD-82C107150330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F0B474-FD08-444D-BCFD-82C107150330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F0B474-FD08-444D-BCFD-82C107150330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43A65104-4401-476A-AC8A-896C657D24DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43A65104-4401-476A-AC8A-896C657D24DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43A65104-4401-476A-AC8A-896C657D24DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43A65104-4401-476A-AC8A-896C657D24DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47BF8DB9-2C3B-4911-991D-079A71CDE2AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47BF8DB9-2C3B-4911-991D-079A71CDE2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47BF8DB9-2C3B-4911-991D-079A71CDE2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47BF8DB9-2C3B-4911-991D-079A71CDE2AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4E8CDCD-7278-4453-A727-11757B956CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E8CDCD-7278-4453-A727-11757B956CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4E8CDCD-7278-4453-A727-11757B956CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4E8CDCD-7278-4453-A727-11757B956CBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB2E636C-2190-4972-846A-CDF1EC0FB64A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB2E636C-2190-4972-846A-CDF1EC0FB64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB2E636C-2190-4972-846A-CDF1EC0FB64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB2E636C-2190-4972-846A-CDF1EC0FB64A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {948ED42E-2F8C-418E-9002-0B67ED758A4B}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{021003b9-d4fa-432c-97a3-35838f7ca298}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{0263144f-b6f2-4b18-ba97-ea2754916272}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1811783c-2853-4886-8e0b-5197d30f0bb0}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{187bfab8-c4b7-4e41-a0e5-80024ada77f3}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2a2596f6-59d3-4f92-a33b-6e9bb2372bee}*SharedItemsImports = 13
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{3b48152e-774c-451d-a343-0a9406a54580}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{43a65104-4401-476a-ac8a-896c657d24dc}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{47bf8db9-2c3b-4911-991d-079a71cde2ae}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{4ea21c07-7aa6-4d3e-ab43-2cb8e7746694}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{52a6e010-4378-4438-a5f9-3d5c4f2ace43}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{566024a0-0481-4067-9adf-7dc4b7661eb0}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{6e9dc286-bc62-410f-9821-9688b2791bd2}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{6f94447c-5a34-4759-a43c-215a6de9e61b}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{8badf58e-54b7-4090-8a1a-6152fb267cf6}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{99acdfa2-8268-4614-a77d-f81e5633be6a}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{be90a61f-78e2-4196-a6c4-0b1896bba55a}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{c31285e4-bc3b-4745-bcfa-7c2cd05147de}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{d5f0b474-fd08-444d-bcfd-82c107150330}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{e0143a72-527e-4623-b371-cc53a83e38b4}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{f0512735-204c-4ec9-b48b-d5793b57c618}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{f4e8cdcd-7278-4453-a727-11757b956cbe}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{fb2e636c-2190-4972-846a-cdf1ec0fb64a}*SharedItemsImports = 4
+	EndGlobalSection
+EndGlobal
