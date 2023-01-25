@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1811783C-2853-4886-8E0B-5197D30F0BB0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BetterAI</RootNamespace>
+    <AssemblyName>Planetbase Template Mod</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Planetbase\Planetbase_Data\Managed\publicized_assemblies\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Planetbase\Planetbase_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Planetbase\Planetbase_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityModManager">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Planetbase\Planetbase_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseState.cs" />
+    <Compile Include="BetterAI.cs" />
+    <Compile Include="CharacterState.cs" />
+    <Compile Include="enums.cs" />
+    <Compile Include="OverrideAI.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScheduledState.cs" />
+    <Compile Include="ScheduledState\ScheduledStateBiologist.cs" />
+    <Compile Include="ScheduledState\ScheduledStateCarrier.cs" />
+    <Compile Include="ScheduledState\ScheduledStateConstructor.cs" />
+    <Compile Include="ScheduledState\ScheduledStateDriller.cs" />
+    <Compile Include="ScheduledState\ScheduledStateEngineer.cs" />
+    <Compile Include="ScheduledState\ScheduledStateGuard.cs" />
+    <Compile Include="ScheduledState\ScheduledStateIntruder.cs" />
+    <Compile Include="ScheduledState\ScheduledStateMedic.cs" />
+    <Compile Include="ScheduledState\ScheduledStateVisitor.cs" />
+    <Compile Include="ScheduledState\ScheduledStateWorker.cs" />
+    <Compile Include="Schedules\AbstractSchedule.cs" />
+    <Compile Include="Schedules\ConstructrionMaterials.cs" />
+    <Compile Include="Schedules\GoInside.cs" />
+    <Compile Include="Schedules\HandleConstruction.cs" />
+    <Compile Include="Schedules\HandleStorage.cs" />
+    <Compile Include="Schedules\HandleTrade.cs" />
+    <Compile Include="Schedules\SelfRepair.cs" />
+    <Compile Include="Schedules\TransformerMaterials.cs" />
+    <Compile Include="Tasks\AbstractTask.cs" />
+    <Compile Include="Tasks\Build.cs" />
+    <Compile Include="Tasks\DeliverConstructionMaterials.cs" />
+    <Compile Include="Tasks\DeliverStorableMaterials.cs" />
+    <Compile Include="Tasks\DeliverTransformerMaterials.cs" />
+    <Compile Include="Tasks\DropConstructionMaterials.cs" />
+    <Compile Include="Tasks\FillTransformer.cs" />
+    <Compile Include="Tasks\FindClosestAirlock.cs" />
+    <Compile Include="Tasks\FindConstructionToBuild.cs" />
+    <Compile Include="Tasks\FindFreeRepairStation.cs" />
+    <Compile Include="Tasks\FindIdle.cs" />
+    <Compile Include="Tasks\FindMerchant.cs" />
+    <Compile Include="Tasks\FindNeededMaterials.cs" />
+    <Compile Include="Tasks\FindStorableMaterials.cs" />
+    <Compile Include="Tasks\FindTradedResource.cs" />
+    <Compile Include="Tasks\GetConstructionMaterials.cs" />
+    <Compile Include="Tasks\GoGetWeapon.cs" />
+    <Compile Include="Tasks\HandleSelfRepair.cs" />
+    <Compile Include="Tasks\HandleTradeWithShip.cs" />
+    <Compile Include="Tasks\Idle.cs" />
+    <Compile Include="Tasks\LoadResource.cs" />
+    <Compile Include="Tasks\SetFallbackSchedule.cs" />
+    <Compile Include="Tasks\SetNextSchedule.cs" />
+    <Compile Include="Tasks\StartWalking.cs" />
+    <Compile Include="Tasks\StoreMaterials.cs" />
+    <Compile Include="Tasks\WaitForMovement.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="..\PlanetbaseModUtilities\PlanetbaseModUtilities.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

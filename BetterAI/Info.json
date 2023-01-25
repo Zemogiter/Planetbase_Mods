@@ -1,0 +1,14 @@
+{
+  "AssemblyName": "BetterAI.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "BetterAI",
+  "EntryMethod": "BetterAI.BetterAI.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "BetterAI",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "0.2.0.2223"
+}
