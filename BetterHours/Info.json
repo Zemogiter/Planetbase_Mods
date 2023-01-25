@@ -1,0 +1,14 @@
+﻿{
+  "EntryMethod": "BetterHours.BetterHours.Init",
+  "Version": "0.2.0.2223",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "ID": "BetterHours",
+  "DisplayName": "Better Hours",
+  "AssemblyName": "BetterHours.dll",
+  "Author": "Zemogiter",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "Repository": ""
+}

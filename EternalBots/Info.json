@@ -1,0 +1,14 @@
+{
+  "EntryMethod": "EternalBots.EternalBots.Init",
+  "Version": "0.2.0.2223",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "ID": "EternalBots",
+  "DisplayName": "EternalBots",
+  "AssemblyName": "EternalBots.dll",
+  "Author": "Zemogiter",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "Repository": ""
+}

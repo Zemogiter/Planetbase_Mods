@@ -1,0 +1,14 @@
+{
+  "AssemblyName": "ExteriorO2Genereator.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "ExteriorO2Genereator",
+  "EntryMethod": "ExteriorO2Genereator.ExteriorO2Genereator.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "Exterior O2 Genereator",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "0.2.0.2223"
+}
