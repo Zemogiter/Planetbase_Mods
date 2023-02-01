@@ -1,15 +1,9 @@
 # PlanetbaseMods
-A series of Planetbase mods written by me.
+A asortment of Planetbase mods - some mine and others are ports of other people's mods to make them compatible with UMM.
 
 ## Mods
 Mods currently available to download from Nexus:
-- [Cheats Tools](https://www.nexusmods.com/planetbase/mods/56)
-- [Improved Components](https://www.nexusmods.com/planetbase/mods/54)
-- [Improved Manufacturing Limits](https://www.nexusmods.com/planetbase/mods/56)
-- [Storage Guru](https://www.nexusmods.com/planetbase/mods/13)
-- [CameraOverhaul Rehauled](https://www.nexusmods.com/planetbase/mods/58) (UMM port of the original [CameraOverhaul](https://www.nexusmods.com/planetbase/mods/8))
-
-## Branches
-The master branch now contains versions of mods that are compatible with [Unity Mod Manager](https://www.nexusmods.com/site/mods/21) (UMM).
-
-The main-redirector contains versions compatible with the older [Patcher](https://www.nexusmods.com/planetbase/mods/1)/[redirector](https://www.nexusmods.com/planetbase/mods/3) by jpfarias.
+- [Almost No Spares Remake](https://www.nexusmods.com/planetbase/mods/53)
+- [AutoAlerts Remake](https://www.nexusmods.com/planetbase/mods/59)
+- [Better Guards](https://www.nexusmods.com/planetbase/mods/63) (made by me)
+- 
