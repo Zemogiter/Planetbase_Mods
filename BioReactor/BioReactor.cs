@@ -5,12 +5,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using Object = UnityEngine.Object;
 
 namespace BioReactor
 {
     public class BioReactor : ModBase
     {
-        public const string NAME = "BioReactor";
+        public const string NAME = "Bio Reactor";
         public const string DESCRIPTION = "A dome fited with power cell arrays, designed to be powered by burning excess starch.";
         public static new void Init(ModEntry modEntry) => InitializeMod(new BioReactor(), modEntry, "BioReactor");
 
@@ -39,40 +40,30 @@ namespace BioReactor
             // Nothing required here
         }
     }
-    public static class ModuleGet
-    {
-        public static string ModuleTypeOxygenGeneratorName => Util.camelCaseToLowercase(TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeOxygenGenerator>().GetType().Name);
-        public static GameObject GetOxygenGeneratorModel()
-        {
-            return ResourceUtil.loadPrefab(ModuleTypeOxygenGeneratorName);
-        }
-    }
     public class ModuleTypeBioReactor : ModuleType
     {
         public ModuleTypeBioReactor()
         {
             string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\BioReactor.png";
-            //to be added
-            //string texture = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\BioReactorTex.png";
             if (File.Exists(path))
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
                 tex.LoadImage(iconBytes);
-                this.mIcon = Util.applyColor(tex);
+                this.mIcon = Util.applyColor(tex, GuiStyles.UiColorMain);
             }
-            mPowerGeneration = 1;
+            else
+            {
+                this.mIcon = ResourceList.StaticIcons.PowerGrid;
+            }
             mWaterGeneration = -1000;
-            mPowerStorageCapacity = 10000;
-            mMinSize = 0;
+            mPowerStorageCapacity = 5000000;
+            mMinSize = 1;
             mMaxSize = 1;
-            mFlags = 23498;
-            mHeight = 0f;
+            mFlags = 1050660;
             mLayoutType = LayoutType.Circular;
-            mBaseType = false;
-            mExterior = false;
-            mModels = ModuleGet.GetOxygenGeneratorModel();
-            mRequiredStructure.set<ModuleTypeOxygenGenerator>();
+            mModels[1] = ResourceUtil.loadPrefab("Prefabs/Modules/PrefabOxygenGenerator2");
+            mRequiredStructure.set<ModuleTypePowerCollector>();
             mCost = new ResourceAmounts();
             mCost.add(TypeList<ResourceType, ResourceTypeList>.find<Bioplastic>(), 3);
             mCost.add(TypeList<ResourceType, ResourceTypeList>.find<Metal>(), 3);
@@ -87,20 +78,23 @@ namespace BioReactor
     }
     public class StarchBurner : ComponentType
     {
-        public const string Name = "StarchBurner";
+        public const string Name = "Starch Burner";
         public const string Description = "A starch burning furnance, then collects thermal energy to charge BioReactor's cells.";
 
         public StarchBurner()
         {
             string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\StarchBurner.png";
-            //to be added
-            //string texture = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\StarchBurnerTex.png";
+            
             if (File.Exists(path))
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
                 tex.LoadImage(iconBytes);
                 this.mIcon = Util.applyColor(tex);
+            }
+            else
+            {
+                this.mIcon = ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<BioplasticProcessor>().GetType().Name));
             }
             mConstructionCosts = new ResourceAmounts();
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Metal>(), 1);
@@ -111,13 +105,11 @@ namespace BioReactor
                 TypeList<ResourceType, ResourceTypeList>.find<Starch>()
             };
             mEmbeddedResourceCount = 2;
-            mPowerGeneration = +2000;
-            mWaterGeneration = -500;
             mResourceProductionPeriod = 1f;
             mFlags = 1248510;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";
-            addUsageAnimation(CharacterAnimationType.Watch);
+            addUsageAnimation(CharacterAnimationType.WorkStanding, CharacterProp.Count, CharacterProp.Count);
             initStrings();
         }
         public static void RegisterStrings()
@@ -125,23 +117,29 @@ namespace BioReactor
             StringUtils.RegisterString("component_starch_burner", Name);
             StringUtils.RegisterString("tooltip_starch_burner", Description);
         }
+        public new Texture2D loadIcon()
+        {
+            return ResourceUtil.loadIconColor("Components/icon_" + NamingUtils.BioplasticProcessorTypeName);
+        }
     }
     public class VegetableBurner : ComponentType
     {
-        public const string Name = "VegetableBurner";
+        public const string Name = "Vegetable Burner";
         public const string Description = "A vegetable burning furnance, then collects thermal energy to charge BioReactor's cells. Last Resort Option!";
 
         public VegetableBurner()
         {
             string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\VegetableBurner.png";
-            //to be added
-            //string texture = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\VegetableBurnerTex.png";
             if (File.Exists(path))
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
                 tex.LoadImage(iconBytes);
                 this.mIcon = Util.applyColor(tex);
+            }
+            else
+            {
+                this.mIcon = loadIcon();
             }
             mConstructionCosts = new ResourceAmounts();
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Metal>(), 1);
@@ -152,15 +150,18 @@ namespace BioReactor
                 TypeList<ResourceType, ResourceTypeList>.find<Vegetables>()
             };
             mEmbeddedResourceCount = 2;
-            mPowerGeneration = +2000;
-            mWaterGeneration = -500;
             mResourceProductionPeriod = 1f;
-            mFlags = 1028519;
+            mFlags = 108519;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";
-            addUsageAnimation(CharacterAnimationType.Watch);
+            addUsageAnimation(CharacterAnimationType.WorkStanding, CharacterProp.Count, CharacterProp.Count);
             initStrings();
         }
+        public new Texture2D loadIcon()
+        {
+            return ResourceUtil.loadIconColor("Components/icon_" + NamingUtils.BioplasticProcessorTypeName);
+        }
+
         public static void RegisterStrings()
         {
             StringUtils.RegisterString("component_vegetable_burner", Name);

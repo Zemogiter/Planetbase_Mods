@@ -53,7 +53,7 @@ namespace PlanetbaseModUtilities
 
         #region Init Factory
 
-        public static ModBase Instance { get; private set; } 
+        public static ModBase Instance { get; private set; }
 
         public static void InitializeMod(ModBase mod, ModEntry modEntry, string modName)
         {

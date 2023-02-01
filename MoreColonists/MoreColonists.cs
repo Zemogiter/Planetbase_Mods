@@ -5,6 +5,9 @@ using PlanetbaseModUtilities;
 using Random = UnityEngine.Random;
 using UnityEngine;
 using System.Reflection;
+using HarmonyLib;
+using static Planetbase.LandingShip;
+using System.ComponentModel;
 
 namespace MoreColonists
 {
@@ -27,125 +30,103 @@ namespace MoreColonists
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
 
-			var landedGeneric = new CustomVisitorship();
-			landedGeneric.onLandedGeneric();
-			var landed = new CustomColonistShip();
-			landed.onLanded();
 		}
-
-		public class CustomVisitorship : VisitorShip
+    }
+	[HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.onLandedGeneric))]
+	public class VisitorShipPatch : VisitorShip
+    {
+		public static void Postfix(VisitorShip visitorShip, VisitorShip __instance)
 		{
-#pragma warning disable IDE1006 // Naming Styles
-			public new void onLandedGeneric(VisitorShip visitorShip)
-#pragma warning restore IDE1006 // Naming Styles
-			{
-				float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
-				int num = 10;
-				if (newcolonists != 0)
-				{
-					num = newcolonists;
-				}
-				if (value > 0.9f)
-				{
-					num += Random.Range(2, 4);
-				}
-				else if (value > 0.7f)
-				{
-					num += Random.Range(1, 3);
-				}
-				if (mSize == Size.Large)
-				{
-					num *= 2;
-				}
-                if (mIntruders)
+            float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
+            int num = 10;
+            if (MoreColonists.newcolonists != 0)
+            {
+                num = MoreColonists.newcolonists;
+            }
+            if (value > 0.9f)
+            {
+                num += Random.Range(2, 4);
+            }
+            else if (value > 0.7f)
+            {
+                num += Random.Range(1, 3);
+            }
+            if (__instance.mSize == Size.Large)
+            {
+                num *= 2;
+            }
+            if (__instance.mIntruders)
+            {
+                num += LandingShipManager.getExtraIntruders();
+                for (int i = 0; i < num; i++)
                 {
-                    num += LandingShipManager.getExtraIntruders();
-                    for (int i = 0; i < num; i++)
-                    {
-                        Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), getPosition(), Location.Exterior);
-						CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", visitorShip, 0);
-                    }
-                    return;
+                    Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), __instance.getPosition(), Location.Exterior);
+                    CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", visitorShip, 0);
                 }
-                try
-				{
-					VisitorShip instance = new();
-					int pendingVisitors = CoreUtils.GetMember<VisitorShip, int>("mPendingVisitors");
-					if (mIntruders)
-					{
-						num += LandingShipManager.getExtraIntruders();
-						for (int i = 0; i < num; i++)
-						{
-							Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), getPosition(), Location.Exterior);
-							pendingVisitors = 0;
-						}
-						return;
-					}
-				}
-				catch (NullReferenceException ex)
-				{
-					Debug.LogError(ex.Message);
-				}
-				for (int j = 0; j < num; j++)
-				{
-					Guest guest = (Guest)Character.create(TypeList<Specialization, SpecializationList>.find<Visitor>(), getSpawnPosition(j),Location.Exterior);
-					guest.decayIndicator(CharacterIndicator.Nutrition, Random.Range(0f, 0.75f));
-					guest.decayIndicator(CharacterIndicator.Morale, Random.Range(0f, 1f));
-					guest.decayIndicator(CharacterIndicator.Hydration, Random.Range(0f, 0.75f));
-					guest.decayIndicator(CharacterIndicator.Sleep, Random.Range(0f, 0.75f));
-					guest.setFee(5 * Random.Range(2, 5));
-					guest.setOwnedShip(this);
-					if (Random.Range(0, 20) == 0)
-					{
-						guest.setCondition(TypeList<ConditionType, ConditionTypeList>.find<ConditionFlu>());
-					}
-				}
-			}
-		}
-
-		public class CustomColonistShip : ColonistShip
-		{
-#pragma warning disable IDE1006 // Naming Styles
-			public new void onLanded(ColonistShip colonistShip)
-#pragma warning restore IDE1006 // Naming Styles
-			{
-				float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
-				int num = 20;
-                if (value > 0.9f)
+                return;
+            }
+            int pendingVisitors = CoreUtils.GetMember<VisitorShip, int>("mPendingVisitors");
+            if (__instance.mIntruders)
+            {
+                num += LandingShipManager.getExtraIntruders();
+                for (int i = 0; i < num; i++)
                 {
-                    num += Random.Range(2, 4);
-                }		
-				else if (value > 0.7f)
-				{
-					num += Random.Range(1, 3);
-				}
-				if (mSize == Size.Large)
-				{
-					num *= 2;
-				}
-				if (mIntruders)
-				{
-					num += LandingShipManager.getExtraIntruders();
-				}
-				try
-				{
-					for (int i = 0; i < num; i++)
-					{
-						MethodInfo getMethod = this.GetType().GetMethod("calculateSpecialization", BindingFlags.NonPublic | BindingFlags.Instance);
-						var calculation = getMethod.Invoke(this, new object[] { colonistShip });
-						Specialization specialization = ((Specialization)((!mIntruders) ? calculation : TypeList<Specialization, SpecializationList>.find<Intruder>()));
-						if (specialization != null)
-						{
-							Character.create(specialization, getSpawnPosition(i), Location.Exterior);
-						}
-					}
-				}
-				catch (NullReferenceException ex2)
-				{
-					Debug.LogError(ex2.Message);
-				}
-			}
-		}
-       
+                    Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), __instance.getPosition(), Location.Exterior);
+                    pendingVisitors = 0;
+                }
+                return;
+            }
+            
+            for (int j = 0; j < num; j++)
+            {
+                Guest guest = (Guest)Character.create(TypeList<Specialization, SpecializationList>.find<Visitor>(), __instance.getSpawnPosition(j), Location.Exterior);
+                guest.decayIndicator(CharacterIndicator.Nutrition, Random.Range(0f, 0.75f));
+                guest.decayIndicator(CharacterIndicator.Morale, Random.Range(0f, 1f));
+                guest.decayIndicator(CharacterIndicator.Hydration, Random.Range(0f, 0.75f));
+                guest.decayIndicator(CharacterIndicator.Sleep, Random.Range(0f, 0.75f));
+                guest.setFee(5 * Random.Range(2, 5));
+                guest.setOwnedShip(visitorShip);
+                if (Random.Range(0, 20) == 0)
+                {
+                    guest.setCondition(TypeList<ConditionType, ConditionTypeList>.find<ConditionFlu>());
+                }
+            }
+        }
+	}
+    [HarmonyPatch(typeof(ColonistShip), nameof(ColonistShip.onLanded))]
+    public class ColonistShipPatch : ColonistShip
+    {
+        public static void Postfix(ColonistShip colonistShip, ColonistShip __instance)
+        {
+            float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
+            int num = 20;
+            if (value > 0.9f)
+            {
+                num += Random.Range(2, 4);
+            }
+            else if (value > 0.7f)
+            {
+                num += Random.Range(1, 3);
+            }
+            if (__instance.mSize == Size.Large)
+            {
+                num *= 2;
+            }
+            if (__instance.mIntruders)
+            {
+                num += LandingShipManager.getExtraIntruders();
+            }
+            
+            for (int i = 0; i < num; i++)
+            {
+                MethodInfo getMethod = colonistShip.GetType().GetMethod("calculateSpecialization", BindingFlags.NonPublic | BindingFlags.Instance);
+                var calculation = getMethod.Invoke(colonistShip, new object[] { colonistShip });
+                Specialization specialization = ((Specialization)((!__instance.mIntruders) ? calculation : TypeList<Specialization, SpecializationList>.find<Intruder>()));
+                if (specialization != null)
+                {
+                    Character.create(specialization, __instance.getSpawnPosition(i), Location.Exterior);
+                }
+            }
+        }
     }
 }

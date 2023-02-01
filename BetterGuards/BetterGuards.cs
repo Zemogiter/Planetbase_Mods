@@ -4,6 +4,9 @@ using PlanetbaseModUtilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Selectable = Planetbase.Selectable;
+using HarmonyLib;
+using System.Data;
 
 namespace BetterGuards
 {
@@ -12,6 +15,7 @@ namespace BetterGuards
         public static new void Init(ModEntry modEntry) => InitializeMod(new BetterGuards(), modEntry, "BetterGuards");
 
         public static float healthmult;
+
         public override void OnInitialized(ModEntry modEntry)
         {
             var path = "./Mods/BetterGuards/config.txt";
@@ -20,93 +24,42 @@ namespace BetterGuards
             line = file.ReadLine();
             line = line.Substring(14);
             healthmult = float.Parse(line);
-            Console.WriteLine("The value of healthmult is " + healthmult);
+            Console.WriteLine("The value of healthmult is " + healthmult + " of type " + healthmult.GetType());
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-
-            List<Character> guards = Character.getSpecializationCharacters(SpecializationList.findPartial("Guard"));
-            foreach (Character guard in guards)
+            //nothing needed here
+        }
+    }
+    [HarmonyPatch(typeof(Human), nameof(Human.init))]
+    public class GuardPatch
+    {
+        //replacing the default health bar with a larger one for guards
+        public static void Postfix(Character __instance)
+        {
+            if (__instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>())
             {
-                
-                //make guards drop guns on death (vanilla = guns disapear with guards)
-                if (guard.isDead() == true)
-                {
-                    var transform = new NewSelectable();
-                    
-                    Vector3 position = guard.getPosition();
-                    Location location = guard.getLocation();
-                    ResourceType gunType = TypeList<ResourceType, ResourceTypeList>.find<Gun>();
-
-                    Resource droppedGun = Resource.create(gunType, position, location);
-                    droppedGun.setRotation(transform.getTransform().rotation);
-                    droppedGun.drop(Resource.State.Idle);
-                }
-            }
-            List<Character> intruders = Character.getSpecializationCharacters(SpecializationList.findPartial("Intruder"));
-            foreach(Character intruder in intruders)
-            {
-                if(intruder.isDead() == true)
-                {
-                    var transform = new NewSelectable();
-
-                    Vector3 position = intruder.getPosition();
-                    Location location = intruder.getLocation();
-                    ResourceType gunType = TypeList<ResourceType, ResourceTypeList>.find<Gun>();
-
-                    Resource droppedGun = Resource.create(gunType, position, location);
-                    droppedGun.setRotation(transform.getTransform().rotation);
-                    droppedGun.drop(Resource.State.Idle);
-                }
+                Indicator indicator = new(StringList.get("health"), ResourceList.StaticIcons.Health, IndicatorType.Normal, 1f, BetterGuards.healthmult, SignType.Health);
+                indicator.setLevels(0.1f, 0.5f, 0.7f, 0.8f);
+                indicator.setOrientation(IndicatorOrientation.Vertical);
+                //__instance.mIndicators[0] = indicator;
             }
         }
     }
-    public class NewSelectable : Selectable
+    [HarmonyPatch(typeof(Character), nameof(Character.onKo))]
+    public class CharacterPatch
     {
-        public override GameObject getGameObject()
+        //make guards and intruders drop guns on death (vanilla = guns disapear with guards/intruders)
+        public static void Postfix(Character __instance)
         {
-            throw new NotImplementedException();
-        }
-
-        public override float getHeight()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Texture2D getIcon()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int getId()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Location getLocation()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string getName()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Vector3 getPosition()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override float getRadius()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override GameObject getSelectionModel()
-        {
-            throw new NotImplementedException();
+            if(__instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>() || __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
+            {
+                Vector3 position = __instance.getPosition();
+                Location location = __instance.getLocation();
+                ResourceType gunType = TypeList<ResourceType, ResourceTypeList>.find<Gun>();
+                Resource droppedGun = Resource.create(gunType, position, location);
+            }
         }
     }
 }

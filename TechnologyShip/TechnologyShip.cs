@@ -26,7 +26,8 @@ namespace TechnologyShip
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            if (SomeValue == (MerchantCategory)6{
+            if (SomeValue == (MerchantCategory)6)
+            {
 
             }
         }
@@ -37,13 +38,10 @@ namespace TechnologyShip
         }
 
     }
-    public class NewCategory : MerchantCategory
-    {
-
-    }
+    
     public class NewMerchant : MerchantShip
     {
-        public new enum MerchantCategory
+        public enum MerchantCategory
         {
 
         }

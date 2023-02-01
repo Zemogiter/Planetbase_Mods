@@ -2,10 +2,8 @@
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using System;
+using HarmonyLib;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace LandingControl
 {
@@ -18,8 +16,6 @@ namespace LandingControl
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            var renderer = new CustomGuiInfoPanelRenderer(r);
-            renderer.onPanelCallback(panelCallback, panel); ;
 
         }
 
@@ -29,17 +25,19 @@ namespace LandingControl
         }
 
     }
-    public class CustomGuiInfoPanelRenderer : GuiInfoPanelRenderer
+    [HarmonyPatch(typeof(GuiInfoPanelRenderer), nameof(GuiInfoPanelRenderer.onPanelCallback))]
+    public class GuiInfoPanelRendererPatch : GuiInfoPanelRenderer
     {
-        public CustomGuiInfoPanelRenderer(GuiRenderer r) : base(r) { }
+        public GuiInfoPanelRendererPatch(GuiRenderer guiRenderer) : base(guiRenderer)
+        {
+        }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Original source hode has it starting with lowercase letter.")]
-        public void onPanelCallback(GuiDefinitions.Callback panelCallback, ModuleType.Panel panel)
+        public static bool Prefix(GuiDefinitions.Callback panelCallback, ModuleType.Panel panel)
         {
             switch (panel)
             {
                 case ModuleType.Panel.LandingPermissions:
-                    panelCallback(new CustomGuiLandingPermissions());
+                    panelCallback(new GuiLandingPermissionsPatch());
                     break;
                 case ModuleType.Panel.SecurityControls:
                     panelCallback(new GuiSecurityWindow());
@@ -48,6 +46,37 @@ namespace LandingControl
                     panelCallback(new GuiManufactureLimitsWindow());
                     break;
             }
+
+            return false;
+        }
+    }
+    [HarmonyPatch(typeof(GuiLandingPermissions), nameof(GuiLandingPermissions.onReset))]
+    public class GuiLandingPermissionsPatch
+    {
+        public static bool Prefix()
+        {
+            var specializationAmount = CoreUtils.GetMember<GuiLandingPermissions, List<GuiAmountSelector>>("mSpecializationAmountSelectors");
+            var steps = CoreUtils.GetMember<GuiAmountSelector, int>("mStep");
+            var changeCallback = CoreUtils.GetMember<GuiAmountSelector, GuiDefinitions.Callback>("mChangeCallback");
+            var flags = CoreUtils.GetMember<GuiAmountSelector, int>("mFlags");
+            var tooltip = CoreUtils.GetMember<GuiAmountSelector, string>("mStep");
+            var callback = CoreUtils.GetMember<GuiLandingPermissions, GuiDefinitions.Callback>("mCallback");
+            foreach (GuiAmountSelector selector in specializationAmount)
+            {
+                steps = 1;
+                changeCallback = null;
+                flags = 0;
+                tooltip = null;
+
+                callback = new GuiDefinitions.Callback(onReset);
+            }
+
+            LandingPermissions landingPermissions = LandingShipManager.getInstance().getLandingPermissions();
+            foreach (Specialization specialization in SpecializationList.getColonistSpecializations())
+            {
+                landingPermissions.getSpecializationPercentage(specialization).set(0);
+            }
+            return true;
         }
     }
 }

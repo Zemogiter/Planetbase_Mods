@@ -31,57 +31,52 @@ namespace EternalBots
 		{
 			
 		}
-        public static void PrivateUpdate(float timeStep)
-        {
-            Character chara = Singleton<NewCharacter>.getInstance();
-            if (chara.mTarget != null)
-            {
-                Selectable selectable = chara.mTarget.getSelectable();
-                if (selectable != null && selectable.isDestroyed())
-                {
-                    chara.setIdle();
-                }
-            }
-            if (chara.mQueuedAnimation != null)
-            {
-                var animationQueueTime = timeStep;
-
-                if (animationQueueTime < 0f)
-                {
-                    chara.playAnimation(chara.mQueuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
-                    if (chara.mQueuedAnchorPoint != null)
-                    {
-                        chara.setTransform(chara.mQueuedAnchorPoint.getPosition(), chara.mQueuedAnchorPoint.getRotation());
-                    }
-                    chara.mQueuedAnimation = null;
-                }
-            }
-            if (chara.mState == State.Walking)
-            {
-                chara.updateWalking(timeStep);
-            }
-            else if (chara.mState == State.Interacting)
-            {
-                chara.updateInteracting(timeStep);
-            }
-            else if (chara.mState == State.Dead)
-            {
-                chara.updateDead(timeStep);
-            }
-            else if (chara.mState == State.Idle)
-            {
-                chara.updateIdle(timeStep);
-            }
-        }
     }
     [HarmonyPatch(typeof(Bot), nameof(Bot.update))]
     public class BotPatch
     {
 		public static bool Prefix(float timeStep)
 		{
-            Bot bot = Singleton<Bot>.getInstance();
-            Character character = Singleton<NewCharacter>.getInstance();
-            EternalBots.PrivateUpdate(timeStep);
+            Bot bot;
+            Character character;
+            if (character.mTarget != null)
+            {
+                Selectable selectable = character.mTarget.getSelectable();
+                if (selectable != null && selectable.isDestroyed())
+                {
+                    character.setIdle();
+                }
+            }
+            if (character.mQueuedAnimation != null)
+            {
+                var animationQueueTime = timeStep;
+
+                if (animationQueueTime < 0f)
+                {
+                    character.playAnimation(character.mQueuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
+                    if (character.mQueuedAnchorPoint != null)
+                    {
+                        character.setTransform(character.mQueuedAnchorPoint.getPosition(), character.mQueuedAnchorPoint.getRotation());
+                    }
+                    character.mQueuedAnimation = null;
+                }
+            }
+            if (character.mState == State.Walking)
+            {
+                character.updateWalking(timeStep);
+            }
+            else if (character.mState == State.Interacting)
+            {
+                character.updateInteracting(timeStep);
+            }
+            else if (character.mState == State.Dead)
+            {
+                character.updateDead(timeStep);
+            }
+            else if (character.mState == State.Idle)
+            {
+                character.updateIdle(timeStep);
+            }
             Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
             character.mIndicators[7] = indicator;
@@ -103,34 +98,6 @@ namespace EternalBots
             bot.updateDustParticles(timeStep);
 
 			return false;
-        }
-    }
-    public class NewCharacter : Character
-    {
-        public override List<string> getAnimationNames(CharacterAnimationType animationType)
-        {
-            return mSpecialization.getAnimationNames(animationType, mLocation, Human.Gender.Unknown);
-        }
-
-        public override float getHeight()
-        {
-            return 1.25f;
-        }
-
-        public override Texture2D getIcon()
-        {
-            return mSpecialization.getIcon();
-        }
-
-        public override Bounds getSelectionBounds()
-        {
-            return new Bounds(getPosition() + Vector3.up * 0.6f, new Vector3(0.9f, 1.2f, 0.9f));
-        }
-    }
-    public class NewBot : Bot
-    {
-        static NewBot()
-        {
         }
     }
 }

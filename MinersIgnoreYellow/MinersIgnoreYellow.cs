@@ -4,12 +4,13 @@ using PlanetbaseModUtilities;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using HarmonyLib;
+using System.ComponentModel;
 
 namespace MinersIgnoreYellow
 {
     public class MinersIgnoreYellow : ModBase
     {
-        public Character character = Character.getFirstCharacter();
         public static new void Init(ModEntry modEntry) => InitializeMod(new MinersIgnoreYellow(), modEntry, "MinersIgnoreYellow");
 
         public override void OnInitialized(ModEntry modEntry)
@@ -19,23 +20,19 @@ namespace MinersIgnoreYellow
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            var newAI = new CustomAI(AiRule.Priority.All);
-            newAI.update(character);
+            
            
         }
     }
-    public class CustomAI : AiRuleGoMine
+    [HarmonyPatch(typeof(AiRuleGoMine), nameof(AiRuleGoMine.update))]
+    public class AiRuleGoMinePatch
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Could be written to at some point")]
-        AlertState state = SecurityManager.getInstance().getAlertState();
-        readonly List<Character> miners = Character.getSpecializationCharacters(SpecializationList.find("Driller"));
-        readonly List<Character> humanMiners = Character.getSpecializationCharacters(SpecializationList.find("Worker"));
+        static AlertState state = SecurityManager.getInstance().getAlertState();
+        static readonly List<Character> miners = Character.getSpecializationCharacters(SpecializationList.find("Driller"));
+        static readonly List<Character> humanMiners = Character.getSpecializationCharacters(SpecializationList.find("Worker"));
 
-        public CustomAI(Priority priority) : base(priority)
-        {
-        }
-
-        public override bool update(Character character)
+        public static bool Prefix(Character character, AiRuleGoMine __instance)
         {
             int maxTargeters = (TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().getMaxUsers() - 1);
             Module module = Module.findMine(character, true, maxTargeters);
@@ -56,14 +53,15 @@ namespace MinersIgnoreYellow
                         //keeps miners in the mine if yellow alert is active
                         if (state == AlertState.YellowAlert && driller.isProtected() || worker.isProtected())
                         {
-                            return AiRule.goTarget(character, new Target(module));
-
+                            object[] parameters = { character, new Target(module) };
+                            bool target = CoreUtils.InvokeMethod<AiRule, bool>("goTarget", __instance, parameters);
+                            return target;
                         }
                     }
 
                 }
             }
-            return false;
+            return true;
         }
     }
 }

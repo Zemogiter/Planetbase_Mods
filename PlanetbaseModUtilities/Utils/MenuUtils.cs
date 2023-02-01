@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace PlanetbaseModUtilities
-{   
+{
     public static class MenuUtils
     {
         public static GuiMenuSystem GetMenuSystem(this GameStateGame game)

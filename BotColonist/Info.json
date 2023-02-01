@@ -1,0 +1,14 @@
+{
+  "AssemblyName": "BotColonists.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Bot Colonists",
+  "EntryMethod": "BotColonists.BotColonists.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "BotColonists",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "0.2.0.2223"
+}

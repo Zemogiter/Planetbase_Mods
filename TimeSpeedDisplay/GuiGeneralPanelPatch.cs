@@ -17,7 +17,7 @@ namespace TimeSpeedDisplay
     {
 
         public static string mTimeScaleCountString;
-        public static bool Prefix(float timeStep, ref GuiGeneralPanel __instance)
+        public static bool Prefix(float timeStep, GuiGeneralPanel __instance)
         {
             __instance.mTimeSinceUpdate -= timeStep;
             if (__instance.mTimeSinceUpdate < 0f)

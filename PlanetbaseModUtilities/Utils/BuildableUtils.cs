@@ -28,7 +28,7 @@ namespace PlanetbaseModUtilities
             return (T)TypeList<ModuleType, ModuleTypeList>.find<T>();
         }
 
-        public static Module.Category GetCategory(this Module module) 
+        public static Module.Category GetCategory(this Module module)
         {
             return CoreUtils.InvokeMethod<Module, Module.Category>("getCategory", module);
         }
@@ -42,9 +42,9 @@ namespace PlanetbaseModUtilities
             var mModuleCategories = CoreUtils.GetMember<Module, List<Module>[]>("mModuleCategories");
 
             // Find and remove old category entry
-            foreach(var categoryList in mModuleCategories)
+            foreach (var categoryList in mModuleCategories)
             {
-                if(categoryList.Contains(module))
+                if (categoryList.Contains(module))
                 {
                     categoryList.Remove(module);
                 }

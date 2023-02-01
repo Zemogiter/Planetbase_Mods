@@ -2,7 +2,8 @@
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using System;
-using System.Diagnostics;
+using HarmonyLib;
+using System.Reflection;
 
 namespace BetterHours
 {
@@ -18,25 +19,10 @@ namespace BetterHours
 
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-            try
-            {
-                StatsCollector sCollector = Singleton<StatsCollector>.getInstance();
-                //Debug.WriteLine("This is the value of sCollector " + sCollector);
-                EnvironmentManager eManager = Singleton<EnvironmentManager>.getInstance();
-                //Debug.WriteLine("This is the value of eManager " + eManager);
-                if (sCollector != null && eManager != null)
-                {
-                    double dayHours = GetDayHours();
-                    sCollector.mRefreshPeriod = (float)(((double)eManager.getDayTime() + (double)eManager.getNightTime()) / (dayHours / 6.0));
-                };
-            }
-            catch (NullReferenceException exception)
-            {
-                Debug.WriteLine(exception.ToString());
-            }
+            
         }
 
-        public double GetDayHours()
+        public static double GetDayHours()
         {
             double dayHours = 24.0;
             PlanetManager pManager = Singleton<PlanetManager>.getInstance();
@@ -46,9 +32,24 @@ namespace BetterHours
             }
             return dayHours;
         }
-        public int GetTimeHour(float value)
+    }
+    [HarmonyPatch(typeof(StatsCollector), nameof(StatsCollector.mRefreshPeriod))]
+    public class StatsCollectorPatch
+    {
+        static void Postfix(StatsCollector __instance)
         {
-            double dayHours = GetDayHours();
+            PropertyInfo refreshPeriod = __instance.GetType().GetProperty("mRefreshPeriod");
+            //__instance.mRefreshPeriod = (float)((Singleton<EnvironmentManager>.getInstance().getDayTime() + Singleton<EnvironmentManager>.getInstance().getNightTime()) / (BetterHours.GetDayHours() / 6.0));
+            float value = (float)((Singleton<EnvironmentManager>.getInstance().getDayTime() + Singleton<EnvironmentManager>.getInstance().getNightTime()) / (BetterHours.GetDayHours() / 6.0));
+            refreshPeriod.SetValue(__instance,value);
+        }
+    }
+    [HarmonyPatch(typeof(Indicator), nameof(Indicator.getTimeHour))]
+    public class IndicatorPatch
+    {
+        public static int Prefix(float value)
+        {
+            double dayHours = BetterHours.GetDayHours();
             return (int)(((double)value * dayHours + 6.0) % dayHours);
         }
     }

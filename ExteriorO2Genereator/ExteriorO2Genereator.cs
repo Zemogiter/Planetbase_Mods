@@ -32,11 +32,6 @@ namespace ExteriorO2Genereator
 
             moduleList.AddType(new ModuleTypeExteriorOxygenGenerator());
         }
-        public string ModuleTypeBasePadName => Util.camelCaseToLowercase(TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeBasePad>().GetType().Name);
-        public ObjectList<UnityEngine.Mesh> GetBasePadMeshes()
-        {
-            return ModuleTypeBasePad.mMeshes;
-        }
         public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
             // Nothing required here
@@ -44,30 +39,10 @@ namespace ExteriorO2Genereator
     }
     public class ModuleTypeExteriorOxygenGenerator : ModuleType
 	{
-        public GameObject LoadOxygenGeneratorPrefab()
-        {
-            string text = "Prefabs/Modules/PrefabOxygenGenerator" + GetType().Name.Replace("ModuleType", string.Empty);
-            GameObject original = ResourceUtil.loadPrefab(text);
-            GameObject gameObject = Object.Instantiate(original);
-            gameObject.calculateSmoothMeshRecursive(mMeshes);
-            if (gameObject.GetComponent<Collider>() != null)
-            {
-                Debug.LogWarning(text + " has collision in the root");
-            }
-            GameObject gameObject2 = GameObject.Find(GroupName);
-            if (gameObject2 == null)
-            {
-                gameObject2 = new();
-                gameObject2.name = GroupName;
-            }
-            gameObject.transform.SetParent(gameObject2.transform, worldPositionStays: false);
-            gameObject.SetActive(value: false);
-            return gameObject;
-        }
+        public GameObject model;
         public ModuleTypeExteriorOxygenGenerator()
 		{
-			string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\ExteriorO2Generator\\Textures\\ExteriorO2Generator.png";
-            var thing = new ExteriorO2Genereator();
+            string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\ExteriorO2Generator\\Textures\\ExteriorO2Generator.png";
             if (File.Exists(path))
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
@@ -75,17 +50,20 @@ namespace ExteriorO2Genereator
                 tex.LoadImage(iconBytes);
                 this.mIcon = Util.applyColor(tex);
             }
+            else
+            {
+                this.mIcon = this.mIcon = ResourceList.StaticIcons.Oxygen;
+            }
             mPowerGeneration = -1000;
 			mWaterGeneration = -1000;
 			mMinSize = 0;
 			mMaxSize = 0;
-			mOxygenGeneration = 10;
-			mFlags = 44560;
+			mOxygenGeneration = 20;
+			mFlags = 55055;
 			mHeight = 0f;
             mBaseType = true;
             mExterior = true;
-            mMeshes = thing.GetBasePadMeshes();
-            mModels = new GameObject[Module.ValidSizes.Length];
+            mModels[0] = ResourceUtil.loadPrefab("Prefabs/Modules/PrefabBasePad1");
             mRequiredStructure.set<ModuleTypeOxygenGenerator>();
 			mCost = new ResourceAmounts();
             mCost.add(TypeList<ResourceType, ResourceTypeList>.find<Bioplastic>(), 2);

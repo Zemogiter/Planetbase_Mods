@@ -18,7 +18,7 @@ namespace PlanetbaseModUtilities
             mStrings.Add(key, value);
         }
 
-        public static void SetHelpText(this HelpItem helpItem, string text) 
+        public static void SetHelpText(this HelpItem helpItem, string text)
         {
             CoreUtils.SetMember("mText", helpItem, text);
         }

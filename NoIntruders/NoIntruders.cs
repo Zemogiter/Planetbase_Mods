@@ -3,16 +3,19 @@ using System;
 using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
+using HarmonyLib;
 using System.Collections.Generic;
+using static Planetbase.ModuleType;
+using System.Reflection;
 
 namespace NoIntruders
 {
     
     public class NoIntruders : ModBase
     {
+		public static Planet Planet { get; private set; }
 		public static new void Init(ModEntry modEntry) => InitializeMod(new NoIntruders(), modEntry, "NoIntruders");
 
-		public Planet Planet { get; private set; }
 		public override void OnInitialized(ModEntry modEntry)
 		{
 			
@@ -21,67 +24,45 @@ namespace NoIntruders
 
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-			//var planet = new NewPlanet();
-			//planet.WealthRecalculation(Planet);
-			var character = new NewCharacter();
-			character.KillIntruders();
-			
+			FieldInfo field = (FieldInfo)typeof(Planet).GetField("mIntruderMinPrestige", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Planet);
+			Console.WriteLine("Minimum prestige for intruders is = " + field.ToString());
         }
 	}
-    public class NewCharacter : Character
-    {
-		public void KillIntruders()
-        {
-			List<Character> intruders = getSpecializationCharacters(SpecializationList.IntruderInstance);
-			if (intruders != null)
-			{
-				foreach (Character intruder in intruders)
-				{
-					// kill intruders instantly.
-					if (intruder != null && !intruder.isDead())
-					{
-						intruder.setArmed(false);
-						var dead = new CharacterImplementation();
-						dead.SetDead();
-					}
-				}
-			}
-		}
-		//Overides below are placeholders to prevent compiler errors
-		public override float getHeight()
-        {
-			if (mCurrentAnimation != null && (mCurrentAnimation.getAnimationType() == CharacterAnimationType.Die || mCurrentAnimation.getAnimationType() == CharacterAnimationType.Sleep))
-			{
-				return 0.5f;
-			}
-			return 1.75f;
-		}
-
-        public override Texture2D getIcon()
-        {
-			
-			return mSpecialization.getIcon();
-		}
-
-        public override Bounds getSelectionBounds()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override List<string> getAnimationNames(CharacterAnimationType animationType)
-        {
-			throw new NotImplementedException();
-		}
-    }
-    public class NewPlanet : Planet
+	[HarmonyPatch(typeof(Character), nameof(Character.getFirstCharacter))]
+	public class CharacterClass
 	{
-		public void WealthRecalculation(Planet planet)
+		public static void Postfix()
 		{
-			CoreUtils.SetMember("mIntruderMinPrestige", planet, 20f);
-		}
-
+            List<Character> intruders = Character.getSpecializationCharacters(SpecializationList.IntruderInstance);
+            if (intruders != null)
+            {
+                foreach (Character intruder in intruders)
+                {
+                    // kill intruders instantly.
+                    if (intruder != null && !intruder.isDead())
+                    {
+                        intruder.setArmed(false);
+						//var dead = new CharacterImplementation();
+						//dead.SetDead();
+						CoreUtils.InvokeMethod<Character>("setDead", intruder);
+                    }
+                }
+            }
+        }
 	}
-	public class CharacterImplementation : Character
+	[HarmonyPatch(typeof(Planet), nameof(Planet.getIntruderMinPrestige))]
+	public class PlanetPatch
+	{
+		public static bool Prefix()
+		{
+			var prestige = PlanetManager.getCurrentPlanet().getIntruderMinPrestige();
+            typeof(Planet).GetField("mIntruderMinPrestige", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(prestige, 2000f);
+            //CoreUtils.SetMember("mIntruderMinPrestige", NoIntruders.Planet, 2000f);
+            return false;
+        }
+		
+	}
+	/*public class CharacterImplementation : Character
 	{
 		public void SetDead()
 		{
@@ -107,5 +88,5 @@ namespace NoIntruders
 		{
 			throw new NotImplementedException();
 		}
-	}
+	}*/
 }

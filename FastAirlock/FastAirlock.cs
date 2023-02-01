@@ -24,112 +24,74 @@ namespace FastAirlock
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //Console.WriteLine("The value of speedmult is " + speedmult);
+            //nothing neede here
         }
     }
     [HarmonyPatch(typeof(InteractionAirlock), nameof(InteractionAirlock.update))]
     public class InteractionAirlockPatch
     {
-        public static bool Prefix(float timeStep)
+        public static void Postfix(float timeStep, InteractionAirlock __instance)
         {
             timeStep *= FastAirlock.speedmult;
-            var airlock = NewInteractionAirlock.getInstance();
-            if (GameManager.getInstance().getGameState() is GameStateGame game)
+            Construction construction = __instance.mSelectable as Construction;
+            if (construction != null && !construction.isPowered() && __instance.mStage == InteractionAirlock.Stage.Wait)
             {
-                airlock.mSelectable = airlock.getSelectable();
-                if (airlock.mSelectable is Construction construction && !construction.isPowered() && airlock.mStage == InteractionAirlock.Stage.Wait)
+                return;
+            }
+            if (__instance.mSelectable.getFirstInteraction() == __instance)
+            {
+                __instance.mStageProgress += timeStep;
+                if (__instance.mStageProgress > 1f || __instance.mStage == InteractionAirlock.Stage.Wait)
                 {
-                    return true;
-                }
-                //Console.WriteLine("this.mSelectable is= " + airlock.mSelectable);
-
-                if (airlock.mTarget != null && airlock.mSelectable is Construction && airlock.mSelectable.getFirstInteraction() == airlock)
-                {
-                    airlock.mStageProgress += timeStep;
-                    //Console.WriteLine("this.mTarget is= " + airlock.mTarget);
-                    //Console.WriteLine("this.mSelectable is= " + airlock.mSelectable);
-                    //Console.WriteLine("this.mStageProgress is= " + airlock.mStageProgress);
-                    if (airlock.mStageProgress > 1f || airlock.mStage == InteractionAirlock.Stage.Wait)
+                    bool flag = __instance.mStage == InteractionAirlock.Stage.Exit;
+                    __instance.onStageDone();
+                    __instance.mStageProgress = 0f;
+                    if (flag)
                     {
-                        //Console.WriteLine("this.mStage is= " + airlock.mStage);
-                        bool flag = airlock.mStage == InteractionAirlock.Stage.Exit;
-                        Console.WriteLine("flag is= " + flag);
-                        airlock.onStageDone();
-                        airlock.mStageProgress = 0f;
-                        if (flag)
-                        {
-                            return true;
-                        }
+                        return;
                     }
+                }
+            }
+            else
+            {
+                __instance.mStage = InteractionAirlock.Stage.Wait;
+                __instance.mTarget = __instance.getQueuePosition(__instance.mSelectable.getInteractionIndex(__instance));
+            }
+            Vector3 direction = __instance.mTarget - __instance.mCharacter.getPosition();
+            float magnitude = direction.magnitude;
+            float d = Mathf.Min(4f * timeStep, magnitude);
+            if (magnitude > 0.25f)
+            {
+                Vector3 target;
+                if (__instance.mStage == InteractionAirlock.Stage.Wait && magnitude < 1f)
+                {
+                    target = (__instance.mSelectable.getPosition() - __instance.mCharacter.getPosition()).flatDirection();
                 }
                 else
                 {
-                    airlock.mStage = InteractionAirlock.Stage.Wait;
-                    airlock.mTarget = airlock.getQueuePosition(airlock.mSelectable.getInteractionIndex(airlock));
+                    target = direction.flatDirection();
                 }
-
-                Vector3 direction = airlock.mTarget - airlock.mCharacter.getPosition();
-                //Console.WriteLine("direction is= " + direction);
-                float magnitude = direction.magnitude;
-                //Console.WriteLine("magnitude is= " + magnitude);
-                float d = Mathf.Min(4f * timeStep, magnitude);
-                //Console.WriteLine("d is= " + d);
-                if (magnitude > 0.25f && direction != null)
+                Vector3 direction2 = __instance.mCharacter.getDirection();
+                __instance.mCharacter.setPosition(__instance.mCharacter.getPosition() + direction.normalized * d);
+                __instance.mCharacter.setDirection(Vector3.RotateTowards(direction2, target, 6.28318548f * timeStep, 0.1f));
+                if (__instance.mAnimationType != CharacterAnimationType.Walk)
                 {
-                    Vector3 target;
-                    if (airlock.mStage == InteractionAirlock.Stage.Wait && magnitude < 1f && airlock.mSelectable is Construction && direction != null)
-                    {
-                        target = (airlock.mSelectable.getPosition() - airlock.mCharacter.getPosition()).flatDirection();
-                    }
-                    else
-                    {
-                        target = direction.flatDirection();
-                    }
-                    Vector3 direction2 = airlock.mCharacter.getDirection();
-                    //Console.WriteLine("direction2 is= " + direction2);
-                    airlock.mCharacter.setPosition(airlock.mCharacter.getPosition() + direction.normalized * d);
-                    airlock.mCharacter.setDirection(Vector3.RotateTowards(direction2, target, 6.28318548f * timeStep, 0.1f));
-                    if (airlock.mAnimationType != CharacterAnimationType.Walk)
-                    {
-                        airlock.mAnimationType = CharacterAnimationType.Walk;
-                        airlock.mCharacter.playWalkAnimation();
-                    }
-                }
-                else
-                {
-                    if (airlock.mStage == InteractionAirlock.Stage.GoEntry)
-                    {
-                        airlock.mStageProgress = 1f;
-                    }
-                    if (airlock.mAnimationType != CharacterAnimationType.Idle)
-                    {
-                        airlock.mAnimationType = CharacterAnimationType.Idle;
-                        airlock.mCharacter.playIdleAnimation(CharacterAnimation.PlayMode.CrossFade);
-                    }   
+                    __instance.mAnimationType = CharacterAnimationType.Walk;
+                    __instance.mCharacter.playWalkAnimation();
                 }
             }
-            return false;
-        }
-    }
-    public class NewInteractionAirlock : InteractionAirlock
-    {
-        public override Vector3 getQueuePosition(int i)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void onStageDone()
-        {
-            throw new NotImplementedException();
-        }
-        public static InteractionAirlock mInstance;
-        public static InteractionAirlock getInstance()
-        {
-            if (mInstance == null)
+            else
             {
-                mInstance = new NewInteractionAirlock();
+                if (__instance.mStage == InteractionAirlock.Stage.GoEntry)
+                {
+                    __instance.mStageProgress = 1f;
+                }
+                if (__instance.mAnimationType != CharacterAnimationType.Idle)
+                {
+                    __instance.mAnimationType = CharacterAnimationType.Idle;
+                    __instance.mCharacter.playIdleAnimation(CharacterAnimation.PlayMode.CrossFade);
+                }
             }
-            return mInstance;
         }
     }
 }

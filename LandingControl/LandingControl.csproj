@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomColonistShip.cs" />
-    <Compile Include="CustomGUILandingPermisions.cs" />
     <Compile Include="LandingControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
