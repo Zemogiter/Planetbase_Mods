@@ -52,8 +52,7 @@ namespace BotColonists
             
             var sizeGet = CoreUtils.GetMember<LandingShip, LandingShip.Size>("mSize");
             var intrudersGet = CoreUtils.GetMember<LandingShip, bool>("mIntruders");
-            var spawnPositionGet = CoreUtils.
-            Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
+            var spawnPositionGet = CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance);
             int num = 10;
             int num2 = 10;
             int num3 = 10;
@@ -91,7 +90,7 @@ namespace BotColonists
                 Specialization specialization = ((!intrudersGet) ? __instance.calculateSpecialization() : TypeList<Specialization, SpecializationList>.find<Intruder>());
                 if (specialization != null)
                 {
-                    Character.create(specialization, LandingShip.getSpawnPosition(i), Location.Exterior);
+                    Character.create(specialization, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, i), Location.Exterior);
                 }
             }
             for (int j = 0; j < num2; j++)
@@ -99,17 +98,17 @@ namespace BotColonists
                 Specialization specialization2 = TypeList<Specialization, SpecializationList>.find<Carrier>();
                 Specialization specialization3 = TypeList<Specialization, SpecializationList>.find<Constructor>();
                 Specialization specialization4 = TypeList<Specialization, SpecializationList>.find<Driller>();
-                Character.create(specialization2, LandingShip.getSpawnPosition(j), Location.Exterior);
-                Character.create(specialization3, LandingShip.getSpawnPosition(j), Location.Exterior);
-                Character.create(specialization4, LandingShip.getSpawnPosition(j), Location.Exterior);
+                Character.create(specialization2, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
+                Character.create(specialization3, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
+                Character.create(specialization4, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
             }
             for (int k = 0; k < num3; k++)
             {
-                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Meal>(), LandingShip.getSpawnPosition(k), Location.Exterior);
-                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Metal>(), LandingShip.getSpawnPosition(k), Location.Exterior);
-                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Bioplastic>(), LandingShip.getSpawnPosition(k), Location.Exterior);
-                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<MedicalSupplies>(), LandingShip.getSpawnPosition(k), Location.Exterior);
-                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Spares>(), LandingShip.getSpawnPosition(k), Location.Exterior);
+                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Meal>(), CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, k), Location.Exterior);
+                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Metal>(), CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, k), Location.Exterior);
+                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Bioplastic>(), CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, k), Location.Exterior);
+                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<MedicalSupplies>(), CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, k), Location.Exterior);
+                Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Spares>(), CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, k), Location.Exterior);
             }
 
             return false;

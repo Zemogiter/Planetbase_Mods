@@ -9,7 +9,6 @@ namespace BetterHours
 {
     public class BetterHours : ModBase
     {
-        public static float timeStep;
         public static new void Init(ModEntry modEntry) => InitializeMod(new BetterHours(), modEntry, "BetterHours");
 
 		public override void OnInitialized(ModEntry modEntry)
@@ -39,7 +38,6 @@ namespace BetterHours
         static void Postfix(StatsCollector __instance)
         {
             PropertyInfo refreshPeriod = __instance.GetType().GetProperty("mRefreshPeriod");
-            //__instance.mRefreshPeriod = (float)((Singleton<EnvironmentManager>.getInstance().getDayTime() + Singleton<EnvironmentManager>.getInstance().getNightTime()) / (BetterHours.GetDayHours() / 6.0));
             float value = (float)((Singleton<EnvironmentManager>.getInstance().getDayTime() + Singleton<EnvironmentManager>.getInstance().getNightTime()) / (BetterHours.GetDayHours() / 6.0));
             refreshPeriod.SetValue(__instance,value);
         }

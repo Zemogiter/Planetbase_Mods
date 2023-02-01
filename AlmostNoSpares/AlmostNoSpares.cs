@@ -28,7 +28,7 @@ namespace AlmostNoSpares
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            
+            //nothing needed here
         }
     }
 }
