@@ -6,8 +6,6 @@ using Random = UnityEngine.Random;
 using UnityEngine;
 using System.Reflection;
 using HarmonyLib;
-using static Planetbase.LandingShip;
-using System.ComponentModel;
 
 namespace MoreColonists
 {
@@ -26,7 +24,8 @@ namespace MoreColonists
 			line = file.ReadLine();
 			line = line.Substring(13);
 			newcolonists = int.Parse(line);
-		}
+            Console.WriteLine("The value of newcolonists is " + newcolonists + " of type " + newcolonists.GetType());
+        }
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
 

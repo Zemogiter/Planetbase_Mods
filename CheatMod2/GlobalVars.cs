@@ -741,7 +741,7 @@ public class GlobalVars : Singleton<GlobalVars>
 		return l2;
 	}
 
-	/*public void ModSaveData(XmlNode rootNode)
+	public void ModSaveData(XmlNode rootNode)
 	{
 		XmlNode parent = Serialization.createNode(rootNode, "CheatMods");
 		string text = "";
@@ -771,7 +771,7 @@ public class GlobalVars : Singleton<GlobalVars>
 		{
 			text4 = text4 + ((text4.Length > 0) ? "," : "") + num;
 		}
-	}*/
+	}
 
 	public void ModLoadData(XmlNode node)
 	{

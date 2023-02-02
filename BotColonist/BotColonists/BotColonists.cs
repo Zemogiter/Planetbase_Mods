@@ -46,13 +46,10 @@ namespace BotColonists
     [HarmonyPatch(typeof(ColonistShip), nameof(ColonistShip.onLanded))]
     public class ColonistShipPatch
     {
-        
-        public static bool Prefix(ColonistShip __instance)
+        public static void Postfix(ColonistShip __instance)
         {
-            
-            var sizeGet = CoreUtils.GetMember<LandingShip, LandingShip.Size>("mSize");
-            var intrudersGet = CoreUtils.GetMember<LandingShip, bool>("mIntruders");
-            var spawnPositionGet = CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance);
+            var sizeGet = CoreUtils.GetMember<LandingShip, LandingShip.Size>("mSize", __instance);
+            var intrudersGet = CoreUtils.GetMember<LandingShip, bool>("mIntruders", __instance);
             int num = 10;
             int num2 = 10;
             int num3 = 10;
@@ -110,8 +107,6 @@ namespace BotColonists
                 Resource.create(TypeList<ResourceType, ResourceTypeList>.find<MedicalSupplies>(), CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, k), Location.Exterior);
                 Resource.create(TypeList<ResourceType, ResourceTypeList>.find<Spares>(), CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, k), Location.Exterior);
             }
-
-            return false;
         }
     }
     public class StaticLanding : LandingShip
