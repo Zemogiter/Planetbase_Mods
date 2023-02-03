@@ -34,7 +34,7 @@ namespace MoreColonists
 	[HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.onLandedGeneric))]
 	public class VisitorShipPatch : VisitorShip
     {
-		public static void Postfix(VisitorShip visitorShip, VisitorShip __instance)
+		public static void Postfix(VisitorShip __instance)
 		{
             float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
             int num = 10;
@@ -60,7 +60,7 @@ namespace MoreColonists
                 for (int i = 0; i < num; i++)
                 {
                     Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), __instance.getPosition(), Location.Exterior);
-                    CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", visitorShip, 0);
+                    CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", __instance, 0);
                 }
                 return;
             }
@@ -84,7 +84,7 @@ namespace MoreColonists
                 guest.decayIndicator(CharacterIndicator.Hydration, Random.Range(0f, 0.75f));
                 guest.decayIndicator(CharacterIndicator.Sleep, Random.Range(0f, 0.75f));
                 guest.setFee(5 * Random.Range(2, 5));
-                guest.setOwnedShip(visitorShip);
+                guest.setOwnedShip(__instance);
                 if (Random.Range(0, 20) == 0)
                 {
                     guest.setCondition(TypeList<ConditionType, ConditionTypeList>.find<ConditionFlu>());
@@ -95,7 +95,7 @@ namespace MoreColonists
     [HarmonyPatch(typeof(ColonistShip), nameof(ColonistShip.onLanded))]
     public class ColonistShipPatch : ColonistShip
     {
-        public static void Postfix(ColonistShip colonistShip, ColonistShip __instance)
+        public static void Postfix(ColonistShip __instance)
         {
             float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
             int num = 20;
@@ -118,8 +118,8 @@ namespace MoreColonists
             
             for (int i = 0; i < num; i++)
             {
-                MethodInfo getMethod = colonistShip.GetType().GetMethod("calculateSpecialization", BindingFlags.NonPublic | BindingFlags.Instance);
-                var calculation = getMethod.Invoke(colonistShip, new object[] { colonistShip });
+                MethodInfo getMethod = __instance.GetType().GetMethod("calculateSpecialization", BindingFlags.NonPublic | BindingFlags.Instance);
+                var calculation = getMethod.Invoke(__instance, new object[] {});
                 Specialization specialization = ((Specialization)((!__instance.mIntruders) ? calculation : TypeList<Specialization, SpecializationList>.find<Intruder>()));
                 if (specialization != null)
                 {
