@@ -7,86 +7,62 @@ using HarmonyLib;
 using System.Collections.Generic;
 using static Planetbase.ModuleType;
 using System.Reflection;
+using System.Linq;
 
 namespace NoIntruders
 {
     
     public class NoIntruders : ModBase
     {
-		public static Planet Planet { get; private set; }
 		public static new void Init(ModEntry modEntry) => InitializeMod(new NoIntruders(), modEntry, "NoIntruders");
 
 		public override void OnInitialized(ModEntry modEntry)
 		{
-			
-			
+
 		}
 
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-			FieldInfo field = (FieldInfo)typeof(Planet).GetField("mIntruderMinPrestige", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Planet);
-			Console.WriteLine("Minimum prestige for intruders is = " + field.ToString());
+
         }
 	}
 	[HarmonyPatch(typeof(Character), nameof(Character.getFirstCharacter))]
-	public class CharacterClass
+	public class CharacterPatch
 	{
-		public static void Postfix()
+		public static void Postfix(Character __instance)
 		{
             List<Character> intruders = Character.getSpecializationCharacters(SpecializationList.IntruderInstance);
-            if (intruders != null)
+            var assemblyList = Assembly.GetExecutingAssembly().GetTypes().Select(t => t.Namespace).ToArray();
+            string assemblyToFind = "MoreColonists";
+            var result = Array.Find(assemblyList, element => element == assemblyToFind);
+            if (intruders != null && result == null)
             {
+                Console.WriteLine("More Colonists mod not found, can execute the CharacterPatch.Postfix without risk of a crash");
                 foreach (Character intruder in intruders)
                 {
                     // kill intruders instantly.
                     if (intruder != null && !intruder.isDead())
                     {
                         intruder.setArmed(false);
-						//var dead = new CharacterImplementation();
-						//dead.SetDead();
-						CoreUtils.InvokeMethod<Character>("setDead", intruder);
+						CoreUtils.InvokeMethod<Character>("setDead", __instance);
                     }
                 }
+            }
+            else
+            {
+                Console.WriteLine("More Colonists mod found, can't run CharacterPatch.Postfix.");
+                return;
             }
         }
 	}
 	[HarmonyPatch(typeof(Planet), nameof(Planet.getIntruderMinPrestige))]
 	public class PlanetPatch
 	{
-		public static bool Prefix()
+		public static bool Prefix(Planet __instance)
 		{
-			var prestige = PlanetManager.getCurrentPlanet().getIntruderMinPrestige();
-            typeof(Planet).GetField("mIntruderMinPrestige", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(prestige, 2000f);
-            //CoreUtils.SetMember("mIntruderMinPrestige", NoIntruders.Planet, 2000f);
+            CoreUtils.SetMember("mIntruderMinPrestige", __instance, 2000f);
+			Console.WriteLine("Minimum prestige for intruders to appear is = " + __instance.mIntruderMinPrestige.ToString());
             return false;
         }
-		
 	}
-	/*public class CharacterImplementation : Character
-	{
-		public void SetDead()
-		{
-			base.setDead();
-		}
-		//Overides below are placeholders to prevent compiler errors
-		public override float getHeight()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override Texture2D getIcon()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override Bounds getSelectionBounds()
-		{
-			throw new NotImplementedException();
-		}
-
-		protected override List<string> getAnimationNames(CharacterAnimationType animationType)
-		{
-			throw new NotImplementedException();
-		}
-	}*/
 }

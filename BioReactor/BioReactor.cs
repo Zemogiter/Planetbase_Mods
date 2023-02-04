@@ -19,6 +19,7 @@ namespace BioReactor
         {
             RegisterStrings();
             RegisterNewBuilding();
+            RegisterNewComponents();
 
             Debug.Log("[MOD] BioReactor activated");
         }
@@ -28,10 +29,29 @@ namespace BioReactor
 
             moduleList.AddType(new ModuleTypeBioReactor());
         }
+        private void RegisterNewComponents()
+        {
+            // Register new components to global lists
+            var componentTypeList = ComponentTypeList.getInstance();
+
+            componentTypeList.AddType(new StarchBurner());
+            componentTypeList.AddType(new VegetableBurner());
+
+            // Add new components to bioreactor
+            var bioReactorComponents = BuildableUtils.FindModuleType<ModuleTypeBioReactor>().GetComponentTypes();
+
+            bioReactorComponents.Add(ComponentTypeList.find<StarchBurner>());
+            bioReactorComponents.Add(ComponentTypeList.find<VegetableBurner>());
+
+            BuildableUtils.FindModuleType<ModuleTypeBioReactor>().SetComponentTypes(bioReactorComponents);
+
+        }
         private static void RegisterStrings()
         {
             StringUtils.RegisterString("bio_reactor", NAME);
             StringUtils.RegisterString("tooltip_bio_reactor", DESCRIPTION);
+            StarchBurner.RegisterStrings();
+            VegetableBurner.RegisterStrings();
         }
        
         
@@ -60,7 +80,7 @@ namespace BioReactor
             mPowerStorageCapacity = 5000000;
             mMinSize = 1;
             mMaxSize = 1;
-            mFlags = 1050660;
+            mFlags = 1050000;
             mLayoutType = LayoutType.Circular;
             mModels[1] = ResourceUtil.loadPrefab("Prefabs/Modules/PrefabOxygenGenerator2");
             mRequiredStructure.set<ModuleTypePowerCollector>();
@@ -106,6 +126,7 @@ namespace BioReactor
             };
             mEmbeddedResourceCount = 2;
             mResourceProductionPeriod = 1f;
+            mPowerGeneration = 3000;
             mFlags = 1248510;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";
@@ -151,6 +172,7 @@ namespace BioReactor
             };
             mEmbeddedResourceCount = 2;
             mResourceProductionPeriod = 1f;
+            mPowerGeneration = 3000;
             mFlags = 108519;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";

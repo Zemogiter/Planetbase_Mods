@@ -59,7 +59,7 @@ namespace ExteriorO2Genereator
 			mMinSize = 0;
 			mMaxSize = 0;
 			mOxygenGeneration = 20;
-			mFlags = 55055;
+			mFlags = 55000;
 			mHeight = 0f;
             mBaseType = true;
             mExterior = true;

@@ -11,8 +11,8 @@ namespace MoreColonists
 {
 	public class MoreColonists : ModBase
 	{
-		public static int newcolonists;
-		public static int vistors = 20;
+		public static int moreColonist;
+		public static int vistors = 10;
 
 		public static new void Init(ModEntry modEntry) => InitializeMod(new MoreColonists(), modEntry, "MoreColonists");
 
@@ -23,8 +23,8 @@ namespace MoreColonists
 			System.IO.StreamReader file = new(path);
 			line = file.ReadLine();
 			line = line.Substring(13);
-			newcolonists = int.Parse(line);
-            Console.WriteLine("The value of newcolonists is " + newcolonists + " of type " + newcolonists.GetType());
+            moreColonist = int.Parse(line);
+            Console.WriteLine("The value of newcolonists is " + moreColonist + " of type " + moreColonist.GetType());
         }
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
@@ -38,9 +38,9 @@ namespace MoreColonists
 		{
             float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
             int num = 10;
-            if (MoreColonists.newcolonists != 0)
+            if (MoreColonists.moreColonist != 0)
             {
-                num = MoreColonists.newcolonists;
+                num = MoreColonists.moreColonist;
             }
             if (value > 0.9f)
             {
@@ -98,7 +98,7 @@ namespace MoreColonists
         public static void Postfix(ColonistShip __instance)
         {
             float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
-            int num = 20;
+            int num = 10;
             if (value > 0.9f)
             {
                 num += Random.Range(2, 4);

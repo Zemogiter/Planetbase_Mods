@@ -45,8 +45,7 @@ namespace StarchlessPlants
             componentTypeList.AddType(new StarchlessMaizePad());
 
             // Add new components to bio domes
-            var bioDomeType = BuildableUtils.FindModuleType<ModuleTypeBioDome>();
-            var bioDomeComponents = bioDomeType.GetComponentTypes();
+            var bioDomeComponents = BuildableUtils.FindModuleType<ModuleTypeBioDome>().GetComponentTypes();
 
             bioDomeComponents.Add(ComponentTypeList.find<StarchlessPeaPad>());
             bioDomeComponents.Add(ComponentTypeList.find<StarchlessRicePad>());
@@ -54,7 +53,7 @@ namespace StarchlessPlants
             bioDomeComponents.Add(ComponentTypeList.find<StarchlessWheatPad>());
             bioDomeComponents.Add(ComponentTypeList.find<StarchlessMaizePad>());
 
-            bioDomeType.SetComponentTypes(bioDomeComponents);
+            BuildableUtils.FindModuleType<ModuleTypeBioDome>().SetComponentTypes(bioDomeComponents);
         }
     }
     public class StarchlessPeaPad : VegetablePad
@@ -63,7 +62,8 @@ namespace StarchlessPlants
         
         public StarchlessPeaPad()
         {
-            this.mIcon = loadIcon();
+            //this.mIcon = loadIcon();
+            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Peas);
@@ -90,7 +90,8 @@ namespace StarchlessPlants
 
         public StarchlessRicePad()
         {
-            this.mIcon = loadIcon();
+            //this.mIcon = loadIcon();
+            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Rice);
@@ -117,7 +118,8 @@ namespace StarchlessPlants
 
         public StarchlessPotatoPad()
         {
-            this.mIcon = loadIcon();
+            //this.mIcon = loadIcon();
+            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Potatoes);
@@ -144,7 +146,8 @@ namespace StarchlessPlants
 
         public StarchlessWheatPad()
         {
-            this.mIcon = loadIcon();
+            //this.mIcon = loadIcon();
+            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Wheat);
@@ -171,7 +174,8 @@ namespace StarchlessPlants
 
         public StarchlessMaizePad()
         {
-            this.mIcon = loadIcon();
+            //this.mIcon = loadIcon();
+            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Maize);

@@ -38,26 +38,6 @@ namespace PatientTraders
     }
     public class PatientTraders : ModBase
     {
-        public static Settings settings;
-
-        static bool Load(UnityModManager.ModEntry modEntry)
-        {
-            settings = Settings.Load<Settings>(modEntry);
-            modEntry.OnGUI = OnGUI;
-            modEntry.OnSaveGUI = OnSaveGUI;
-
-            return true;
-        }
-
-        static void OnGUI(UnityModManager.ModEntry modEntry)
-        {
-            settings.Draw(modEntry);
-        }
-
-        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
-        {
-            settings.Save(modEntry);
-        }
 
         public static new void Init(ModEntry modEntry) => InitializeMod(new PatientTraders(), modEntry, "PatientTraders");
 
