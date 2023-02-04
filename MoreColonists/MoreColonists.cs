@@ -24,7 +24,7 @@ namespace MoreColonists
 			line = file.ReadLine();
 			line = line.Substring(13);
             moreColonist = int.Parse(line);
-            Console.WriteLine("The value of newcolonists is " + moreColonist + " of type " + moreColonist.GetType());
+            Console.WriteLine("The value of moreColonist is " + moreColonist + " of type " + moreColonist.GetType());
         }
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
@@ -64,14 +64,12 @@ namespace MoreColonists
                 }
                 return;
             }
-            int pendingVisitors = CoreUtils.GetMember<VisitorShip, int>("mPendingVisitors");
             if (__instance.mIntruders)
             {
                 num += LandingShipManager.getExtraIntruders();
                 for (int i = 0; i < num; i++)
                 {
                     Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), __instance.getPosition(), Location.Exterior);
-                    pendingVisitors = 0;
                 }
                 return;
             }
