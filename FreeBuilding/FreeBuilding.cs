@@ -3,7 +3,6 @@ using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using HarmonyLib;
-using System.Reflection;
 using System.Collections.Generic;
 using Module = Planetbase.Module;
 using System;
@@ -12,22 +11,31 @@ namespace FreeBuilding
 {
     public class FreeBuilding : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new FreeBuilding(), modEntry, "FreeBuilding");
+        public static new void Init(ModEntry modEntry) 
+        {
+            TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= ModuleType.FlagAutoRotate;
+            InitializeMod(new FreeBuilding(), modEntry, "FreeBuilding");
+        }
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            
+            //TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= ModuleType.FlagAutoRotate;
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            
+            //nothing required here
         }
     }
     [HarmonyPatch(typeof(Module), nameof(Module.canPlaceModule))]
     public class ModulePatch
     {
-        public static void Postfix(Vector3 position, Vector3 normal, float size, Module __instance)
+        public static bool Prefix(Module __instance, ref bool __result, Vector3 position, Vector3 normal, float size)
+        {
+            __result = ReplacementMethod(__instance, position, normal, size);
+            return false;
+        }
+        public static bool ReplacementMethod(Module __instance,Vector3 position, Vector3 normal, float size)
         {
             float floorHeight = Singleton<TerrainGenerator>.getInstance().getFloorHeight();
             float heightDiff = position.y - floorHeight;
@@ -38,13 +46,13 @@ namespace FreeBuilding
                 if (heightDiff < 1f || heightDiff > 3f)
                 {
                     // mine must be a little elevated
-                    return;
+                    return false;
                 }
             }
             else if (heightDiff > 0.1f || heightDiff < -0.1f)
             {
                 // not at floor level
-                return;
+                return false;
             }
             // here we're approximating the circumference of the structure with 8 points and will check that all these points are level with the floor
             float reducedRadius = size * 0.75f;
@@ -77,7 +85,7 @@ namespace FreeBuilding
 
                 if (!isValid)
                 {
-                    return;
+                    return false;
                 }
             }
             else
@@ -88,7 +96,7 @@ namespace FreeBuilding
                     PhysicsUtil.findFloor(circumference[j], out Vector3 floor, 256);
                     if (floor.y > floorHeight + 2f || floor.y < floorHeight - 1f)
                     {
-                        return;
+                        return false;
                     }
                 }
             }
@@ -97,12 +105,12 @@ namespace FreeBuilding
             float distToCenter = (mapCenter - new Vector2(position.x, position.z)).magnitude;
             if (distToCenter > 375f)
             {
-                return;
+                return false;
             }
 
             if (Construction.getCount() > 1 && !CoreUtils.InvokeMethod<Module, bool>("anyPotentialLinks", __instance ,position))
             {
-                return;
+                return false;
             }
 
             RaycastHit[] array2 = Physics.SphereCastAll(position + Vector3.up * 20f, size * 0.5f + 3f, Vector3.down, 40f, 4198400);
@@ -119,7 +127,7 @@ namespace FreeBuilding
                         float distToConstruction = (position - construction.getPosition()).magnitude - __instance.getRadius() - construction.getRadius();
                         if (distToConstruction < 3f)
                         {
-                            return;
+                            return false;
                         }
                     }
                     else
@@ -132,10 +140,10 @@ namespace FreeBuilding
             // Check that it's away from the ship
             if (Physics.CheckSphere(position, size * 0.5f + 3f, 65536))
             {
-                return;
+                return false;
             }
 
-            return;
+            return true;
         }
     }
 }

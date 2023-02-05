@@ -76,7 +76,7 @@ namespace EternalBots
 		{
             Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
-            __instance2.mIndicators[7] = indicator;
+            MyCharacterImpl.mIndicators[7] = indicator;
 
             if (__instance.shouldDecay())
             {
@@ -98,7 +98,8 @@ namespace EternalBots
     }
     public sealed class MyCharacterImpl : Character
     {
-        //To-do: add implementation for mIndicators[]
+        //To-do: add WORKING implementation for mIndicators[]
+        public static new Indicator[] mIndicators = new Indicator[8];
         public new bool decayIndicator(CharacterIndicator status, float amount)
         {
             Indicator indicator = mIndicators[(int)status];
@@ -114,6 +115,7 @@ namespace EternalBots
             }
             return result;
         }
+        //methods below are here just to stop compiler errors
         public override List<string> getAnimationNames(CharacterAnimationType animationType)
         {
             throw new System.NotImplementedException();
