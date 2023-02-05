@@ -86,13 +86,13 @@ public class Androbot : Character
 
 	protected void serialize(XmlNode parent, string name)
 	{
-		base.serialize(parent, name);
+		//base.serialize(parent, name);
 		Serialization.serializeFloat(parent.LastChild, "integrity-decay-rate", mIntegrityDecayRate);
 	}
 
 	protected void deserialize(XmlNode node)
 	{
-		base.deserialize(node);
+		//base.deserialize(node);
 		if (node["integrity-decay-rate"] != null)
 		{
 			mIntegrityDecayRate = Serialization.deserializeFloat(node["integrity-decay-rate"]);

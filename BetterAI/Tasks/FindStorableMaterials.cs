@@ -12,7 +12,7 @@ namespace BetterAI.Tasks
 
             Resource storable;
 
-            var resList = ;
+            var resList = new List<ResourceType>();
 
             foreach (ResourceType resourceType in resList)
             {

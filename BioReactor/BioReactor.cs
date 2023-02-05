@@ -6,14 +6,55 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Object = UnityEngine.Object;
+using UnityModManagerNet;
+using UnityEngine.UI;
 
 namespace BioReactor
 {
+    public class Settings : UnityModManager.ModSettings, IDrawable
+    {
+        [Draw("Use Custom Icon")] public bool UseCustomIcon = false;
+        
+        public override void Save(UnityModManager.ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        void IDrawable.OnChange()
+        {
+        }
+    }
     public class BioReactor : ModBase
     {
         public const string NAME = "Bio Reactor";
         public const string DESCRIPTION = "A dome fited with power cell arrays, designed to be powered by burning excess starch.";
-        public static new void Init(ModEntry modEntry) => InitializeMod(new BioReactor(), modEntry, "BioReactor");
+
+        public static bool enabled;
+        public static Settings settings;
+
+        public static new void Init(ModEntry modEntry)
+        {
+            settings = Settings.Load<Settings>(modEntry);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+            modEntry.OnToggle = OnToggle;
+            InitializeMod(new BioReactor(), modEntry, "BioReactor");
+        }
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+        }
+
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        {
+            enabled = value;
+
+            return true;
+        }
 
         public override void OnInitialized(ModEntry modEntry)
         {
@@ -65,16 +106,16 @@ namespace BioReactor
         public ModuleTypeBioReactor()
         {
             string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\BioReactor.png";
-            if (File.Exists(path))
+            if (File.Exists(path) && BioReactor.settings.UseCustomIcon == true)
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
                 tex.LoadImage(iconBytes);
-                this.mIcon = Util.applyColor(tex, GuiStyles.UiColorMain);
+                mIcon = Util.applyColor(tex);
             }
             else
             {
-                this.mIcon = ResourceList.StaticIcons.PowerGrid;
+                mIcon = ResourceList.StaticIcons.PowerGrid;
             }
             mWaterGeneration = -1000;
             mPowerStorageCapacity = 5000000;
