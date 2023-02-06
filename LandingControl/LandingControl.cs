@@ -68,7 +68,7 @@ namespace LandingControl
                 flags = 0;
                 tooltip = null;
 
-                callback = new GuiDefinitions.Callback(onReset);
+                //callback = new GuiDefinitions.Callback(GuiLandingPermissions.onReset);
             }
 
             LandingPermissions landingPermissions = LandingShipManager.getInstance().getLandingPermissions();

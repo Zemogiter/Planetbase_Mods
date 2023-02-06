@@ -12,7 +12,7 @@ namespace LandingControl
             NavigationGraph.getExterior().addBlocker(this.getPosition() + base.getTransform().forward, this.getRadius());
 
             int numNewColonists = 2;
-
+            /*
             float welfare = Colony.getInstance().getWelfareIndicator().getValue();
             if (welfare > 0.9f)
             {
@@ -39,7 +39,7 @@ namespace LandingControl
             if (this.mIntruders)
             {
                 numNewColonists += LandingShipManager.getExtraIntruders();
-            }
+            }*/
 
             LandingPermissions landingPermissions = LandingShipManager.getInstance().getLandingPermissions();
             for (int i = 0; i < numNewColonists; i++)

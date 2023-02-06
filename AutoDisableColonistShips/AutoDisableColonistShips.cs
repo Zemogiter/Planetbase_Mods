@@ -74,6 +74,10 @@ namespace AutoDisableColonistShips
             StringUtils.RegisterString("message_oxygen_level_normal", MESSAGE3);
             StringUtils.RegisterString("message_oxygen_level_normal_2", MESSAGE4);
         }
+        
+    }
+    public class Timer
+    {
         public static void wait(int milliseconds)
         {
             var timer1 = new System.Windows.Forms.Timer();
@@ -100,7 +104,7 @@ namespace AutoDisableColonistShips
     [HarmonyPatch(typeof(LandingPermissions), nameof(LandingPermissions.areColonistsAllowed))]
     public class LandingPermissionsPatch : LandingPermissions
     {
-        //code to disable arrival of colonist and visitor ships if we have less than 4 left in oxygen production
+        //code to disable arrival of colonist and visitor ships if we have less than TriggerValue left in oxygen production
         //to-do: make the display of MESSAGE/MESSAGE2 less frequent (low priotiry)
         public static void Postfix(LandingPermissions __instance)
         {
@@ -119,7 +123,7 @@ namespace AutoDisableColonistShips
                     Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled", AutoDisableColonistShips.MESSAGE), ResourceList.StaticIcons.Oxygen, 8));
                     while (maxNumber - numberofColonists < AutoDisableColonistShips.settings.TriggerValue)
                     {
-                        AutoDisableColonistShips.wait(20000);
+                        Timer.wait(AutoDisableColonistShips.settings.TimeBetweenOxygenNotifications);
                     }
                     if (AutoDisableColonistShips.settings.ReEnableShips == true &&  maxNumber - numberofColonists > AutoDisableColonistShips.settings.TriggerValue)
                     {
@@ -135,7 +139,7 @@ namespace AutoDisableColonistShips
                     Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled_2", AutoDisableColonistShips.MESSAGE2), ResourceList.StaticIcons.Oxygen, 8));
                     while (maxNumber - numberofColonists < AutoDisableColonistShips.settings.TriggerValue)
                     {
-                        AutoDisableColonistShips.wait(20000);
+                        Timer.wait(AutoDisableColonistShips.settings.TimeBetweenOxygenNotifications);
                     }
                     if (AutoDisableColonistShips.settings.ReEnableShips == true && maxNumber - numberofColonists > AutoDisableColonistShips.settings.TriggerValue)
                     {

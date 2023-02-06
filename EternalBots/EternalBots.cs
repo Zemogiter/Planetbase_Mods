@@ -23,60 +23,14 @@ namespace EternalBots
 			
 		}
     }
-    /*[HarmonyPatch(typeof(Character), nameof(Character.update))]
-    public class CharacterPatch
-    {
-        public static bool Prefix(Character __instance)
-        {
-            if (__instance.mTarget != null)
-            {
-                Selectable selectable = __instance.mTarget.getSelectable();
-                if (selectable != null && selectable.isDestroyed())
-                {
-                    __instance.setIdle();
-                }
-            }
-            if (__instance.mQueuedAnimation != null)
-            {
-                var animationQueueTime = timeStep;
-
-                if (animationQueueTime < 0f)
-                {
-                    __instance.playAnimation(__instance.mQueuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
-                    if (__instance.mQueuedAnchorPoint != null)
-                    {
-                        __instance.setTransform(__instance.mQueuedAnchorPoint.getPosition(), __instance.mQueuedAnchorPoint.getRotation());
-                    }
-                    __instance.mQueuedAnimation = null;
-                }
-            }
-            if (__instance.mState == State.Walking)
-            {
-                __instance.updateWalking(timeStep);
-            }
-            else if (__instance.mState == State.Interacting)
-            {
-                __instance.updateInteracting(timeStep);
-            }
-            else if (__instance.mState == State.Dead)
-            {
-                __instance.updateDead(timeStep);
-            }   
-            else if (__instance.mState == State.Idle)
-            {
-                __instance.updateIdle(timeStep);
-            }
-            return false;
-        }
-    }*/
     [HarmonyPatch(typeof(Bot), nameof(Bot.update))]
     public class BotPatch
     {
-		public static void Postfix(float timeStep, Bot __instance)
+        public static bool Prefix(Bot __instance, float timeStep)
 		{
             Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
-            MyCharacterImpl.mIndicators[7] = indicator;
+            MyCharacter.mIndicators[7] = indicator;
 
             if (__instance.shouldDecay())
             {
@@ -94,11 +48,11 @@ namespace EternalBots
             }
             __instance.updateDustParticles(timeStep);
 
+            return false;
         }
     }
     public sealed class MyCharacterImpl : Character
     {
-        //To-do: add WORKING implementation for mIndicators[]
         public static new Indicator[] mIndicators = new Indicator[8];
         public new bool decayIndicator(CharacterIndicator status, float amount)
         {
@@ -138,6 +92,7 @@ namespace EternalBots
     }
     public class MyCharacter
     {
+        public static Indicator[] mIndicators = MyCharacterImpl.mIndicators;
         public static void decayIndicator(CharacterIndicator status, float amount)
         {
             var indicator = new MyCharacterImpl();

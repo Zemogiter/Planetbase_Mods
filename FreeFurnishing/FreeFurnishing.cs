@@ -2,58 +2,145 @@
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using UnityEngine;
-using System.Reflection;
 using Module = Planetbase.Module;
+using HarmonyLib;
+using UnityModManagerNet;
+using System.Collections.Generic;
 
 namespace FreeFurnishing
 {
+    public class Settings : UnityModManager.ModSettings, IDrawable
+    {
+        [Draw("Enable Unsafe Mode?")] public bool unsafeMode = false;
+        [Draw("Rotate by increments?")] public bool rotateByIncrements = true;
+        [Draw("Rotation angle increment (degrees)")] public float rotationAngle = 15f;
+        [Draw("Rotate Clockwise Keybind")] public KeyCode rotateUpKeybind = KeyCode.X;
+        [Draw("Rotate Counter-Clockwise Keybind")] public KeyCode rotateDownKeybind = KeyCode.Z;
+        public override void Save(UnityModManager.ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        void IDrawable.OnChange()
+        {
+        }
+    }
     public class FreeFurnishing : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new FreeFurnishing(), modEntry, "FreeFurnishing");
+        public static bool enabled;
+        public static Settings settings;
+        public static new void Init(ModEntry modEntry) 
+        {
+            settings = Settings.Load<Settings>(modEntry);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+            modEntry.OnToggle = OnToggle;
+            InitializeMod(new FreeFurnishing(), modEntry, "FreeFurnishing"); 
+        }
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+        }
 
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        {
+            enabled = value;
+
+            return true;
+        }
         public override void OnInitialized(ModEntry modEntry)
         {
-            Debug.Log("[MOD] FreeFurnishing activated");
-
+            //nothing needed here
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            GameObject go = new GameObject();
-            go.AddComponent<ComponentX>();
-            GameObject.DontDestroyOnLoad(go);
+            //nothing needed here
         }
-    }
-    public class ComponentX : MonoBehaviour
-    {
-        public void OnGUI()
+        public static List<ComponentType> TypesToExclude()
         {
-            typeof(DebugManager).GetField("mEnabled", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(DebugManager.getInstance(), true);
-            DebugManager.getInstance().onGui();
-        }
-    }
-
-    public class CustomModule : Module
-    {
-        public bool CanPlaceComponent(ConstructionComponent component)
-        {
-            Module module = new Module();
-            if (Input.GetKeyUp(KeyCode.X))
+            List<ComponentType> types = new()
             {
-                // rotate
-                component.getTransform().Rotate(Vector3.up * 15f);
+                new VideoScreen(),
+                new SickBayBed(),
+                new MedicalCabinet(),
+                new SecurityConsole(),
+                new Armory(),
+                new TelescopeConsole(),
+                new RadioConsole(),
+                new Bed(),
+                new Bunk(),
+                new Workbench(),
+                new TissueSynthesizer()
+            };
+            return types;
+        }
+    }
+    [HarmonyPatch(typeof(Module), nameof(Module.canPlaceComponent))]
+    public class ModulePatch
+    { 
+        public static bool Prefix(Module __instance, ref bool __result, ConstructionComponent component)
+        {
+            __result = ReplacementMethod(__instance, component);
+            return false;
+        }
+        public static bool ReplacementMethod(Module __instance, ConstructionComponent component)
+        {
+            
+            //to-do: exclude wall-placable components from this mod as I found out they don't work that well (can be placed outside of their modules)
+            if (!FreeFurnishing.TypesToExclude().Contains(component.mComponentType) || FreeFurnishing.settings.unsafeMode == true)
+            {
+                if (FreeFurnishing.settings.rotateByIncrements == true)
+                {
+                    //rotation by increments
+                    if (Input.GetKeyUp(FreeFurnishing.settings.rotateUpKeybind))
+                    {
+                        component.getTransform().Rotate(Vector3.up * FreeFurnishing.settings.rotationAngle);
+                    }
+                    if (Input.GetKeyUp(FreeFurnishing.settings.rotateDownKeybind))
+                    {
+                        component.getTransform().Rotate(Vector3.down * FreeFurnishing.settings.rotationAngle);
+                    }
+                }
+                else
+                {
+                    //continious rotation while key is pressed
+                    if (Input.GetKey(FreeFurnishing.settings.rotateUpKeybind))
+                    {
+                        component.getTransform().Rotate(Vector3.up * 5f);
+                    }
+                    if (Input.GetKey(FreeFurnishing.settings.rotateDownKeybind))
+                    {
+                        component.getTransform().Rotate(Vector3.down * 5f);
+                    }
+                }
+
+                Vector3 fromCenter = component.getPosition() - __instance.getPosition();
+                fromCenter.x = Mathf.Round(fromCenter.x * 0.1f) * 0.5f;
+                fromCenter.z = Mathf.Round(fromCenter.z * 0.1f) * 0.5f;
+                component.setPosition(component.getPosition() + fromCenter);
             }
+            else
+            {
+                bool flag = true;
+                if (__instance.mComponentLocations != null)
+                {
+                    __instance.snapToComponentLocation(component);
+                }
+                else
+                {
+                    __instance.clampComponentPosition(component);
+                    flag = __instance.isValidLayoutPosition(component);
+                }
+            }
+            
+            CoreUtils.InvokeMethod<Module>("clampComponentPosition", __instance, component);
 
-            // step
-            Vector3 fromCenter = component.getPosition() - getPosition();
-            fromCenter.x = Mathf.Round(fromCenter.x * 2f) * 0.5f;
-            fromCenter.z = Mathf.Round(fromCenter.z * 2f) * 0.5f;
-            component.setPosition(getPosition() + fromCenter);
-
-            CoreUtils.InvokeMethod<Module>("clampComponentPosition", module, component);
-            clampComponentPosition(component);
-
-            return !CoreUtils.InvokeMethod<Module, bool>("intersectsAnyComponents", module, component);
+            return !CoreUtils.InvokeMethod<Module, bool>("intersectsAnyComponents", __instance, component);
         }
     }
 }

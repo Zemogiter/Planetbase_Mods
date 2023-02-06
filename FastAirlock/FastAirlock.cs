@@ -30,13 +30,18 @@ namespace FastAirlock
     [HarmonyPatch(typeof(InteractionAirlock), nameof(InteractionAirlock.update))]
     public class InteractionAirlockPatch
     {
-        public static void Postfix(float timeStep, InteractionAirlock __instance)
+        public static bool Prefix(InteractionAirlock __instance, ref bool __result, float timeStep)
+        {
+            __result = ReplacementMethod(__instance, timeStep);
+            return false;
+        }
+        public static bool ReplacementMethod(InteractionAirlock __instance, float timeStep)
         {
             timeStep *= FastAirlock.speedmult;
             Construction construction = __instance.mSelectable as Construction;
             if (construction != null && !construction.isPowered() && __instance.mStage == InteractionAirlock.Stage.Wait)
             {
-                return;
+                return true;
             }
             if (__instance.mSelectable.getFirstInteraction() == __instance)
             {
@@ -48,7 +53,7 @@ namespace FastAirlock
                     __instance.mStageProgress = 0f;
                     if (flag)
                     {
-                        return;
+                        return true;
                     }
                 }
             }
@@ -92,6 +97,7 @@ namespace FastAirlock
                     __instance.mCharacter.playIdleAnimation(CharacterAnimation.PlayMode.CrossFade);
                 }
             }
+            return false;
         }
     }
 }
