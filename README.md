@@ -6,6 +6,8 @@ Mods currently available to download from Nexus:
 - [Almost No Spares Remake](https://www.nexusmods.com/planetbase/mods/53)
 - [AutoAlerts Remake](https://www.nexusmods.com/planetbase/mods/59)
 - [Better Guards](https://www.nexusmods.com/planetbase/mods/63) (made by me)
+- [CharacterCam Remake](https://www.nexusmods.com/planetbase/mods/64)
+- [FreeBuilding Remake](https://www.nexusmods.com/planetbase/mods/65)
 
 ## Additional Info
 Uses PlanetbaseModUtilites from https://github.com/JCoil/PlanetbaseMods
