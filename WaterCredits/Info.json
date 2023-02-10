@@ -1,0 +1,14 @@
+{
+  "AssemblyName": "WaterCredits.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Water Credits",
+  "EntryMethod": "WaterCredits.WaterCredits.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "WaterCredits",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "1.0.0.0"
+}

@@ -6,27 +6,115 @@ using HarmonyLib;
 using System.Collections.Generic;
 using Module = Planetbase.Module;
 using System;
+using UnityEngine.UI;
+using UnityModManagerNet;
+using Mono.Cecil.Cil;
+using System.Linq;
 
 namespace FreeBuilding
 {
+    public class Settings : UnityModManager.ModSettings, IDrawable
+    {
+        [Draw("Construction rotation keybind")] public KeyCode constructionRotation = KeyCode.T;
+        public override void Save(UnityModManager.ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        void IDrawable.OnChange()
+        {
+        }
+    }
     public class FreeBuilding : ModBase
     {
+        private int connectionCount;
+        public static bool enabled;
+        public static Settings settings;
+
         public static new void Init(ModEntry modEntry) 
         {
+            settings = Settings.Load<Settings>(modEntry);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+            modEntry.OnToggle = OnToggle;
             TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= ModuleType.FlagAutoRotate;
             InitializeMod(new FreeBuilding(), modEntry, "FreeBuilding");
         }
 
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+        }
+
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        {
+            enabled = value;
+
+            return true;
+        }
+
         public override void OnInitialized(ModEntry modEntry)
         {
-            //TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= ModuleType.FlagAutoRotate;
+            TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= ModuleType.FlagAutoRotate;
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //nothing required here
+            //allows module rotaion pre-placement
+            if (GameManager.getInstance().getGameState() is GameStateGame gameState)
+            {
+                if (GameManager.getInstance().mState != GameManager.State.Updating)
+                    return;
+
+                if (gameState == null || gameState.mMode != GameStateGame.Mode.PlacingModule || gameState.mActiveModule == null)
+                    return;
+
+                Module activeModule = gameState.mActiveModule;
+                List<Vector3> connectionPositions = new();
+                for (int i = 0; i < Construction.mConstructions.Count; ++i)
+                {
+                    if (Construction.mConstructions[i] is Module module && module != activeModule && Connection.canLink(activeModule, module))
+                    {
+                        connectionPositions.Add(module.getPosition());
+                    }
+                }
+
+                if (connectionPositions.Count == 0)
+                    return;
+
+                connectionCount = Math.Min(connectionCount, connectionPositions.Count - 1);
+                if (Input.GetKeyUp(FreeBuilding.settings.constructionRotation))
+                {
+                    connectionCount = ++connectionCount % connectionPositions.Count;
+                }
+
+                activeModule.mObject.transform.localRotation = Quaternion.LookRotation((connectionPositions[connectionCount] - activeModule.getPosition()).normalized);
+            }
         }
     }
+    //instantly builds connection to a module once it's done (still requires resources to be placed, it's a QoL feature to prevent builders from getting stuck)
+    [HarmonyPatch(typeof(Module), nameof(Module.onBuilt))]
+    public class OnBuiltPatch
+    {
+        public static void Postfix()
+        {
+            foreach (Module module in BuildableUtils.GetAllModules())
+            {
+                foreach (Construction connection in module.getLinks())
+                {
+                    if (connection.isAwaitingBuilder())
+                    {
+                        connection.onBuilt();
+                    }
+                }
+            }
+        }
+    }
+    //main code
     [HarmonyPatch(typeof(Module), nameof(Module.canPlaceModule))]
     public class ModulePatch
     {

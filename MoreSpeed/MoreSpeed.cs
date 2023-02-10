@@ -20,12 +20,7 @@ namespace MoreSpeed
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-#if DEBUG
-            Console.WriteLine("\nCurrent speed is = " + Singleton<TimeManager>.getInstance().getTimeScale());
-            TimeManager instance = Singleton<TimeManager>.getInstance();
-            List<float> list = (instance.GetPrivateFieldValue<object>("TimeScales") as IEnumerable<float>).ToList();
-            list.ForEach(i => Console.Write("{0}\t", i));
-#endif
+            //nothing needed here
         }
         private void UpdateTimeScale()
         {
@@ -34,9 +29,7 @@ namespace MoreSpeed
             list.Add(6f);
             list.Add(8f);
             //10 speed glitches out ship landing, making them hover over landing pads/starports indefinitly
-#if DEBUG
-            list.Add(10f);
-#endif
+            //list.Add(10f);
             instance.SetPrivateFieldValue("TimeScales", list.ToArray());
             instance.GetPrivateFieldValue<object>("TimeScales");
         }

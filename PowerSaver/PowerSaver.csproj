@@ -4,14 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6D5E952A-CA54-4F20-B945-E7871E3A28F9}</ProjectGuid>
+    <ProjectGuid>{88E06502-BBAB-42B5-B144-A1800B025F94}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MeteorsLeaveOres</RootNamespace>
-    <AssemblyName>MeteorsLeaveOres</AssemblyName>
+    <RootNamespace>PowerSaver</RootNamespace>
+    <AssemblyName>PowerSaver</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>preview</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -44,12 +44,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Planetbase\Planetbase_Data\Managed\System.Xml.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Planetbase\Planetbase_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -61,13 +59,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MeteorsLeaveOres.cs" />
+    <Compile Include="CustomGrid.cs" />
+    <Compile Include="GridManagementConsole.cs" />
+    <Compile Include="PowerSaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Settings\PowerSaver.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\GridManagementConsoleIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="..\PlanetbaseModUtilities\PlanetbaseModUtilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

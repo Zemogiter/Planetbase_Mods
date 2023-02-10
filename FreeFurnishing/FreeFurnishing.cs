@@ -41,7 +41,6 @@ namespace FreeFurnishing
         {
             settings.Draw(modEntry);
         }
-
         static void OnSaveGUI(UnityModManager.ModEntry modEntry)
         {
             settings.Save(modEntry);
@@ -61,7 +60,16 @@ namespace FreeFurnishing
         {
             //nothing needed here
         }
-        public static List<ComponentType> TypesToExclude()
+    }
+    [HarmonyPatch(typeof(Module), nameof(Module.canPlaceComponent))]
+    public class ModulePatch
+    { 
+        public static bool Prefix(Module __instance, ref bool __result, ConstructionComponent component)
+        {
+            __result = ReplacementMethod(__instance, component);
+            return false;
+        }
+        public static bool ReplacementMethod(Module __instance, ConstructionComponent component)
         {
             List<ComponentType> types = new()
             {
@@ -77,22 +85,8 @@ namespace FreeFurnishing
                 new Workbench(),
                 new TissueSynthesizer()
             };
-            return types;
-        }
-    }
-    [HarmonyPatch(typeof(Module), nameof(Module.canPlaceComponent))]
-    public class ModulePatch
-    { 
-        public static bool Prefix(Module __instance, ref bool __result, ConstructionComponent component)
-        {
-            __result = ReplacementMethod(__instance, component);
-            return false;
-        }
-        public static bool ReplacementMethod(Module __instance, ConstructionComponent component)
-        {
-            
-            //to-do: exclude wall-placable components from this mod as I found out they don't work that well (can be placed outside of their modules)
-            if (!FreeFurnishing.TypesToExclude().Contains(component.mComponentType) || FreeFurnishing.settings.unsafeMode == true)
+            //checking if selected component is on the excluded list
+            if (!types.Contains(component.mComponentType) || FreeFurnishing.settings.unsafeMode == true)
             {
                 if (FreeFurnishing.settings.rotateByIncrements == true)
                 {
@@ -120,8 +114,8 @@ namespace FreeFurnishing
                 }
 
                 Vector3 fromCenter = component.getPosition() - __instance.getPosition();
-                fromCenter.x = Mathf.Round(fromCenter.x * 0.1f) * 0.5f;
-                fromCenter.z = Mathf.Round(fromCenter.z * 0.1f) * 0.5f;
+                fromCenter.x = Mathf.Round(fromCenter.x);
+                fromCenter.z = Mathf.Round(fromCenter.z);
                 component.setPosition(component.getPosition() + fromCenter);
             }
             else
@@ -136,6 +130,7 @@ namespace FreeFurnishing
                     __instance.clampComponentPosition(component);
                     flag = __instance.isValidLayoutPosition(component);
                 }
+                return !CoreUtils.InvokeMethod<Module, bool>("intersectsAnyComponents", __instance, component);
             }
             
             CoreUtils.InvokeMethod<Module>("clampComponentPosition", __instance, component);

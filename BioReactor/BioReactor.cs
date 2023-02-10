@@ -99,6 +99,12 @@ namespace BioReactor
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
             // Nothing required here
+            ModuleTypeBioReactor moduleTypeCount = new();
+
+            if (GameManager.getInstance().getGameState() is GameStateGame && Module.getBuiltCountOfType(moduleTypeCount) > 0)
+            {
+                
+            }
         }
     }
     public class ModuleTypeBioReactor : ModuleType

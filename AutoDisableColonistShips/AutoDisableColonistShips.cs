@@ -3,17 +3,19 @@ using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using System;
 using HarmonyLib;
-using UnityEngine;
 using UnityModManagerNet;
+using System.Timers;
+using System.Collections.Generic;
 
 namespace AutoDisableColonistShips
 {
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
-        [Draw("Trigger Value")] public int TriggerValue = 4;
-        [Draw("Re-enable Ships")] public bool ReEnableShips = false;
-        [Draw("Disallow Visitor Ships")] public bool DisallowVisitorShips = false;
-        [Draw("Time between oxygen notifications(miliseconds)")] public int TimeBetweenOxygenNotifications = 20000;
+        [Draw("Trigger Value (max oxygen genration - oxygen usage)")] public int TriggerValue = 4;
+        [Draw("Re-enable ships once you go above trigger value?")] public bool ReEnableShips = false;
+        [Draw("Disallow visitor ships as well?")] public bool DisallowVisitorShips = false;
+        //To-do: implement this \/
+        [Draw("Manual Override (enable colonist/visitor ships even when below trigger value)")] public bool manualOverride = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -27,12 +29,16 @@ namespace AutoDisableColonistShips
     {
         public static bool enabled;
         public static Settings settings;
+        //needed so that we wont display the same message over and over
+        public static bool messageDisplayed = false;
+        public static bool messageDisplayedNormal = false;
+
         public static new void Init(ModEntry modEntry)
         {
             settings = Settings.Load<Settings>(modEntry);
             modEntry.OnGUI = OnGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
-            modEntry.OnToggle= OnToggle;
+            modEntry.OnToggle = OnToggle;
 
             InitializeMod(new AutoDisableColonistShips(), modEntry, "AutoDisableColonistShips");
         }
@@ -64,7 +70,60 @@ namespace AutoDisableColonistShips
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //nothing required here
+            if(GameManager.getInstance().getGameState() is GameStateGame)
+            {
+                var landingPermissions = LandingShipManager.getInstance().getLandingPermissions();
+                var refBool = landingPermissions.getColonistRefBool();
+                var refBoolVisitors = landingPermissions.getVisitorRefBool();
+                
+                //we also need to check if we even have oxygen generators on map to avoid unnecessary messages
+                if (Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeOxygenGenerator>()) > 0)
+                {
+                    //without visitor ships
+                    if (refBool.mValue == true && settings.DisallowVisitorShips == false && CountOxygenUsers() <= settings.TriggerValue)
+                    {
+                        refBool.set(false);
+                        if (messageDisplayed == false)
+                        {
+                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled",MESSAGE), ResourceList.StaticIcons.Oxygen, 1));
+                            messageDisplayed = true;
+                        }
+                        if (settings.ReEnableShips == true && settings.DisallowVisitorShips == false && CountOxygenUsers() >= settings.TriggerValue && messageDisplayedNormal == false)
+                        {
+                            refBool.set(true);
+                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal", MESSAGE3), ResourceList.StaticIcons.Oxygen, 8));
+                            messageDisplayedNormal = true;
+                        }
+                    }    
+                    //with vistior ships
+                    else if (refBool.mValue == true && settings.DisallowVisitorShips == true && CountOxygenUsers() <= settings.TriggerValue)
+                    {
+                        refBool.set(false);
+                        refBoolVisitors.set(false);
+                        if (messageDisplayed == false)
+                        {
+                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled_2",MESSAGE2), ResourceList.StaticIcons.Oxygen, 8));
+                            messageDisplayed = true;
+                        }
+                        if (settings.ReEnableShips == true && settings.DisallowVisitorShips == true && CountOxygenUsers() >= settings.TriggerValue && messageDisplayedNormal == false)
+                        {
+                            refBool.set(true);
+                            refBoolVisitors.set(true);
+                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal_2", MESSAGE4), ResourceList.StaticIcons.Oxygen, 8));
+                            messageDisplayedNormal = true;
+                        }
+                    }
+                    messageDisplayedNormal= false;
+                }
+            }
+        }
+
+        public void ManualOverride()
+        {
+            if (settings.manualOverride == true)
+            {
+                //implement this
+            }
         }
 
         private static void RegisterStrings()
@@ -74,81 +133,12 @@ namespace AutoDisableColonistShips
             StringUtils.RegisterString("message_oxygen_level_normal", MESSAGE3);
             StringUtils.RegisterString("message_oxygen_level_normal_2", MESSAGE4);
         }
-        
-    }
-    public class Timer
-    {
-        public static void wait(int milliseconds)
+        public int CountOxygenUsers()
         {
-            var timer1 = new System.Windows.Forms.Timer();
-            if (milliseconds == 0 || milliseconds < 0) return;
+            int numberofColonists = Character.getHumanCount();
+            int maxNumber = Module.getOverallOxygenGeneration();
 
-            // Console.WriteLine("start wait timer");
-            timer1.Interval = milliseconds;
-            timer1.Enabled = true;
-            timer1.Start();
-
-            timer1.Tick += (s, e) =>
-            {
-                timer1.Enabled = false;
-                timer1.Stop();
-                // Console.WriteLine("stop wait timer");
-            };
-
-            while (timer1.Enabled)
-            {
-                System.Windows.Forms.Application.DoEvents();
-            }
-        }
-    }
-    [HarmonyPatch(typeof(LandingPermissions), nameof(LandingPermissions.areColonistsAllowed))]
-    public class LandingPermissionsPatch : LandingPermissions
-    {
-        //code to disable arrival of colonist and visitor ships if we have less than TriggerValue left in oxygen production
-        //to-do: make the display of MESSAGE/MESSAGE2 less frequent (low priotiry)
-        public static void Postfix(LandingPermissions __instance)
-        {
-            var refBool = __instance.getColonistRefBool();
-            var refBoolVisitors = __instance.getVisitorRefBool();
-
-            if (GameManager.getInstance().getGameState() is GameStateGame)
-            {
-                int numberofColonists = Character.getHumanCount();
-                int maxNumber = Module.getOverallOxygenGeneration();
-
-                if (AutoDisableColonistShips.settings.DisallowVisitorShips == false && maxNumber - numberofColonists < AutoDisableColonistShips.settings.TriggerValue)
-                {
-                    Console.WriteLine("We reached the trigger value and disallowing visitor ship is off");
-                    refBool.set(false);
-                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled", AutoDisableColonistShips.MESSAGE), ResourceList.StaticIcons.Oxygen, 8));
-                    while (maxNumber - numberofColonists < AutoDisableColonistShips.settings.TriggerValue)
-                    {
-                        Timer.wait(AutoDisableColonistShips.settings.TimeBetweenOxygenNotifications);
-                    }
-                    if (AutoDisableColonistShips.settings.ReEnableShips == true &&  maxNumber - numberofColonists > AutoDisableColonistShips.settings.TriggerValue)
-                    {
-                        refBool.set(true);
-                        Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal", AutoDisableColonistShips.MESSAGE3), ResourceList.StaticIcons.Oxygen, 1));
-                    }
-                }
-                else if (AutoDisableColonistShips.settings.DisallowVisitorShips == true && maxNumber - numberofColonists < AutoDisableColonistShips.settings.TriggerValue)
-                {
-                    Console.WriteLine("We reached the trigger value and disallowing visitor ship is on");
-                    refBool.set(false);
-                    refBoolVisitors.set(false);
-                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled_2", AutoDisableColonistShips.MESSAGE2), ResourceList.StaticIcons.Oxygen, 8));
-                    while (maxNumber - numberofColonists < AutoDisableColonistShips.settings.TriggerValue)
-                    {
-                        Timer.wait(AutoDisableColonistShips.settings.TimeBetweenOxygenNotifications);
-                    }
-                    if (AutoDisableColonistShips.settings.ReEnableShips == true && maxNumber - numberofColonists > AutoDisableColonistShips.settings.TriggerValue)
-                    {
-                        refBool.set(true);
-                        refBoolVisitors.set(true);
-                        Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal_2", AutoDisableColonistShips.MESSAGE4), ResourceList.StaticIcons.Oxygen, 1));
-                    }
-                }
-            }
+            return maxNumber - numberofColonists;
         }
     }
 }

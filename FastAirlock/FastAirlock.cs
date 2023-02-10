@@ -4,22 +4,55 @@ using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using HarmonyLib;
+using UnityModManagerNet;
+using UnityEngine.UI;
 
 namespace FastAirlock
 {
+    public class Settings : UnityModManager.ModSettings, IDrawable
+    {
+        [Draw("Speed multiplier for airlock animations")] public float speedmult = 3;
+        public override void Save(UnityModManager.ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        void IDrawable.OnChange()
+        {
+        }
+    }
     public class FastAirlock : ModBase
     {
-        public static float speedmult;
-        public static new void Init(ModEntry modEntry) => InitializeMod(new FastAirlock(), modEntry, "FastAirlock");
+        public static bool enabled;
+        public static Settings settings;
+        public static new void Init(ModEntry modEntry)
+        {
+            settings = Settings.Load<Settings>(modEntry);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+            modEntry.OnToggle = OnToggle;
+            InitializeMod(new FastAirlock(), modEntry, "FastAirlock");
+        }
+
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+        }
+
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        {
+            enabled = value;
+
+            return true;
+        }
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            var path = "./Mods/FastAirlock/config.txt";
-            string line;
-            System.IO.StreamReader file = new(path);
-            line = file.ReadLine();
-            line = line.Substring(13);
-            speedmult = float.Parse(line);
+            //nothing required here
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
@@ -37,7 +70,7 @@ namespace FastAirlock
         }
         public static bool ReplacementMethod(InteractionAirlock __instance, float timeStep)
         {
-            timeStep *= FastAirlock.speedmult;
+            timeStep *= FastAirlock.settings.speedmult;
             Construction construction = __instance.mSelectable as Construction;
             if (construction != null && !construction.isPowered() && __instance.mStage == InteractionAirlock.Stage.Wait)
             {
