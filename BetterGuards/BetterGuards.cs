@@ -13,6 +13,7 @@ namespace BetterGuards
 {
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
+        [Draw("Enable gun drops?")] public bool enableGunDrops = true;
         [Draw("Health multipler for guards")] public float healthmult = 4.2f;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -75,19 +76,23 @@ namespace BetterGuards
             if (__instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>())
             {
                 Indicator indicator = new(StringList.get("health"), ResourceList.StaticIcons.Health, IndicatorType.Normal, 1f, BetterGuards.settings.healthmult, SignType.Health);
+                Console.WriteLine("The new indicator is " + indicator);
                 indicator.setLevels(0.1f, 0.5f, 0.7f, 0.8f);
+                Console.WriteLine("New indicator's levels " + indicator.getLevels());
                 indicator.setOrientation(IndicatorOrientation.Vertical);
+                Console.WriteLine("Orientation of the new indicator (should be vertical) " + indicator.getOrientation());
                 __instance.mIndicators[0] = indicator;
+                Console.WriteLine("This should be the same as the new indicator " + __instance.mIndicators[0]);
             }
         }
     }
     [HarmonyPatch(typeof(Character), nameof(Character.onKo))]
     public class CharacterPatch
     {
-        //make guards and intruders drop guns on death (vanilla = guns disapear with guards/intruders)
+        //make guards and intruders drop guns on death (vanilla = guns disapear with them)
         public static void Postfix(Character __instance)
         {
-            if(__instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>() || __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
+            if(BetterGuards.settings.enableGunDrops == true && __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>() || __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
             {
                 Vector3 position = __instance.getPosition();
                 Location location = __instance.getLocation();
