@@ -14,7 +14,6 @@ namespace AutoDisableColonistShips
         [Draw("Trigger Value (max oxygen genration - oxygen usage)")] public int TriggerValue = 4;
         [Draw("Re-enable ships once you go above trigger value?")] public bool ReEnableShips = false;
         [Draw("Disallow visitor ships as well?")] public bool DisallowVisitorShips = false;
-        //To-do: implement this \/
         [Draw("Manual Override (enable colonist/visitor ships even when below trigger value)")] public bool manualOverride = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -75,9 +74,13 @@ namespace AutoDisableColonistShips
                 var landingPermissions = LandingShipManager.getInstance().getLandingPermissions();
                 var refBool = landingPermissions.getColonistRefBool();
                 var refBoolVisitors = landingPermissions.getVisitorRefBool();
-                
-                //we also need to check if we even have oxygen generators on map to avoid unnecessary messages
-                if (Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeOxygenGenerator>()) > 0)
+
+                if(settings.manualOverride == true)
+                {
+                    return;
+                }
+                //we also need to check if we even have oxygen generators on map and basic base functions covered to avoid unnecessary messages
+                if (Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeOxygenGenerator>()) > 0 && Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeWaterExtractor>()) > 0 && Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeSolarPanel>()) > 0 || Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeWindTurbine>()) > 0)
                 {
                     //without visitor ships
                     if (refBool.mValue == true && settings.DisallowVisitorShips == false && CountOxygenUsers() <= settings.TriggerValue)
@@ -114,15 +117,8 @@ namespace AutoDisableColonistShips
                         }
                     }
                     messageDisplayedNormal= false;
+                    messageDisplayed = false;
                 }
-            }
-        }
-
-        public void ManualOverride()
-        {
-            if (settings.manualOverride == true)
-            {
-                //implement this
             }
         }
 

@@ -16,6 +16,7 @@ namespace FreeBuilding
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Construction rotation keybind")] public KeyCode constructionRotation = KeyCode.T;
+        [Draw("Disable modules upon construction?")] public bool turnOffOnBuilt = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -96,12 +97,18 @@ namespace FreeBuilding
             }
         }
     }
-    //instantly builds connection to a module once it's done (still requires resources to be placed, it's a QoL feature to prevent builders from getting stuck)
+
     [HarmonyPatch(typeof(Module), nameof(Module.onBuilt))]
     public class OnBuiltPatch
     {
-        public static void Postfix()
+        public static void Postfix(Module __instance)
         {
+            //turns building off upon construction
+            if (FreeBuilding.settings.turnOffOnBuilt == true)
+            {
+                __instance.setEnabled(false);
+            }
+            //instantly builds connection to a module once it's done (still requires resources to be placed, it's a QoL feature to prevent builders from getting stuck)
             foreach (Module module in BuildableUtils.GetAllModules())
             {
                 foreach (Construction connection in module.getLinks())

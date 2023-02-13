@@ -4,6 +4,7 @@ using PlanetbaseModUtilities;
 using System;
 using HarmonyLib;
 using System.Reflection;
+using UnityEngine;
 
 namespace BetterHours
 {
@@ -14,11 +15,15 @@ namespace BetterHours
 		public override void OnInitialized(ModEntry modEntry)
 		{
             
-		}
+        }
 
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-            
+            if (GameManager.getInstance().getGameState() is GameStateGame)
+            {
+                float value = (float)((Singleton<EnvironmentManager>.getInstance().getDayTime() + Singleton<EnvironmentManager>.getInstance().getNightTime()) / (BetterHours.GetDayHours() / 6.0));
+                Traverse.Create(StatsCollector.getInstance()).Field("m_MinFallingHeight").SetValue(value);
+            }
         }
 
         public static double GetDayHours()
@@ -32,23 +37,13 @@ namespace BetterHours
             return dayHours;
         }
     }
-    [HarmonyPatch(typeof(StatsCollector), nameof(StatsCollector.mRefreshPeriod))]
-    public class StatsCollectorPatch
-    {
-        static void Postfix(StatsCollector __instance)
-        {
-            PropertyInfo refreshPeriod = __instance.GetType().GetProperty("mRefreshPeriod");
-            float value = (float)((Singleton<EnvironmentManager>.getInstance().getDayTime() + Singleton<EnvironmentManager>.getInstance().getNightTime()) / (BetterHours.GetDayHours() / 6.0));
-            refreshPeriod.SetValue(__instance,value);
-        }
-    }
     [HarmonyPatch(typeof(Indicator), nameof(Indicator.getTimeHour))]
     public class IndicatorPatch
     {
-        public static int Prefix(float value)
+        static int Postfix(int value)
         {
             double dayHours = BetterHours.GetDayHours();
-            return (int)(((double)value * dayHours + 6.0) % dayHours);
+            return (int)((value * dayHours + 6.0) % dayHours);
         }
     }
 }

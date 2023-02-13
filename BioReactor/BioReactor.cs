@@ -58,9 +58,11 @@ namespace BioReactor
 
         public override void OnInitialized(ModEntry modEntry)
         {
+            //For future reference, adding new buildings must be done in this order or else the mod fails to load or game crshes when clicking on the "edit module" button:
             RegisterStrings();
-            RegisterNewBuilding();
             RegisterNewComponents();
+            RegisterNewBuilding();
+            AddNewComponentsToBuilding();
 
             Debug.Log("[MOD] BioReactor activated");
         }
@@ -77,15 +79,14 @@ namespace BioReactor
 
             componentTypeList.AddType(new StarchBurner());
             componentTypeList.AddType(new VegetableBurner());
-
+        }
+        private void AddNewComponentsToBuilding()
+        {
             // Add new components to bioreactor
             var bioReactorComponents = BuildableUtils.FindModuleType<ModuleTypeBioReactor>().GetComponentTypes();
 
             bioReactorComponents.Add(ComponentTypeList.find<StarchBurner>());
             bioReactorComponents.Add(ComponentTypeList.find<VegetableBurner>());
-
-            BuildableUtils.FindModuleType<ModuleTypeBioReactor>().SetComponentTypes(bioReactorComponents);
-
         }
         private static void RegisterStrings()
         {
@@ -99,12 +100,14 @@ namespace BioReactor
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
             // Nothing required here
-            ModuleTypeBioReactor moduleTypeCount = new();
-
-            if (GameManager.getInstance().getGameState() is GameStateGame && Module.getBuiltCountOfType(moduleTypeCount) > 0)
+            /*if (GameManager.getInstance().getGameState() is GameStateGame && Module.getBuiltCountOfType(ModuleTypeList.find<ModuleTypeBioReactor>()) > 0)
             {
-                
-            }
+                var componentList = ComponentTypeList.getInstance();
+                foreach(StarchBurner in componentList)
+                {
+
+                }
+            }*/
         }
     }
     public class ModuleTypeBioReactor : ModuleType
@@ -171,10 +174,11 @@ namespace BioReactor
             {
                 TypeList<ResourceType, ResourceTypeList>.find<Starch>()
             };
-            mEmbeddedResourceCount = 2;
+            addResourceProduction<Bioplastic>();
+            mEmbeddedResourceCount = 3;
             mResourceProductionPeriod = 1f;
-            mPowerGeneration = 3000;
-            mFlags = 1248510;
+            mPowerGeneration = 30000;
+            mFlags = 148510;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";
             addUsageAnimation(CharacterAnimationType.WorkStanding, CharacterProp.Count, CharacterProp.Count);
@@ -219,7 +223,7 @@ namespace BioReactor
             };
             mEmbeddedResourceCount = 2;
             mResourceProductionPeriod = 1f;
-            mPowerGeneration = 3000;
+            mPowerGeneration = 30000;
             mFlags = 108519;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";

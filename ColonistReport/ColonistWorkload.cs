@@ -48,8 +48,7 @@ namespace ColonistReport
         /// </summary>
         public float CalculateInstantaneousWorkload()
         {
-            if (Character.getSpecializationCharacters(Specialization) is List<Character> specializationCharacters
-                && specializationCharacters.Count > 0)
+            if (Character.getSpecializationCharacters(Specialization) is List<Character> specializationCharacters && specializationCharacters.Count > 0)
             {
                 TotalCharacters = specializationCharacters.Count;
 

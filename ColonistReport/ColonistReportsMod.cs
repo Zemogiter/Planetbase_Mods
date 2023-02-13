@@ -1,52 +1,28 @@
-﻿using ModWrapper;
-using Planetbase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Planetbase;
+using PlanetbaseModUtilities;
 using UnityEngine;
+using static UnityModManagerNet.UnityModManager;
 
 namespace ColonistReport
 {
-    public class ColonistReportsMod : ModBase, IMod
+    public class ColonistReportsMod : ModBase
     {
-        GuiReportsMenuItem ReportsMenuItem { get; set; } 
-        GuiReportsMenu ReportsMenu { get; set; }
+        static GuiReportsMenuItem ReportsMenuItem { get; set; } 
+        static GuiReportsMenu ReportsMenu { get; set; }
 
-        public override void Init()
+        public static new void Init(ModEntry modEntry)
         {
-            RegisterStrings();
-
             WorkloadManager.mInstance = new WorkloadManager();
 
-            ReportsMenuItem = new GuiReportsMenuItem(new GuiDefinitions.Callback(OnReportsMenuOpen));
             ReportsMenu = new GuiReportsMenu();
+            InitializeMod(new ColonistReportsMod(), modEntry, "Colonist Reports Mod");
 
             Debug.Log("[MOD] Colonist Reports activated");
         }
 
-        private void RegisterStrings()
+        public void OnGameStart()
         {
-            StringList.mStrings.Add("reports", "Base Reports");
-            StringList.mStrings.Add("reports_workload", "Colonist Workload");
-
-            StringList.mStrings.Add("reports_worker_workload", "Worker Workload");
-        }
-
-        public override void Update(float timeStep)
-        {
-            WorkloadManager.getInstance().Update(timeStep);
-
-            if (Game.mGameGui.getWindow() is GuiReportsMenu menu)
-            {
-                menu.updateUi();
-            }
-        }
-
-        public override void OnGameStart()
-        {
-            if (MenuSystem.mMenuBaseManagement is GuiMenu menuBaseManagement)
+            if (GuiMenuSystem.mMenuBaseManagement is GuiMenu menuBaseManagement)
             {
                 if (!menuBaseManagement.mItems.Contains(ReportsMenuItem))
                 {
@@ -59,15 +35,38 @@ namespace ColonistReport
             }
         }
 
+        public override void OnInitialized(ModEntry modEntry)
+        {
+            RegisterStrings();
+            ReportsMenuItem = new GuiReportsMenuItem(new GuiDefinitions.Callback(OnReportsMenuOpen));
+        }
+
+        public override void OnUpdate(ModEntry modEntry, float timeStep)
+        {
+            WorkloadManager.getInstance().Update(timeStep);
+
+            if (GameStateGame.mGameGui.getWindow() is GuiReportsMenu menu)
+            {
+                menu.updateUi();
+            }
+        }
+
+        private void RegisterStrings()
+        {
+            StringList.mStrings.Add("reports", "Base Reports");
+            StringList.mStrings.Add("reports_workload", "Colonist Workload");
+            StringList.mStrings.Add("reports_worker_workload", "Worker Workload");
+        }
+
         private void OnReportsMenuOpen(object parameter)
         {
-            if (Game.mGameGui.getWindow() is GuiReportsMenu)
+            if (GameStateGame.mGameGui.getWindow() is GuiReportsMenu)
             {
-                Game.mGameGui.setWindow(null);
+                GameStateGame.mGameGui.setWindow(null);
             }
             else
             {
-                Game.mGameGui.setWindow(ReportsMenu);
+                GameStateGame.mGameGui.setWindow(ReportsMenu);
             }
         }
     }

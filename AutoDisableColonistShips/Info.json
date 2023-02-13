@@ -7,8 +7,6 @@
   "HomePage": "",
   "ID": "AutoDisableColonistShips",
   "Repository": "",
-  "Requirements": [
-    "PBUtilities"
-  ],
+  "Requirements": [],
   "Version": "1.0.0.0"
 }

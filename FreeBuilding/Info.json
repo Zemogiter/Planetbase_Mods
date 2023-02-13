@@ -1,9 +1,7 @@
 {
   "EntryMethod": "FreeBuilding.FreeBuilding.Init",
-  "Version": "0.2.0.2223",
-  "Requirements": [
-    "PBUtilities"
-  ],
+  "Version": "1.0.0.0",
+  "Requirements": [],
   "ID": "FreeBuilding",
   "DisplayName": "Free Building",
   "AssemblyName": "FreeBuilding.dll",

@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "PanelsWithoutModules.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Panels Without Modules",
+  "EntryMethod": "PanelsWithoutModules.PanelsWithoutModules.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "PanelsWithoutModules",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0.0"
+}

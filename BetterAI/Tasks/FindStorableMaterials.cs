@@ -1,8 +1,8 @@
-﻿using Planetbase;
-using PlanetbaseModUtilities;
-using System.Collections.Generic;
+﻿using BetterAI.Tasks;
+using BetterAI;
+using Planetbase;
 
-namespace BetterAI.Tasks
+namespace BetterAi.Tasks
 {
     class FindStorableMaterials : AbstractTask
     {
@@ -12,9 +12,7 @@ namespace BetterAI.Tasks
 
             Resource storable;
 
-            var resList = TypeList<ResourceType, ResourceTypeList>.get();
-
-            foreach (ResourceType resourceType in resList)
+            foreach (ResourceType resourceType in ResourceTypeList.getInstance().mTypeList)
             {
                 ConstructionComponent storageComponent = Module.findStorageComponent(character, resourceType);
                 if (storageComponent != null)

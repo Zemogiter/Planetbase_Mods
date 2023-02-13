@@ -1,9 +1,7 @@
 ﻿{
   "EntryMethod": "AutoAlerts.AutoAlerts.Init",
-  "Version": "0.2.0.2223",
-  "Requirements": [
-    "PBUtilities"
-  ],
+  "Version": "1.0.0.0",
+  "Requirements": [],
   "ID": "AutoAlerts",
   "DisplayName": "Auto Alerts",
   "AssemblyName": "AutoAlerts.dll",

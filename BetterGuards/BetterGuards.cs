@@ -4,27 +4,56 @@ using PlanetbaseModUtilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Selectable = Planetbase.Selectable;
 using HarmonyLib;
 using System.Data;
+using UnityModManagerNet;
+using System.Reflection;
 
 namespace BetterGuards
 {
+    public class Settings : UnityModManager.ModSettings, IDrawable
+    {
+        [Draw("Health multipler for guards")] public float healthmult = 4.2f;
+        public override void Save(UnityModManager.ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        void IDrawable.OnChange()
+        {
+        }
+    }
     public class BetterGuards : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new BetterGuards(), modEntry, "BetterGuards");
+        public static bool enabled;
+        public static Settings settings;
+        public static new void Init(ModEntry modEntry)
+        {
+            settings = Settings.Load<Settings>(modEntry);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+            modEntry.OnToggle = OnToggle;
+            InitializeMod(new BetterGuards(), modEntry, "BetterGuards");
+        }
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+        }
 
-        public static float healthmult;
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        {
+            enabled = value;
+
+            return true;
+        }
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            var path = "./Mods/BetterGuards/config.txt";
-            string line;
-            System.IO.StreamReader file = new(path);
-            line = file.ReadLine();
-            line = line.Substring(14);
-            healthmult = float.Parse(line);
-            Console.WriteLine("The value of healthmult is " + healthmult + " of type " + healthmult.GetType());
+            //nothing needed here
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
@@ -32,18 +61,23 @@ namespace BetterGuards
             //nothing needed here
         }
     }
-    [HarmonyPatch(typeof(Human), nameof(Human.init))]
+    [HarmonyPatch(typeof(Character))]
+    [HarmonyPatch("mIndicators", MethodType.Setter)]
     public class GuardPatch
     {
         //replacing the default health bar with a larger one for guards
         public static void Postfix(Character __instance)
         {
+            if (__instance == null)
+            {
+                return;
+            }
             if (__instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>())
             {
-                Indicator indicator = new(StringList.get("health"), ResourceList.StaticIcons.Health, IndicatorType.Normal, 1f, BetterGuards.healthmult, SignType.Health);
+                Indicator indicator = new(StringList.get("health"), ResourceList.StaticIcons.Health, IndicatorType.Normal, 1f, BetterGuards.settings.healthmult, SignType.Health);
                 indicator.setLevels(0.1f, 0.5f, 0.7f, 0.8f);
                 indicator.setOrientation(IndicatorOrientation.Vertical);
-                //__instance.mIndicators[0] = indicator;
+                __instance.mIndicators[0] = indicator;
             }
         }
     }

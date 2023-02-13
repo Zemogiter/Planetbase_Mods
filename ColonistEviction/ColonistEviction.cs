@@ -87,6 +87,12 @@ namespace ColonistEviction
                     else 
                     {
                         //To-do: implement spawning the colonist ship (with animation) and evicted colonist walking to it, despawning and ship taking off
+                        Module targetModule = TypeList<ModuleType, ModuleTypeList>.find;
+                        var colonistShipEviction = ColonistShip.create(targetModule, LandingShip.Size.Regular);
+                        __instance.setTarget(colonistShipEviction);
+                        //probably need to check if evicted colonist is close enough to ship
+                        __instance.destroy();
+                        colonistShipEviction.onTakeOff();
                     
                     }    
                 }

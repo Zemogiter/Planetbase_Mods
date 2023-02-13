@@ -8,15 +8,17 @@ using System.Reflection;
 using HarmonyLib;
 using UnityModManagerNet;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoreColonists
 {
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Extra colonists (number is double for bigger ships)")] public int moreColonist = 5;
-        [Draw("As above but for visitors")] public int visitors = 10;
-        [Draw("Random chance for colonist ships to contain bots")] public bool botColonistsMode = true;
-        [Draw("Dont increase intruder numbers?")] public bool noIntruders = true;
+        [Draw("As above but for visitors")] public int visitors = 5;
+        [Draw("Random chance for colonist ships to contain bots(same as visitors having flu)")] public bool botColonistsMode = true;
+        [Draw("Enable to decrease number of intruders on board of visitor/colonist ships")] public bool noIntruders = true;
         [Draw("Can visitors carry flu?")] public bool canBeCarrier = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -57,14 +59,41 @@ namespace MoreColonists
 
         public override void OnInitialized(ModEntry modEntry)
 		{
-			
+			//nothing for now
         }
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-
+            /*if(GameManager.getInstance().getGameState() is GameStateGame)
+            {
+                var visitorShipList = VisitorShip.mShips;
+                foreach (VisitorShip ship in visitorShipList)
+                {
+                    if (ship != null && ship.getPendingVisitorCount() < 0)
+                    {
+                        ship.onTakeOff();
+                    }
+                }
+                
+            }*/
 		}
     }
-	[HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.onLandedGeneric))]
+    public class CustomVisitorShip : VisitorShip
+    {
+        public override bool canTakeOff()
+        {
+            var visitorShipList = VisitorShip.mShips;
+            foreach (VisitorShip ship in visitorShipList.Cast<VisitorShip>())
+            {
+                if (ship != null && ship.getPendingVisitorCount() < 0 || ship.getPendingVisitorCount() == null)
+                {
+                    ship.destroy();
+                    return base.canTakeOff() && mPendingVisitors == 0;
+                }
+            }
+            return base.canTakeOff() && mPendingVisitors == 0;
+        }
+    }
+    [HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.onLandedGeneric))]
 	public class VisitorShipPatch : VisitorShip
     {
 		public static void Postfix(VisitorShip __instance)
@@ -89,24 +118,21 @@ namespace MoreColonists
             }
             if (__instance.mIntruders)
             {
-                num += LandingShipManager.getExtraIntruders();
-                for (int i = 0; i < num; i++)
+                if (MoreColonists.settings.noIntruders == true)
                 {
-                    Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), __instance.getPosition(), Location.Exterior);
-                    CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", __instance, 0);
+                    num = 0;
                 }
-                return;
-            }
-            if (__instance.mIntruders)
-            {
-                num += LandingShipManager.getExtraIntruders();
-                for (int i = 0; i < num; i++)
+                else
                 {
-                    Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), __instance.getPosition(), Location.Exterior);
+                    num += LandingShipManager.getExtraIntruders();
+                    for (int i = 0; i < num; i++)
+                    {
+                        Character.create(TypeList<Specialization, SpecializationList>.find<Intruder>(), __instance.getPosition(), Location.Exterior);
+                        CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", __instance, 0);
+                    }
+                    return;
                 }
-                return;
             }
-            
             for (int j = 0; j < num; j++)
             {
                 Guest guest = (Guest)Character.create(TypeList<Specialization, SpecializationList>.find<Visitor>(), __instance.getSpawnPosition(j), Location.Exterior);
@@ -146,7 +172,7 @@ namespace MoreColonists
             {
                 if (MoreColonists.settings.noIntruders == true)
                 {
-                    num += 0;
+                    num = 0;
                 }
                 else
                 {

@@ -65,6 +65,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColonistEviction", "Colonis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerSaver", "PowerSaver\PowerSaver.csproj", "{88E06502-BBAB-42B5-B144-A1800B025F94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColonistReports", "ColonistReport\ColonistReports.csproj", "{2EC08DF2-1D53-4EF0-B987-1EC9112CF42E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoveTutorialFromMenu", "RemoveTutorialFromMenu\RemoveTutorialFromMenu.csproj", "{E2D40135-FAD7-4C0D-A672-4E96758901A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanelsWithoutModules", "PanelsWithoutModules\PanelsWithoutModules.csproj", "{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,6 +197,18 @@ Global
 		{88E06502-BBAB-42B5-B144-A1800B025F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88E06502-BBAB-42B5-B144-A1800B025F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88E06502-BBAB-42B5-B144-A1800B025F94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EC08DF2-1D53-4EF0-B987-1EC9112CF42E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EC08DF2-1D53-4EF0-B987-1EC9112CF42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EC08DF2-1D53-4EF0-B987-1EC9112CF42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EC08DF2-1D53-4EF0-B987-1EC9112CF42E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2D40135-FAD7-4C0D-A672-4E96758901A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2D40135-FAD7-4C0D-A672-4E96758901A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2D40135-FAD7-4C0D-A672-4E96758901A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2D40135-FAD7-4C0D-A672-4E96758901A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -202,10 +220,11 @@ Global
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{021003b9-d4fa-432c-97a3-35838f7ca298}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{0263144f-b6f2-4b18-ba97-ea2754916272}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{161e571c-b932-4514-9d6f-6b271d079c18}*SharedItemsImports = 4
-		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1811783c-2853-4886-8e0b-5197d30f0bb0}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{187bfab8-c4b7-4e41-a0e5-80024ada77f3}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1ed5bb4c-ebe7-4ef2-8b2c-284b3742ec26}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2629f166-f5f1-49e4-9b57-62544d3e6a77}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2a2596f6-59d3-4f92-a33b-6e9bb2372bee}*SharedItemsImports = 13
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2ec08df2-1d53-4ef0-b987-1ec9112cf42e}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{3b48152e-774c-451d-a343-0a9406a54580}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{430c85cd-4ec4-4961-90ec-c6d1a025ebeb}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{43a65104-4401-476a-ac8a-896c657d24dc}*SharedItemsImports = 4
@@ -226,6 +245,7 @@ Global
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{c31285e4-bc3b-4745-bcfa-7c2cd05147de}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{d5f0b474-fd08-444d-bcfd-82c107150330}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{e0143a72-527e-4623-b371-cc53a83e38b4}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{e2d40135-fad7-4c0d-a672-4e96758901a5}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{f0512735-204c-4ec9-b48b-d5793b57c618}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{f4e8cdcd-7278-4453-a727-11757b956cbe}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{fb2e636c-2190-4972-846a-cdf1ec0fb64a}*SharedItemsImports = 4

@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Planetbase_Template_Mod</RootNamespace>
-    <AssemblyName>Planetbase Template Mod</AssemblyName>
+    <AssemblyName>Planetbase_Template_Mod</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

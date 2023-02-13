@@ -1,9 +1,7 @@
 ﻿{
   "EntryMethod": "BetterHours.BetterHours.Init",
   "Version": "0.2.0.2223",
-  "Requirements": [
-    "PBUtilities"
-  ],
+  "Requirements": [],
   "ID": "BetterHours",
   "DisplayName": "Better Hours",
   "AssemblyName": "BetterHours.dll",
