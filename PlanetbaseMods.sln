@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoveTutorialFromMenu", "R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanelsWithoutModules", "PanelsWithoutModules\PanelsWithoutModules.csproj", "{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassMineControl", "MassMineControl\MassMineControl.csproj", "{30C895A0-277C-4930-A37E-341367D5A8DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,10 @@ Global
 		{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1ED5BB4C-EBE7-4EF2-8B2C-284B3742EC26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C895A0-277C-4930-A37E-341367D5A8DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C895A0-277C-4930-A37E-341367D5A8DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C895A0-277C-4930-A37E-341367D5A8DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C895A0-277C-4930-A37E-341367D5A8DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -225,6 +231,7 @@ Global
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2629f166-f5f1-49e4-9b57-62544d3e6a77}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2a2596f6-59d3-4f92-a33b-6e9bb2372bee}*SharedItemsImports = 13
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2ec08df2-1d53-4ef0-b987-1ec9112cf42e}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{30c895a0-277c-4930-a37e-341367d5a8da}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{3b48152e-774c-451d-a343-0a9406a54580}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{430c85cd-4ec4-4961-90ec-c6d1a025ebeb}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{43a65104-4401-476a-ac8a-896c657d24dc}*SharedItemsImports = 4

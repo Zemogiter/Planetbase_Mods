@@ -5,6 +5,7 @@ using PlanetbaseModUtilities;
 using HarmonyLib;
 using State = Planetbase.Character.State;
 using System.Collections.Generic;
+using System;
 
 namespace EternalBots
 {
@@ -28,23 +29,29 @@ namespace EternalBots
     {
         public static bool Prefix(Bot __instance, float timeStep)
 		{
-            Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
+            //Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
+            //indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
+            //MyCharacter.mIndicators[7] = indicator;
+
+            Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Normal, 1f, 1f, SignType.Condition);
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
-            MyCharacter.mIndicators[7] = indicator;
+            indicator.setOrientation(IndicatorOrientation.Vertical);
+            CharacterIndicator IntegrityIndicator = CharacterIndicator.Integrity;
+            __instance.getIndicator(IntegrityIndicator).setValue(indicator.getMax());
 
             if (__instance.shouldDecay())
             {
-                MyCharacter.decayIndicator(CharacterIndicator.Condition, timeStep / 480f);
+                __instance.decayIndicator(CharacterIndicator.Condition, timeStep / 480f);
             }
             Disaster stormInProgress = Singleton<DisasterManager>.getInstance().getStormInProgress();
             if (stormInProgress != null && !__instance.isProtected())
             {
-                MyCharacter.decayIndicator(CharacterIndicator.Condition, timeStep * stormInProgress.getIntensity() / 600f);
+                __instance.decayIndicator(CharacterIndicator.Condition, timeStep * stormInProgress.getIntensity() / 600f);
             }
             SolarFlare solarFlare = Singleton<DisasterManager>.getInstance().getSolarFlare();
             if (solarFlare.isInProgress() && !__instance.isProtected())
             {
-                MyCharacter.decayIndicator(CharacterIndicator.Condition, timeStep * solarFlare.getIntensity() / 180f);
+                __instance.decayIndicator(CharacterIndicator.Condition, timeStep * solarFlare.getIntensity() / 180f);
             }
             __instance.updateDustParticles(timeStep);
 

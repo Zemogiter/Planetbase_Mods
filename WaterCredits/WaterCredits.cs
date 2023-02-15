@@ -33,10 +33,6 @@ namespace WaterCredits
     {
         public static bool enabled;
         public static Settings settings;
-        //divided the message because its a constant and constant does not allow variables (duh)
-        public const string MESSAGE = "Sold ";
-        public const string MESSAGE2 = " units of water for ";
-        public const string MESSAGE3 = " coin(s) per unit.";
         public const string MESSAGE_ERROR = "Water balance is below minimum for trading.";
         public const string MESSAGE_ERROR2 = "The value of waterPerTransaction is bigger than the current storage";
         public const string MESSAGE_ERROR3 = "To trade water with departing ships, build a water tank.";
@@ -71,42 +67,55 @@ namespace WaterCredits
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            if(GameManager.getInstance().getGameState() is GameStateGame && MyLandingShip.getState() == LandingShip.State.ClosingDoor)
-            {
-                WaterTransaction(Ship.mShips.First<Ship>() as LandingShip);
-            }
+
         }
         private static void RegisterStrings()
         {
-            StringUtils.RegisterString("message_water_transaction", MESSAGE);
-            StringUtils.RegisterString("message_water_transaction_2", MESSAGE2);
-            StringUtils.RegisterString("message_water_transaction_3", MESSAGE3);
+            StringUtils.RegisterString("message_water_transaction", GetMessageContent());
             StringUtils.RegisterString("message_water_transaction_error", MESSAGE_ERROR);
             StringUtils.RegisterString("message_water_transaction_error_2", MESSAGE_ERROR2);
             StringUtils.RegisterString("message_water_transaction_error_3", MESSAGE_ERROR3);
         }
-        public void WaterTransaction(LandingShip __instance)
+        public static string GetMessageContent()
+        {
+            return $"Sold {WaterCredits.settings.waterPerTransaction} units of water for {WaterCredits.settings.coinsPerUnit} coin(s) per unit.";
+        }
+        public static int GetWaterCreditsCount()
+        {
+            int count = WaterCredits.settings.coinsPerUnit * WaterCredits.settings.waterPerTransaction;
+            Console.WriteLine(count);
+            return count;
+        }
+        public static void RemoveSoldWater()
+        {
+            int waterStorage = Module.getOverallWaterStorage();
+            int newWaterStorage = waterStorage - WaterCredits.settings.waterPerTransaction;
+            //To-do: set the water storage variable to newWaterStorage
+        }
+    }
+    [HarmonyPatch(typeof(LandingShip), nameof(LandingShip.onClosingDoor))]
+    public class LandingShipPatch
+    {
+        static void Postfix(LandingShip __instance)
         {
             //since we are working off of tanks, at least one tank is needed to execute the entire method correctly
             if (Module.getBuiltCountOfType(ModuleTypeList.find<ModuleTypeWaterTank>()) > 0)
             {
-                //Module instance = (Module)Activator.CreateInstance(typeof(Module));
-                int waterGeneration = CustomModule.getWaterGeneration();
+                int waterGeneration = Module.getOverallWaterBalance();
                 int waterStorage = Module.getOverallWaterStorage();
-                if (waterGeneration >= WaterCredits.settings.minimumBalance && WaterCredits.settings.waterPerTransaction < waterStorage)
+                //Console.WriteLine("Water storage is " + waterStorage);
+                if (waterGeneration > WaterCredits.settings.minimumBalance && WaterCredits.settings.waterPerTransaction < waterStorage)
                 {
-                    float newWaterBalance = waterStorage - WaterCredits.settings.waterPerTransaction;
-                    //typeof(Module).GetField("mWaterStorageIndicator", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newWaterBalance);
-                    CustomModule.mWaterStorageIndicator.setValue(newWaterBalance);
-                    for (int i = 0; i == WaterCredits.settings.waterPerTransaction; i++)
+                    //WaterCredits.RemoveSoldWater();
+                    ResourceType coinType = TypeList<ResourceType, ResourceTypeList>.find<Coins>();
+                    //var coinType = ResourceTypeList.CoinsInstance;
+                    for (int i = 0; i == WaterCredits.GetWaterCreditsCount(); i++)
                     {
-                        ResourceType coinType = TypeList<ResourceType, ResourceTypeList>.find<Coins>();
-                        for (int j = 0; j == WaterCredits.settings.coinsPerUnit; j++)
-                        {
-                            Resource.create(coinType, __instance.getPosition(), __instance.getLocation());
-                        }
+                        Console.WriteLine("Position of the ship/coin " + __instance.getPosition());
+                        Resource.create(coinType, __instance.getPosition(), __instance.getLocation());
                     }
-                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_water_transaction", WaterCredits.MESSAGE + WaterCredits.settings.waterPerTransaction + WaterCredits.MESSAGE2 + WaterCredits.settings.coinsPerUnit + WaterCredits.MESSAGE3), ResourceList.StaticIcons.Water, 8));
+                    Message message = new (StringList.get("message_water_transaction", WaterCredits.GetMessageContent()), ResourceList.StaticIcons.Water, 8);
+                    Singleton<MessageLog>.getInstance().addMessage(message);
                 }
                 else if (waterGeneration <= WaterCredits.settings.minimumBalance)
                 {
@@ -121,35 +130,6 @@ namespace WaterCredits
             {
                 Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_water_transaction_error_3", WaterCredits.MESSAGE_ERROR3), ResourceList.StaticIcons.Water, 8));
             }
-        }
-    }
-    public class CustomModule : Module
-    {
-        public static new Indicator mWaterStorageIndicator;
-        public static new int mCurrentWaterGeneration;
-        public static new int getWaterGeneration()
-        {
-            return mCurrentWaterGeneration;
-        }
-
-    }
-    public class CustomLandingShip : LandingShip
-    {
-        public State getState()
-        {
-            return mState;
-        }
-        public override GameObject getPrefab()
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class MyLandingShip
-    {
-        public static LandingShip.State getState()
-        {
-            var state = new CustomLandingShip();
-            return state.getState();
         }
     }
 }

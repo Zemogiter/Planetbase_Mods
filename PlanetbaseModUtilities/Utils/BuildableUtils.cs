@@ -78,6 +78,11 @@ namespace PlanetbaseModUtilities
             CoreUtils.SetMember("mComponentTypes", moduleType, componentTypes.ToArray());
         }
 
+        public static T FindComponentType<T>() where T : ComponentType
+        {
+            return (T)TypeList<ComponentType, ComponentTypeList>.find<T>();
+        }
+
         #endregion
 
         #region Storage

@@ -2,10 +2,6 @@
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using HarmonyLib;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 using System.Reflection;
 using static Planetbase.ModuleType;
 
@@ -27,7 +23,25 @@ namespace PanelsWithoutModules
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //nothing required here for now
+            //nothing required here
+        }
+    }
+    [HarmonyPatch(typeof(GuiMenuSystem), nameof(GuiMenuSystem.init))]
+    public class BaseManagementMenuPatch
+    {
+        static void Postfix(GuiMenuSystem __instance)
+        {
+            var landing_permissions = __instance.mMenuBaseManagement.getItem(3);
+            landing_permissions.setRequiredModuleType(null);
+            var security_controls = __instance.mMenuBaseManagement.getItem(4);
+            security_controls.setRequiredModuleType(null);
+            var manufacture_limits = __instance.mMenuBaseManagement.getItem(5);
+            manufacture_limits.setRequiredModuleType(null);
+
+            /*foreach(GuiMenuItem item in __instance.mMenuBaseManagement.mItems)
+            {
+                item.setRequiredModuleType(null);
+            }*/
         }
     }
 }

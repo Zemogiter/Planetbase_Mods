@@ -25,13 +25,8 @@ namespace RemoveTutorialFromMenu
     [HarmonyPatch(typeof(GameStateTitle), "onGui")]
     public class MainMenuPatch
     {
-        public static void Postfix(GameStateTitle __instance)
+        public static bool Prefix(GameStateTitle __instance)
         {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                return;
-            }
-
             Type instanceType = __instance.GetType();
 
             FieldInfo mGuiRendererInfo = Reflection.GetPrivateFieldOrThrow(instanceType, "mGuiRenderer", true);
@@ -70,14 +65,7 @@ namespace RemoveTutorialFromMenu
             menuLocation.x += (float)Reflection.GetInstanceFieldValue(__instance, mRightOffsetInfo);
             if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("new_game"), FontSize.Huge, true))
             {
-                if ((bool)Reflection.InvokeInstanceMethod(__instance, canAlreadyPlayInfo))
-                {
-                    GameManager.getInstance().setGameStateLocationSelection();
-                }
-                else
-                {
-                    Reflection.InvokeInstanceMethod(__instance, renderTutorialRequestWindowInfo, new GuiDefinitions.Callback(__instance.onWindowCancelNewGame));
-                }
+                GameManager.getInstance().setGameStateLocationSelection();
             }
             GUI.enabled = (bool)Reflection.GetInstanceFieldValue(__instance, mAnySavegamesInfo);
             num5 += num6;
@@ -90,24 +78,11 @@ namespace RemoveTutorialFromMenu
             {
                 GameManager.getInstance().setGameStateLoadGame();
             }
-            num5 += num6;
             GUI.enabled = true;
-            num5 += num6;
-            if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("tutorial"), FontSize.Huge, true) == true)
-            {
-                return;
-            }
             num5 += num6;
             if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("challenges"), FontSize.Huge, true))
             {
-                if ((bool)Reflection.InvokeInstanceMethod(__instance, canAlreadyPlayInfo))
-                {
-                    GameManager.getInstance().setGameStateChallengeSelection();
-                }
-                else
-                {
-                    Reflection.InvokeInstanceMethod(__instance, renderTutorialRequestWindowInfo, new GuiDefinitions.Callback(__instance.onWindowCancelChallenges));
-                }
+                GameManager.getInstance().setGameStateChallengeSelection();
             }
             num5 += num6;
             if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("settings"), FontSize.Huge, true))
@@ -138,11 +113,8 @@ namespace RemoveTutorialFromMenu
                 Singleton<TitleScene>.getInstance().switchPlanet();
             }
             rect.x += num8 + num9;
-            if (mGuiRenderer.renderButton(rect, new GUIContent(null, instance.Icons.Achievements, StringList.get("achievements")), null))
-            {
-                GameManager.getInstance().setGameStateAchievements();
-            }
-            rect.x += num8 + num9;
+
+            return false;
         }
     }
     public static class Reflection

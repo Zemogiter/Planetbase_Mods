@@ -8,12 +8,15 @@ using System.IO;
 using Object = UnityEngine.Object;
 using UnityModManagerNet;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace BioReactor
 {
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Use Custom Icon")] public bool UseCustomIcon = false;
+        [Draw("Power generation per burner")] public int burnerPowerGeneration = 1000;
+        [Draw("Water consumption per burner")] public int burnerWaterConsumption = 2000; 
         
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -100,14 +103,6 @@ namespace BioReactor
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
             // Nothing required here
-            /*if (GameManager.getInstance().getGameState() is GameStateGame && Module.getBuiltCountOfType(ModuleTypeList.find<ModuleTypeBioReactor>()) > 0)
-            {
-                var componentList = ComponentTypeList.getInstance();
-                foreach(StarchBurner in componentList)
-                {
-
-                }
-            }*/
         }
     }
     public class ModuleTypeBioReactor : ModuleType
@@ -128,6 +123,7 @@ namespace BioReactor
             }
             mWaterGeneration = -1000;
             mPowerStorageCapacity = 5000000;
+            mPowerGeneration = 0;
             mMinSize = 1;
             mMaxSize = 1;
             mFlags = 1050000;
@@ -150,11 +146,12 @@ namespace BioReactor
     {
         public const string Name = "Starch Burner";
         public const string Description = "A starch burning furnance, then collects thermal energy to charge BioReactor's cells.";
+        
 
         public StarchBurner()
         {
             string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\StarchBurner.png";
-            
+
             if (File.Exists(path))
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
@@ -174,10 +171,11 @@ namespace BioReactor
             {
                 TypeList<ResourceType, ResourceTypeList>.find<Starch>()
             };
-            addResourceProduction<Bioplastic>();
+            addResourceProduction<Coins>();
             mEmbeddedResourceCount = 3;
             mResourceProductionPeriod = 1f;
             mPowerGeneration = 30000;
+            mWaterGeneration = BioReactor.settings.burnerWaterConsumption * -1;
             mFlags = 148510;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";
@@ -221,9 +219,11 @@ namespace BioReactor
             {
                 TypeList<ResourceType, ResourceTypeList>.find<Vegetables>()
             };
+            addResourceProduction<Coins>();
             mEmbeddedResourceCount = 2;
             mResourceProductionPeriod = 1f;
             mPowerGeneration = 30000;
+            mWaterGeneration = BioReactor.settings.burnerWaterConsumption * -1;
             mFlags = 108519;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";

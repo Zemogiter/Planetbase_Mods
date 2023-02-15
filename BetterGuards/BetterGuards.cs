@@ -62,8 +62,95 @@ namespace BetterGuards
             //nothing needed here
         }
     }
-    [HarmonyPatch(typeof(Character))]
-    [HarmonyPatch("mIndicators", MethodType.Setter)]
+    public static class Reflection
+    {
+        public static MethodInfo GetPrivateMethod(Type obj, string methodName, bool instance)
+        {
+            try
+            {
+                BindingFlags flags = BindingFlags.NonPublic | ((instance) ? BindingFlags.Instance : BindingFlags.Static);
+                return obj.GetMethod(methodName, flags);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static bool TryGetPrivateMethod(Type obj, string methodName, bool instance, out MethodInfo methodInfo)
+        {
+            methodInfo = GetPrivateMethod(obj, methodName, instance);
+            return (methodInfo != null);
+        }
+
+        public static MethodInfo GetPrivateMethodOrThrow(Type obj, string methodName, bool instance)
+        {
+            MethodInfo methodInfo = GetPrivateMethod(obj, methodName, instance);
+            if (methodInfo == null)
+                throw new MissingMethodException($"Could not find \"{methodName}\"");
+
+            return methodInfo;
+        }
+
+        public static FieldInfo GetPrivateField(Type obj, string fieldName, bool instance)
+        {
+            try
+            {
+                BindingFlags flags = BindingFlags.NonPublic | ((instance) ? BindingFlags.Instance : BindingFlags.Static);
+                return obj.GetField(fieldName, flags);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static FieldInfo GetPrivateFieldOrThrow(Type obj, string fieldName, bool instance)
+        {
+            FieldInfo fieldInfo = GetPrivateField(obj, fieldName, instance);
+            if (fieldInfo == null)
+                throw new MissingMethodException($"Could not find \"{fieldName}\"");
+
+            return fieldInfo;
+        }
+
+        public static bool TryGetPrivateField(Type obj, string fieldName, bool instance, out FieldInfo fieldInfo)
+        {
+            fieldInfo = GetPrivateField(obj, fieldName, instance);
+            return (fieldInfo != null);
+        }
+
+        public static object InvokeStaticMethod(MethodInfo method, params object[] args)
+        {
+            return method.Invoke(null, args);
+        }
+
+        public static object InvokeInstanceMethod(object instance, MethodInfo method, params object[] args)
+        {
+            return method.Invoke(instance, args);
+        }
+
+        public static object GetStaticFieldValue(FieldInfo field)
+        {
+            return field.GetValue(null);
+        }
+
+        public static object GetInstanceFieldValue(object instance, FieldInfo field)
+        {
+            return field.GetValue(instance);
+        }
+
+        public static void SetStaticFieldValue(FieldInfo field, object value)
+        {
+            field.SetValue(null, value);
+        }
+
+        public static void SetInstanceFieldValue(object instance, FieldInfo field, object value)
+        {
+            field.SetValue(instance, value);
+        }
+    }
+    [HarmonyPatch(typeof(Character), nameof(Character.init))]
     public class GuardPatch
     {
         //replacing the default health bar with a larger one for guards
@@ -80,8 +167,8 @@ namespace BetterGuards
                 indicator.setLevels(0.1f, 0.5f, 0.7f, 0.8f);
                 Console.WriteLine("New indicator's levels " + indicator.getLevels());
                 indicator.setOrientation(IndicatorOrientation.Vertical);
-                Console.WriteLine("Orientation of the new indicator (should be vertical) " + indicator.getOrientation());
-                __instance.mIndicators[0] = indicator;
+                CharacterIndicator healthIndicator = CharacterIndicator.Health;
+                __instance.getIndicator(healthIndicator).setValue(indicator.getMax());
                 Console.WriteLine("This should be the same as the new indicator " + __instance.mIndicators[0]);
             }
         }

@@ -63,11 +63,40 @@ namespace ColonistEviction
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-
+            //nothing needed here for now
         }
         public void RegisterStrings()
         {
             StringUtils.RegisterString("message_eviction", MESSAGE);
+        }
+    }
+    public class CustomModule : Module
+    {
+        public static Module findClosestLandingPad(Vector3 position)
+        {
+            float num = float.MaxValue;
+            Module result = null;
+            int count = mModules.Count;
+            for (int i = 0; i < count; i++)
+            {
+                Module module = mModules[i];
+                float sqrMagnitude = (module.getPosition() - position).sqrMagnitude;
+                if (sqrMagnitude < num && module.getModuleType() is ModuleTypeLandingPad)
+                {
+                    result = findOperational(module.getPosition(), 1, 0);
+                    num = sqrMagnitude;
+                    if (result == null || result.getModuleType() is not ModuleTypeLandingPad)
+                    {
+                        result = findOperational(module.getPosition(), 16384, 0);
+                    }
+                }
+                else if (sqrMagnitude < num && module.getModuleType() is ModuleTypeStarport)
+                {
+                    result = findOperational(module.getPosition(), 16384, 0);
+                    num = sqrMagnitude;
+                }
+            }
+            return result;
         }
     }
     [HarmonyPatch(typeof(Character), nameof(Character.update))]
@@ -79,21 +108,25 @@ namespace ColonistEviction
             {
                 if (Input.GetKeyUp(ColonistEviction.settings.evictionKeybind))
                 {
-                    if (ColonistEviction.settings.quickMode == true)
+                    //the part after || is there in case colonist is stuck in a dead space between modules and corridors
+                    if (ColonistEviction.settings.quickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         __instance.destroy();
                         Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction" + __instance.getName() + __instance.getSpecialization(), ColonistEviction.MESSAGE), ResourceList.StaticIcons.Disable, 8));
                     }
                     else 
                     {
-                        //To-do: implement spawning the colonist ship (with animation) and evicted colonist walking to it, despawning and ship taking off
-                        Module targetModule = TypeList<ModuleType, ModuleTypeList>.find;
-                        var colonistShipEviction = ColonistShip.create(targetModule, LandingShip.Size.Regular);
-                        __instance.setTarget(colonistShipEviction);
+                        //To-do: implement spawning the colonist ship (with animation) and evicted colonist walking to it, despawning and ship taking off;
+                        var landingPadPosition = CustomModule.findClosestLandingPad(__instance.getPosition());
+                        var colonistShipEviction = ColonistShip.create<ColonistShip>(landingPadPosition, LandingShip.Size.Regular);
+                        __instance.setTarget(landingPadPosition);
                         //probably need to check if evicted colonist is close enough to ship
-                        __instance.destroy();
-                        colonistShipEviction.onTakeOff();
-                    
+                        if (Vector3.Distance(__instance.getPosition(), landingPadPosition.getPosition()) < 5)
+                        {
+                            __instance.destroy();
+                            colonistShipEviction.onTakeOff();
+                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction" + __instance.getName() + __instance.getSpecialization(), ColonistEviction.MESSAGE), ResourceList.StaticIcons.Disable, 8));
+                        }
                     }    
                 }
             }

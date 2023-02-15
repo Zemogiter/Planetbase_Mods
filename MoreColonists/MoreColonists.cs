@@ -63,35 +63,8 @@ namespace MoreColonists
         }
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-            /*if(GameManager.getInstance().getGameState() is GameStateGame)
-            {
-                var visitorShipList = VisitorShip.mShips;
-                foreach (VisitorShip ship in visitorShipList)
-                {
-                    if (ship != null && ship.getPendingVisitorCount() < 0)
-                    {
-                        ship.onTakeOff();
-                    }
-                }
-                
-            }*/
+            //nothing for now
 		}
-    }
-    public class CustomVisitorShip : VisitorShip
-    {
-        public override bool canTakeOff()
-        {
-            var visitorShipList = VisitorShip.mShips;
-            foreach (VisitorShip ship in visitorShipList.Cast<VisitorShip>())
-            {
-                if (ship != null && ship.getPendingVisitorCount() < 0 || ship.getPendingVisitorCount() == null)
-                {
-                    ship.destroy();
-                    return base.canTakeOff() && mPendingVisitors == 0;
-                }
-            }
-            return base.canTakeOff() && mPendingVisitors == 0;
-        }
     }
     [HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.onLandedGeneric))]
 	public class VisitorShipPatch : VisitorShip
@@ -145,6 +118,14 @@ namespace MoreColonists
                 if (Random.Range(0, 20) == 0 && MoreColonists.settings.canBeCarrier)
                 {
                     guest.setCondition(TypeList<ConditionType, ConditionTypeList>.find<ConditionFlu>());
+                }
+            }
+            var visitorShipList = VisitorShip.mShips;
+            foreach (VisitorShip ship in visitorShipList)
+            {
+                if (ship != null && ship.getPendingVisitorCount() < 0 || ship.getPendingVisitorCount() == null)
+                {
+                    ship.destroy();
                 }
             }
         }

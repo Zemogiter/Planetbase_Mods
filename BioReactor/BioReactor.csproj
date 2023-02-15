@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BioReactor.cs" />
+    <Compile Include="BioReactorBehaviour.cs" />
     <Compile Include="NamingUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
