@@ -8,8 +8,8 @@ Mods currently available to download from Nexus:
 - [Better Guards](https://www.nexusmods.com/planetbase/mods/63) (made by me)
 - [CharacterCam Remake](https://www.nexusmods.com/planetbase/mods/64)
 - [FreeBuilding Remake](https://www.nexusmods.com/planetbase/mods/65)
-- [Mass Mine Control](https://www.nexusmods.com/planetbase/mods/66)
-- [Panels Without Modules](https://www.nexusmods.com/planetbase/mods/67)
+- [Mass Mine Control](https://www.nexusmods.com/planetbase/mods/66) (made by me)
+- [Panels Without Modules](https://www.nexusmods.com/planetbase/mods/67) (made by me)
 
 ## Additional Info
 Uses PlanetbaseModUtilites from https://github.com/JCoil/PlanetbaseMods
