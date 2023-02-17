@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanelsWithoutModules", "Pan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassMineControl", "MassMineControl\MassMineControl.csproj", "{30C895A0-277C-4930-A37E-341367D5A8DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarthlikePlanet", "EarthlikePlanet\EarthlikePlanet.csproj", "{A9954F33-D717-4CB6-8BAE-95328D88ACB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,6 +217,10 @@ Global
 		{30C895A0-277C-4930-A37E-341367D5A8DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30C895A0-277C-4930-A37E-341367D5A8DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30C895A0-277C-4930-A37E-341367D5A8DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9954F33-D717-4CB6-8BAE-95328D88ACB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9954F33-D717-4CB6-8BAE-95328D88ACB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9954F33-D717-4CB6-8BAE-95328D88ACB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9954F33-D717-4CB6-8BAE-95328D88ACB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -248,6 +254,7 @@ Global
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{90c29248-d03f-4b5b-86b0-d520b89db0be}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{98c40f17-9308-4053-8b71-af9fe168de04}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{99acdfa2-8268-4614-a77d-f81e5633be6a}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{a9954f33-d717-4cb6-8bae-95328d88acb4}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{be90a61f-78e2-4196-a6c4-0b1896bba55a}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{c31285e4-bc3b-4745-bcfa-7c2cd05147de}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{d5f0b474-fd08-444d-bcfd-82c107150330}*SharedItemsImports = 4

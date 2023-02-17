@@ -15,7 +15,7 @@ namespace ColonistEviction
 {
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
-        [Draw("Eviction Keybind")] public KeyCode evictionKeybind = KeyCode.F;
+        [Draw("Eviction Keybind")] public KeyCode evictionKeybind = KeyCode.M;
         [Draw("Quick mode (delete colonist without animations)")] public bool quickMode = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -67,7 +67,12 @@ namespace ColonistEviction
         }
         public void RegisterStrings()
         {
-            StringUtils.RegisterString("message_eviction", MESSAGE);
+            //var instance = Singleton<Colonist>.getInstance();
+            StringUtils.RegisterString("message_eviction", GetMessageContent(instance));
+        }
+        public static string GetMessageContent(Colonist __instance)
+        {
+            return $"Evicted {__instance.getName()} from colony. Specialization of evicted colonist: {__instance.getSpecialization()}";
         }
     }
     public class CustomModule : Module
@@ -112,20 +117,23 @@ namespace ColonistEviction
                     if (ColonistEviction.settings.quickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         __instance.destroy();
-                        Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction" + __instance.getName() + __instance.getSpecialization(), ColonistEviction.MESSAGE), ResourceList.StaticIcons.Disable, 8));
+                        Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance)), ResourceList.StaticIcons.Disable, 8));
                     }
                     else 
                     {
                         //To-do: implement spawning the colonist ship (with animation) and evicted colonist walking to it, despawning and ship taking off;
+                        
                         var landingPadPosition = CustomModule.findClosestLandingPad(__instance.getPosition());
                         var colonistShipEviction = ColonistShip.create<ColonistShip>(landingPadPosition, LandingShip.Size.Regular);
-                        __instance.setTarget(landingPadPosition);
+                        //not sure if this Target will work as intended (pointing to colonistShipEviction)
+                        Target evictionTarget = __instance.getTarget();
+                        CharacterUtils.SetTarget(__instance,evictionTarget);
                         //probably need to check if evicted colonist is close enough to ship
-                        if (Vector3.Distance(__instance.getPosition(), landingPadPosition.getPosition()) < 5)
+                        if (Vector3.Distance(__instance.getPosition(), landingPadPosition.getPosition()) < 2)
                         {
                             __instance.destroy();
                             colonistShipEviction.onTakeOff();
-                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction" + __instance.getName() + __instance.getSpecialization(), ColonistEviction.MESSAGE), ResourceList.StaticIcons.Disable, 8));
+                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance)), ResourceList.StaticIcons.Disable, 8));
                         }
                     }    
                 }

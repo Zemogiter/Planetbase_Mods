@@ -9,7 +9,7 @@ namespace BioReactor
 {
     internal class BioReactorBehaviour
     {
-        public void BioReactorPowerGeneration()
+        public static void BioReactorPowerGeneration()
         {
             var originalList = BuildableUtils.GetAllComponents();
             var burnerType = BuildableUtils.FindComponentType<StarchBurner>();

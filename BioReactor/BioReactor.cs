@@ -102,7 +102,10 @@ namespace BioReactor
         
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            // Nothing required here
+            if (GameManager.getInstance().getGameState() is GameStateGame)
+            {
+                BioReactorBehaviour.BioReactorPowerGeneration();
+            }
         }
     }
     public class ModuleTypeBioReactor : ModuleType

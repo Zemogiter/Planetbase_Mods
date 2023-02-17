@@ -24,11 +24,57 @@ namespace EternalBots
 			
 		}
     }
+    public class CustomBot : Bot
+    {
+        public static void PrivateUpdate(Bot __instance, float timeStep)
+        {
+            if (__instance.mTarget != null)
+            {
+                Selectable selectable = __instance.mTarget.getSelectable();
+                if (selectable != null && selectable.isDestroyed())
+                {
+                    __instance.setIdle();
+                }
+            }
+            if (__instance.mQueuedAnimation != null)
+            {
+                __instance.mAnimationQueueTime -= timeStep;
+                if (__instance.mAnimationQueueTime < 0f)
+                {
+                    __instance.playAnimation(__instance.mQueuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
+                    if (__instance.mQueuedAnchorPoint != null)
+                    {
+                        __instance.setTransform(__instance.mQueuedAnchorPoint.getPosition(), __instance.mQueuedAnchorPoint.getRotation());
+                        __instance.mQueuedAnchorPoint = null;
+                    }
+                    __instance.mQueuedAnimation = null;
+                }
+            }
+            if (__instance.mState == State.Walking)
+            {
+                __instance.updateWalking(timeStep);
+            }
+            else if (__instance.mState == State.Interacting)
+            {
+                __instance.updateInteracting(timeStep);
+            }
+            else if (__instance.mState == State.Dead)
+            {
+                __instance.updateDead(timeStep);
+            }
+            else if (__instance.mState == State.Idle)
+            {
+                __instance.updateIdle(timeStep);
+            }
+        }
+    }
     [HarmonyPatch(typeof(Bot), nameof(Bot.update))]
-    public class BotPatch
+    public class BotPatch : Bot
     {
         public static bool Prefix(Bot __instance, float timeStep)
 		{
+            CustomBot.PrivateUpdate(__instance, timeStep);
+
             //Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
             //indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
             //MyCharacter.mIndicators[7] = indicator;
@@ -56,54 +102,6 @@ namespace EternalBots
             __instance.updateDustParticles(timeStep);
 
             return false;
-        }
-    }
-    public sealed class MyCharacterImpl : Character
-    {
-        public static new Indicator[] mIndicators = new Indicator[8];
-        public new bool decayIndicator(CharacterIndicator status, float amount)
-        {
-            Indicator indicator = mIndicators[(int)status];
-            bool result = false;
-            if (indicator != null)
-            {
-                result = indicator.isMin();
-                if (indicator != null && !indicator.isMin())
-                {
-                    result = indicator.decrease(amount);
-                    updateSign(indicator, indicator.getSignType());
-                }
-            }
-            return result;
-        }
-        //methods below are here just to stop compiler errors
-        public override List<string> getAnimationNames(CharacterAnimationType animationType)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override float getHeight()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Texture2D getIcon()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Bounds getSelectionBounds()
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-    public class MyCharacter
-    {
-        public static Indicator[] mIndicators = MyCharacterImpl.mIndicators;
-        public static void decayIndicator(CharacterIndicator status, float amount)
-        {
-            var indicator = new MyCharacterImpl();
-            indicator.decayIndicator(status, amount);
         }
     }
 }
