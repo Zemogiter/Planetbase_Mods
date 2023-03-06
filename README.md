@@ -10,6 +10,7 @@ Mods currently available to download from Nexus:
 - [FreeBuilding Remake](https://www.nexusmods.com/planetbase/mods/65)
 - [Mass Mine Control](https://www.nexusmods.com/planetbase/mods/66) (made by me)
 - [Panels Without Modules](https://www.nexusmods.com/planetbase/mods/67) (made by me)
+- [FastAirlock Remake](https://www.nexusmods.com/planetbase/mods/68)
 
 ## Additional Info
 Uses PlanetbaseModUtilites from https://github.com/JCoil/PlanetbaseMods
