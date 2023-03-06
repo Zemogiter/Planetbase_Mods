@@ -16,7 +16,7 @@ namespace EarthlikePlanet
 
         public const string planetName = "Earthlike Planet";
         public const string planetDifficulty = "Medium";
-        public const string planetDescription = "A planet with a Earth-like gas composition, allowing for breathing without spacesuits.";
+        public const string planetDescription = "A planet with a Earth-like gas composition, allowing for breathing without spacesuits. Small chance of previously encountered natural disasters.";
 
         public override void OnInitialized(ModEntry modEntry)
         {
@@ -41,15 +41,15 @@ namespace EarthlikePlanet
             mName = StringList.get("planet5_name");
             mDifficultyString = StringList.get("planet5_difficulty");
             mDescription = StringList.get("planet5_description");
-            //To-do: create this mDefinition
-            mDefinition = ResourceUtil.loadPrefab("Prefabs/Planets/PrefabPlanetDefinition5").GetComponent<PlanetDefinition>();
+            //To-do: create this mDefinition, lack of it crashes the game on new game menu
+            mDefinition = ResourceUtil.loadPrefab(FileUtils.getModLocation() + "Assets\\PrefabPlanetDefinition5").GetComponent<PlanetDefinition>();
             mAtmosphereDensity = Quantity.High;
             mLightAmount = Quantity.High;
             mSandstormRisk = Quantity.Low;
             mBlizzardRisk = Quantity.Low;
             mMeteorRisk = Quantity.Low;
             mThunderstormRisk = Quantity.Low;
-            mMilestonesToUnlock = 0;
+            mMilestonesToUnlock = 14;
             addStartingSpecialization<Worker>(5);
             addStartingSpecialization<Biologist>(6);
             addStartingSpecialization<Engineer>(4);
@@ -80,7 +80,7 @@ namespace EarthlikePlanet
                 {
                     if(character.getLocation() is Location.Exterior)
                     {
-                        character.setModel(character.getSelectionModel()); //not sure how to force the suit-less models outside of bases, also not sure if the suitless models have a variand for disasters (colonists covering heads with their arms)
+                        character.setModel(character.getSelectionModel()); //not sure how to force the suit-less models outside of bases, also not sure if the suitless models have a variant for disasters (colonists covering heads with their arms)
                     }
 
                 }
@@ -89,6 +89,7 @@ namespace EarthlikePlanet
     }
     public class CustomCharacter : Character
     {
+        //placeholders
         public override List<string> getAnimationNames(CharacterAnimationType animationType)
         {
             throw new NotImplementedException();

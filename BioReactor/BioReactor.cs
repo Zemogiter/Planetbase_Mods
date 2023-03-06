@@ -61,7 +61,7 @@ namespace BioReactor
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            //For future reference, adding new buildings must be done in this order or else the mod fails to load or game crshes when clicking on the "edit module" button:
+            //For future reference, adding new buildings must be done in this order or else the mod fails to load or game crashes when clicking on the "edit module" button:
             RegisterStrings();
             RegisterNewComponents();
             RegisterNewBuilding();

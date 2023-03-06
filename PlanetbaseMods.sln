@@ -75,6 +75,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassMineControl", "MassMine
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarthlikePlanet", "EarthlikePlanet\EarthlikePlanet.csproj", "{A9954F33-D717-4CB6-8BAE-95328D88ACB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTissueSynthesizers", "SmartTissueSynthesizers\SmartTissueSynthesizers.csproj", "{541B2B7C-3485-4510-969A-647AB246C8F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilientDeaths", "SilientDeaths\SilientDeaths.csproj", "{C0C9E7BD-7019-4909-B3FF-898BB9FD1939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelescopesAreFun", "TelescopesAreFun\TelescopesAreFun.csproj", "{EF802843-0A25-44A9-92A2-B60642C62C71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModulesWithTanks", "ModulesWithTanks\ModulesWithTanks.csproj", "{827B7845-1DA9-4569-A5F4-D740A76ACC0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +229,22 @@ Global
 		{A9954F33-D717-4CB6-8BAE-95328D88ACB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9954F33-D717-4CB6-8BAE-95328D88ACB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9954F33-D717-4CB6-8BAE-95328D88ACB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{541B2B7C-3485-4510-969A-647AB246C8F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{541B2B7C-3485-4510-969A-647AB246C8F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{541B2B7C-3485-4510-969A-647AB246C8F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{541B2B7C-3485-4510-969A-647AB246C8F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C9E7BD-7019-4909-B3FF-898BB9FD1939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C9E7BD-7019-4909-B3FF-898BB9FD1939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C9E7BD-7019-4909-B3FF-898BB9FD1939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C9E7BD-7019-4909-B3FF-898BB9FD1939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF802843-0A25-44A9-92A2-B60642C62C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF802843-0A25-44A9-92A2-B60642C62C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF802843-0A25-44A9-92A2-B60642C62C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF802843-0A25-44A9-92A2-B60642C62C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{827B7845-1DA9-4569-A5F4-D740A76ACC0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{827B7845-1DA9-4569-A5F4-D740A76ACC0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{827B7845-1DA9-4569-A5F4-D740A76ACC0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{827B7845-1DA9-4569-A5F4-D740A76ACC0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,11 +268,13 @@ Global
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{47bf8db9-2c3b-4911-991d-079a71cde2ae}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{4ea21c07-7aa6-4d3e-ab43-2cb8e7746694}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{52a6e010-4378-4438-a5f9-3d5c4f2ace43}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{541b2b7c-3485-4510-969a-647ab246c8f6}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{566024a0-0481-4067-9adf-7dc4b7661eb0}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{6cc501be-9e3e-4ecd-b237-57003acfc363}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{6d5e952a-ca54-4f20-b945-e7871e3a28f9}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{6e9dc286-bc62-410f-9821-9688b2791bd2}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{6f94447c-5a34-4759-a43c-215a6de9e61b}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{827b7845-1da9-4569-a5f4-d740a76acc0d}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{88e06502-bbab-42b5-b144-a1800b025f94}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{8badf58e-54b7-4090-8a1a-6152fb267cf6}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{90c29248-d03f-4b5b-86b0-d520b89db0be}*SharedItemsImports = 4
@@ -256,6 +282,7 @@ Global
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{99acdfa2-8268-4614-a77d-f81e5633be6a}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{a9954f33-d717-4cb6-8bae-95328d88acb4}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{be90a61f-78e2-4196-a6c4-0b1896bba55a}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{c0c9e7bd-7019-4909-b3ff-898bb9fd1939}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{c31285e4-bc3b-4745-bcfa-7c2cd05147de}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{d5f0b474-fd08-444d-bcfd-82c107150330}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{e0143a72-527e-4623-b371-cc53a83e38b4}*SharedItemsImports = 4

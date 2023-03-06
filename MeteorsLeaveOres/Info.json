@@ -7,8 +7,6 @@
   "HomePage": "",
   "ID": "MeteorsLeaveOres",
   "Repository": "",
-  "Requirements": [
-    "PBUtilities"
-  ],
-  "Version": "0.2.0.2223"
+  "Requirements": [],
+  "Version": "1.0.0.0"
 }

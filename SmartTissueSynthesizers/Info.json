@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "SmartTissueSynthesizers.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Smart Tissue Synthesizers",
+  "EntryMethod": "SmartTissueSynthesizers.SmartTissueSynthesizers.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "SmartTissueSynthesizers",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0.0"
+}

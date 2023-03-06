@@ -44,13 +44,12 @@ namespace PowerSaver
             if (File.Exists(iconPath))
             {
                 byte[] iconBytes = File.ReadAllBytes(iconPath);
-                Texture2D tex = new Texture2D(0, 0);
+                Texture2D tex = new(0, 0);
                 tex.LoadImage(iconBytes);
                 this.mIcon = Util.applyColor(tex);
             }
             else 
             { 
-            
                 this.mIcon = ResourceList.StaticIcons.PowerGrid;
             }
         }

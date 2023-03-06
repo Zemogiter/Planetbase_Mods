@@ -1,9 +1,7 @@
 {
   "EntryMethod": "MoreColonists.MoreColonists.Init",
-  "Version": "0.2.0.2223",
-  "Requirements": [
-    "PBUtilities"
-  ],
+  "Version": "1.0.0.0",
+  "Requirements": [],
   "ID": "MoreColonists",
   "DisplayName": "More Colonists",
   "AssemblyName": "MoreColonists.dll",

@@ -57,9 +57,25 @@ namespace FastAirlock
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //nothing neede here
+            //nothing required here
         }
     }
+    //this patch is needed so players wont be able to decostruct airlocks when used, causing the game to crash with an NRE in Selectable class
+    [HarmonyPatch(typeof(Construction), nameof(Construction.isDeleteable))]
+    public class ModuleAirlockDeconstructionPatch
+    {
+        public static bool Prefix(Module __instance, out bool buttonEnabled)
+        {
+            if (__instance.getModuleType() == TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeAirlock>() && __instance.getInteractionCount() > 0)
+            {
+                buttonEnabled = Grid.isSplitterConstruction(__instance);
+                return false;
+            }
+            buttonEnabled = !Grid.isSplitterConstruction(__instance);
+            return true;
+        }
+    }
+    //main patch
     [HarmonyPatch(typeof(InteractionAirlock), nameof(InteractionAirlock.update))]
     public class InteractionAirlockPatch
     {
@@ -70,13 +86,16 @@ namespace FastAirlock
         }
         public static bool ReplacementMethod(InteractionAirlock __instance, float timeStep)
         {
+            if (__instance == null)
+            {
+                return false;
+            }
             timeStep *= FastAirlock.settings.speedmult;
-            Construction construction = __instance.mSelectable as Construction;
-            if (construction != null && !construction.isPowered() && __instance.mStage == InteractionAirlock.Stage.Wait)
+            if (__instance.mSelectable is Construction construction && !construction.isPowered() && __instance.mStage == InteractionAirlock.Stage.Wait)
             {
                 return true;
             }
-            if (__instance.mSelectable.getFirstInteraction() == __instance)
+            if (__instance != null && __instance.mSelectable.getFirstInteraction() == __instance)
             {
                 __instance.mStageProgress += timeStep;
                 if (__instance.mStageProgress > 1f || __instance.mStage == InteractionAirlock.Stage.Wait)

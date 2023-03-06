@@ -53,7 +53,7 @@ namespace StarchlessPlants
             bioDomeComponents.Add(ComponentTypeList.find<StarchlessWheatPad>());
             bioDomeComponents.Add(ComponentTypeList.find<StarchlessMaizePad>());
 
-            BuildableUtils.FindModuleType<ModuleTypeBioDome>().SetComponentTypes(bioDomeComponents);
+            //BuildableUtils.FindModuleType<ModuleTypeBioDome>().SetComponentTypes(bioDomeComponents);
         }
     }
     public class StarchlessPeaPad : VegetablePad
@@ -62,20 +62,14 @@ namespace StarchlessPlants
         
         public StarchlessPeaPad()
         {
-            //this.mIcon = loadIcon();
-            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
+            mIcon = ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<PeaPad>().GetType().Name));
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Peas);
             addResourceProduction<Vegetables>(ResourceSubtype.Peas);
-            this.mFlags = 2048;
-            this.initStrings();
-            this.mPrefabName = "PrefabPadStarchyPea";
-        }
-
-        public new Texture2D loadIcon()
-        {
-            return ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<PeaPad>().GetType().Name));
+            mFlags = 2048;
+            initStrings();
+            mPrefabName = "PrefabPadStarchyPea";
         }
 
         public static void RegisterStrings()
@@ -90,20 +84,14 @@ namespace StarchlessPlants
 
         public StarchlessRicePad()
         {
-            //this.mIcon = loadIcon();
-            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
+            mIcon = ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<RicePad>().GetType().Name));
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Rice);
             addResourceProduction<Vegetables>(ResourceSubtype.Rice);
-            this.mFlags = 2048;
-            this.initStrings();
-            this.mPrefabName = "PrefabPadStarchyRice";
-        }
-
-        public new Texture2D loadIcon()
-        {
-            return ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<RicePad>().GetType().Name));
+            mFlags = 2048;
+            initStrings();
+            mPrefabName = "PrefabPadStarchyRice";
         }
 
         public static void RegisterStrings()
@@ -118,20 +106,14 @@ namespace StarchlessPlants
 
         public StarchlessPotatoPad()
         {
-            //this.mIcon = loadIcon();
-            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
+            mIcon = ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<PotatoPad>().GetType().Name));
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Potatoes);
             addResourceProduction<Vegetables>(ResourceSubtype.Potatoes);
-            this.mFlags = 2048;
-            this.initStrings();
-            this.mPrefabName = "PrefabPadStarchyPotato";
-        }
-
-        public new Texture2D loadIcon()
-        {
-            return ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<PotatoPad>().GetType().Name));
+            mFlags = 2048;
+            initStrings();
+            mPrefabName = "PrefabPadStarchyPotato";
         }
 
         public static void RegisterStrings()
@@ -146,20 +128,14 @@ namespace StarchlessPlants
 
         public StarchlessWheatPad()
         {
-            //this.mIcon = loadIcon();
-            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
+            mIcon = ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<WheatPad>().GetType().Name)); ;
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Wheat);
             addResourceProduction<Vegetables>(ResourceSubtype.Wheat);
-            this.mFlags = 2048;
-            this.initStrings();
-            this.mPrefabName = "PrefabPadStarchyWheat";
-        }
-
-        public new Texture2D loadIcon()
-        {
-            return ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<WheatPad>().GetType().Name));
+            mFlags = 2048;
+            initStrings();
+            mPrefabName = "PrefabPadStarchyWheat";
         }
 
         public static void RegisterStrings()
@@ -174,20 +150,14 @@ namespace StarchlessPlants
 
         public StarchlessMaizePad()
         {
-            //this.mIcon = loadIcon();
-            mIcon = loadIcon(TypeList<ResourceType, ResourceTypeList>.find<Vegetables>().getStatsColor());
+            mIcon = ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<MaizePad>().GetType().Name));
             addUsageAnimation(CharacterAnimationType.WorkPadLow);
             addUsageAnimation(CharacterAnimationType.TakeNotes, CharacterProp.Pad);
             addResourceProduction<Vegetables>(ResourceSubtype.Maize);
             addResourceProduction<Vegetables>(ResourceSubtype.Maize);
-            this.mFlags = 2048;
-            this.initStrings();
-            this.mPrefabName = "PrefabPadStarchyMaize";
-        }
-
-        public new Texture2D loadIcon()
-        {
-            return ResourceUtil.loadIconColor("Components/icon_" + Util.camelCaseToLowercase(TypeList<ComponentType, ComponentTypeList>.find<MaizePad>().GetType().Name));
+            mFlags = 2048;
+            initStrings();
+            mPrefabName = "PrefabPadStarchyMaize";
         }
 
         public static void RegisterStrings()

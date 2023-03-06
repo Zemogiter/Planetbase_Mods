@@ -1,9 +1,7 @@
 {
   "EntryMethod": "FastAirlock.FastAirlock.Init",
-  "Version": "0.2.0.2223",
-  "Requirements": [
-    "PBUtilities"
-  ],
+  "Version": "1.0.0.0",
+  "Requirements": [],
   "ID": "FastAirlock",
   "DisplayName": "Fast Airlock",
   "AssemblyName": "FastAirlock.dll",

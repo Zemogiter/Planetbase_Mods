@@ -16,7 +16,9 @@ namespace ColonistEviction
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Eviction Keybind")] public KeyCode evictionKeybind = KeyCode.M;
-        [Draw("Quick mode (delete colonist without animations)")] public bool quickMode = true;
+        [Draw("Eviction quick mode (delete evicted colonist without animations)")] public bool EvictionQuickMode = true;
+        [Draw("Stuck rescue keybind")] public KeyCode stuckRescueKeybind = KeyCode.T;
+        [Draw("Stuck rescue quick mode (teleport colonist to closest landing pad without animations)")] public bool stuckRescueQuickMode = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -67,8 +69,9 @@ namespace ColonistEviction
         }
         public void RegisterStrings()
         {
-            //var instance = Singleton<Colonist>.getInstance();
-            StringUtils.RegisterString("message_eviction", GetMessageContent(instance));
+            //To-do: get an instance of type Colonist that wont crash the game with an NRE
+            Colonist colonist= new Colonist();
+            StringUtils.RegisterString("message_eviction", GetMessageContent(colonist));
         }
         public static string GetMessageContent(Colonist __instance)
         {
@@ -114,15 +117,15 @@ namespace ColonistEviction
                 if (Input.GetKeyUp(ColonistEviction.settings.evictionKeybind))
                 {
                     //the part after || is there in case colonist is stuck in a dead space between modules and corridors
-                    if (ColonistEviction.settings.quickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
+                    if (ColonistEviction.settings.EvictionQuickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
+                        __instance.destroyInteractions();
                         __instance.destroy();
-                        Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance)), ResourceList.StaticIcons.Disable, 8));
+                        Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance as Colonist)), ResourceList.StaticIcons.Disable, 8));
                     }
                     else 
                     {
                         //To-do: implement spawning the colonist ship (with animation) and evicted colonist walking to it, despawning and ship taking off;
-                        
                         var landingPadPosition = CustomModule.findClosestLandingPad(__instance.getPosition());
                         var colonistShipEviction = ColonistShip.create<ColonistShip>(landingPadPosition, LandingShip.Size.Regular);
                         //not sure if this Target will work as intended (pointing to colonistShipEviction)
@@ -133,9 +136,21 @@ namespace ColonistEviction
                         {
                             __instance.destroy();
                             colonistShipEviction.onTakeOff();
-                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance)), ResourceList.StaticIcons.Disable, 8));
+                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance as Colonist)), ResourceList.StaticIcons.Disable, 8));
                         }
                     }    
+                }
+                if (Input.GetKeyUp(ColonistEviction.settings.stuckRescueKeybind))
+                {
+                    if(ColonistEviction.settings.stuckRescueQuickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
+                    {
+                        __instance.destroyInteractions();
+                        __instance.setPosition(CustomModule.findClosestLandingPad(__instance.getPosition()).getPosition());
+                    }
+                    else
+                    {
+                        //To-do: implement a colonist ship spawning above the stuck colonist, despawn it (while keeping information about colonist like indicators and class) then move the ship to landing pad, respawn the colonist and make the ship depart
+                    }
                 }
             }
         }

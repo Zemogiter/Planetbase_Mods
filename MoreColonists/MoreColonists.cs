@@ -10,6 +10,7 @@ using UnityModManagerNet;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using Module = Planetbase.Module;
 
 namespace MoreColonists
 {
@@ -20,6 +21,7 @@ namespace MoreColonists
         [Draw("Random chance for colonist ships to contain bots(same as visitors having flu)")] public bool botColonistsMode = true;
         [Draw("Enable to decrease number of intruders on board of visitor/colonist ships")] public bool noIntruders = true;
         [Draw("Can visitors carry flu?")] public bool canBeCarrier = true;
+        [Draw("Debug mode")] public bool debugMode = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -63,8 +65,46 @@ namespace MoreColonists
         }
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-            //nothing for now
+            //removal of glitched visitor ships
+            if (GameManager.getInstance().getGameState() is GameStateGame && Module.getBuiltCountOfType(TypeList < ModuleType, ModuleTypeList>.find<ModuleTypeLandingPad>()) > 0 || Module.getBuiltCountOfType(TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeStarport>()) > 0)
+            {
+                var shipList = VisitorShip.mShips;
+                if ( shipList != null ) 
+                {
+                    foreach (VisitorShip ship in shipList.Cast<VisitorShip>())
+                    {
+                        if (shipList != null && ship.mState is VisitorShip.State.Landed && ship.getPendingVisitorCount() <= 0)
+                        {
+                            ship.onClosingDoor();
+                            ship.setState(LandingShip.State.TakingOff);
+                            ship.destroy();
+                        }
+
+                    }
+                }
+            }
 		}
+    }
+    [HarmonyPatch(typeof(Character), nameof(Character.update))]
+    public class VisitorPatch
+    {
+        //fix for the error that makes visitors lose their ship ownership upon save load and occupy the base, this should set the ownership to the nearest visitor ship
+        //and from there the regular game code should work
+        static void Postfix(Character __instance)
+        {
+            var visitorList = Character.getSpecializationCharacters(TypeList<Specialization, SpecializationList>.find<Visitor>());
+            if (visitorList != null)
+            {
+                foreach (Human visitor in visitorList.Cast<Human>())
+                {
+                    if (visitor.getOwnedShip() == null && visitor.getState() != Character.State.Ko)
+                    {
+                        VisitorShip newShip = (VisitorShip)Ship.getFirstOfType<Ship>();
+                        visitor.setOwnedShip(newShip);
+                    }
+                }
+            }
+        }
     }
     [HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.onLandedGeneric))]
 	public class VisitorShipPatch : VisitorShip
@@ -106,6 +146,7 @@ namespace MoreColonists
                     return;
                 }
             }
+            CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", __instance, num);
             for (int j = 0; j < num; j++)
             {
                 Guest guest = (Guest)Character.create(TypeList<Specialization, SpecializationList>.find<Visitor>(), __instance.getSpawnPosition(j), Location.Exterior);
@@ -118,14 +159,6 @@ namespace MoreColonists
                 if (Random.Range(0, 20) == 0 && MoreColonists.settings.canBeCarrier)
                 {
                     guest.setCondition(TypeList<ConditionType, ConditionTypeList>.find<ConditionFlu>());
-                }
-            }
-            var visitorShipList = VisitorShip.mShips;
-            foreach (VisitorShip ship in visitorShipList)
-            {
-                if (ship != null && ship.getPendingVisitorCount() < 0 || ship.getPendingVisitorCount() == null)
-                {
-                    ship.destroy();
                 }
             }
         }
