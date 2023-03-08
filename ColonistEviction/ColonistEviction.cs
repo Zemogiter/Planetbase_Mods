@@ -112,7 +112,7 @@ namespace ColonistEviction
     {
         public static void Postfix(Character __instance, float timeStep)
         {
-            if(__instance.mSelected == true && __instance.getState() != Character.State.Ko && __instance.mSpecialization != SpecializationList.IntruderInstance && __instance.mSpecialization != SpecializationList.VisitorInstance)
+            if(__instance.isSelected() && __instance.getState() != Character.State.Ko && __instance.getSpecialization() != SpecializationList.IntruderInstance && __instance.getSpecialization() != SpecializationList.VisitorInstance)
             {
                 if (Input.GetKeyUp(ColonistEviction.settings.evictionKeybind))
                 {

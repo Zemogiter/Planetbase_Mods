@@ -8,7 +8,6 @@ namespace BetterAI
 {
     public class CharacterState : ScheduledState
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "At this point I am unsure if those can be read-only.")]
         Dictionary<CONDITION, CharacterIndicator> mCharacterIndicators;
         Dictionary<CONDITION, CharacterIndicator> mCharacterIndicatorsCrit;
 

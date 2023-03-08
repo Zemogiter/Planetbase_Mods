@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "BetterStatsMenu.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Better Stats Menu",
+  "EntryMethod": "BetterStatsMenu.BetterStatsMenu.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "BetterStatsMenu",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0.0"
+}

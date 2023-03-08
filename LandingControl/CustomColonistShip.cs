@@ -12,34 +12,6 @@ namespace LandingControl
             NavigationGraph.getExterior().addBlocker(this.getPosition() + base.getTransform().forward, this.getRadius());
 
             int numNewColonists = 2;
-            /*
-            float welfare = Colony.getInstance().getWelfareIndicator().getValue();
-            if (welfare > 0.9f)
-            {
-                numNewColonists = Random.Range(3, 6);
-            }
-            else if (welfare > 0.7f)
-            {
-                numNewColonists = Random.Range(2, 5);
-            }
-            else if (welfare > 0.5f)
-            {
-                numNewColonists = Random.Range(2, 4);
-            }
-            else if (welfare < 0.2f)
-            {
-                numNewColonists = 1;
-            }
-
-            if (this.mSize == LandingShip.Size.Large)
-            {
-                numNewColonists++;
-            }
-
-            if (this.mIntruders)
-            {
-                numNewColonists += LandingShipManager.getExtraIntruders();
-            }*/
 
             LandingPermissions landingPermissions = LandingShipManager.getInstance().getLandingPermissions();
             for (int i = 0; i < numNewColonists; i++)
