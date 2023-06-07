@@ -17,6 +17,7 @@ namespace FreeBuilding
     {
         [Draw("Construction rotation keybind")] public KeyCode constructionRotation = KeyCode.T;
         [Draw("Disable modules upon construction?")] public bool turnOffOnBuilt = false;
+        [Draw("Experimental Mode (lifts airlock placement restrictions, very buggy)")] public bool experimentalMode = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -136,6 +137,13 @@ namespace FreeBuilding
             float heightDiff = position.y - floorHeight;
 
             bool isMine = __instance.hasFlag(ModuleType.FlagMine);
+            bool isAirlock = __instance.hasFlag(ModuleType.FlagAirlock);
+
+            if (isAirlock && GameManager.getInstance().getGameState() is GameStateGame gameState && FreeBuilding.settings.experimentalMode )
+            {
+                return true;
+            }
+
             if (isMine)
             {
                 if (heightDiff < 1f || heightDiff > 3f)

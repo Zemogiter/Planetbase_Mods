@@ -21,7 +21,7 @@ namespace MoreColonists
         [Draw("Random chance for colonist ships to contain bots(same as visitors having flu)")] public bool botColonistsMode = true;
         [Draw("Enable to decrease number of intruders on board of visitor/colonist ships")] public bool noIntruders = true;
         [Draw("Can visitors carry flu?")] public bool canBeCarrier = true;
-        [Draw("Debug mode")] public bool debugMode = false;
+        //[Draw("Debug mode")] public bool debugMode = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);

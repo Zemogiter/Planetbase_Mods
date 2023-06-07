@@ -1,0 +1,14 @@
+{
+  "AssemblyName": ".dll",
+  "Author": "Zemogiter",
+  "DisplayName": "",
+  "EntryMethod": "..Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "0.2.0.2223"
+}

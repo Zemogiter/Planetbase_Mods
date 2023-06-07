@@ -1,6 +1,6 @@
 {
   "EntryMethod": "FreeBuilding.FreeBuilding.Init",
-  "Version": "1.0.0.0",
+  "Version": "1.1.0.0",
   "Requirements": [],
   "ID": "FreeBuilding",
   "DisplayName": "Free Building",

@@ -14,6 +14,7 @@ namespace BetterGuards
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Enable gun drops?")] public bool enableGunDrops = true;
+        [Draw("Intruders have better guns?")] public bool intruderGunHighDurability = false;
         [Draw("Health multipler for guards")] public float healthmult = 4.2f;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -97,6 +98,10 @@ namespace BetterGuards
                 Location location = __instance.getLocation();
                 ResourceType gunType = TypeList<ResourceType, ResourceTypeList>.find<Gun>();
                 Resource droppedGun = Resource.create(gunType, position, location);
+                if(BetterGuards.settings.intruderGunHighDurability == true && __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
+                {
+                    droppedGun.setDurability(Resource.Durability.High);
+                }
             }
         }
     }

@@ -87,6 +87,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterStatsMenu", "BetterSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealisticStorage", "RealisticStorage\RealisticStorage.csproj", "{9FFCC3B7-D48C-47E7-8030-B233835EC7CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterLandingPermissions", "BetterLandingPermissions\BetterLandingPermissions.csproj", "{3069F511-2C0A-4383-AD59-1001315C378A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMusic", "CustomMusic\CustomMusic.csproj", "{5B3C7384-4EDA-46BC-B336-DCB2A5CE77CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -257,6 +261,14 @@ Global
 		{9FFCC3B7-D48C-47E7-8030-B233835EC7CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FFCC3B7-D48C-47E7-8030-B233835EC7CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FFCC3B7-D48C-47E7-8030-B233835EC7CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3069F511-2C0A-4383-AD59-1001315C378A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3069F511-2C0A-4383-AD59-1001315C378A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3069F511-2C0A-4383-AD59-1001315C378A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3069F511-2C0A-4383-AD59-1001315C378A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B3C7384-4EDA-46BC-B336-DCB2A5CE77CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B3C7384-4EDA-46BC-B336-DCB2A5CE77CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B3C7384-4EDA-46BC-B336-DCB2A5CE77CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B3C7384-4EDA-46BC-B336-DCB2A5CE77CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

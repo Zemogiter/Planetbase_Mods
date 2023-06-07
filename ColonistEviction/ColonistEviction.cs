@@ -56,8 +56,6 @@ namespace ColonistEviction
             return true;
         }
 
-        public const string MESSAGE = "Colonist evicted. ";
-
         public override void OnInitialized(ModEntry modEntry)
         {
             RegisterStrings();
@@ -70,8 +68,9 @@ namespace ColonistEviction
         public void RegisterStrings()
         {
             //To-do: get an instance of type Colonist that wont crash the game with an NRE
-            Colonist colonist= new Colonist();
+            Colonist colonist= (Colonist)Colonist.getFirstHuman();
             StringUtils.RegisterString("message_eviction", GetMessageContent(colonist));
+            StringUtils.RegisterString("message_eviction_error","Cannot evict colonist. Can't be knocked out, an intruder or a visitor.");
         }
         public static string GetMessageContent(Colonist __instance)
         {
@@ -112,7 +111,7 @@ namespace ColonistEviction
     {
         public static void Postfix(Character __instance, float timeStep)
         {
-            if(__instance.isSelected() && __instance.getState() != Character.State.Ko && __instance.getSpecialization() != SpecializationList.IntruderInstance && __instance.getSpecialization() != SpecializationList.VisitorInstance)
+            if(__instance.isSelected() && __instance.getState() != Character.State.Ko && __instance.getSpecialization() != SpecializationList.IntruderInstance && __instance.getSpecialization() != SpecializationList.VisitorInstance) //we want this to work on non-downed colonists only
             {
                 if (Input.GetKeyUp(ColonistEviction.settings.evictionKeybind))
                 {
@@ -123,7 +122,7 @@ namespace ColonistEviction
                         __instance.destroy();
                         Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance as Colonist)), ResourceList.StaticIcons.Disable, 8));
                     }
-                    else 
+                    else if(ColonistEviction.settings.EvictionQuickMode == false || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         //To-do: implement spawning the colonist ship (with animation) and evicted colonist walking to it, despawning and ship taking off;
                         var landingPadPosition = CustomModule.findClosestLandingPad(__instance.getPosition());
@@ -140,6 +139,10 @@ namespace ColonistEviction
                         }
                     }    
                 }
+                else
+                {
+                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction_error"), ResourceList.StaticIcons.Disable, 8));
+                }
                 if (Input.GetKeyUp(ColonistEviction.settings.stuckRescueKeybind))
                 {
                     if(ColonistEviction.settings.stuckRescueQuickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
@@ -147,7 +150,7 @@ namespace ColonistEviction
                         __instance.destroyInteractions();
                         __instance.setPosition(CustomModule.findClosestLandingPad(__instance.getPosition()).getPosition());
                     }
-                    else
+                    else if(ColonistEviction.settings.stuckRescueQuickMode == false || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         //To-do: implement a colonist ship spawning above the stuck colonist, despawn it (while keeping information about colonist like indicators and class) then move the ship to landing pad, respawn the colonist and make the ship depart
                     }
