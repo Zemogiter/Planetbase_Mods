@@ -5,6 +5,9 @@ using System;
 using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
 
 namespace RemoveTutorialFromMenu
 {
@@ -14,17 +17,36 @@ namespace RemoveTutorialFromMenu
 
         public override void OnInitialized(ModEntry modEntry)
         {
-
+            
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
 
         }
+        
     }
     [HarmonyPatch(typeof(GameStateTitle), "onGui")]
+    [HarmonyDebug]
     public class MainMenuPatch
     {
+        [HarmonyTranspiler]
+        [HarmonyDebug]
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher matcher = new CodeMatcher(instructions);
+            matcher.MatchStartForward(new CodeMatch(OpCodes.Stloc_S, 11));
+            if (matcher.IsValid)
+            {
+                matcher.RemoveInstructionsInRange(1,26);
+            }
+            else
+            {
+                Console.WriteLine($"Failed to find matching instructions. Either another mod has already transpiled this or the game's/Unity's code has changed.");
+            }
+            return instructions;
+        }
+        /*
         public static bool Prefix(GameStateTitle __instance)
         {
             Type instanceType = __instance.GetType();
@@ -116,6 +138,7 @@ namespace RemoveTutorialFromMenu
 
             return false;
         }
+        */
     }
     public static class Reflection
     {
@@ -140,10 +163,7 @@ namespace RemoveTutorialFromMenu
 
         public static MethodInfo GetPrivateMethodOrThrow(Type obj, string methodName, bool instance)
         {
-            MethodInfo methodInfo = GetPrivateMethod(obj, methodName, instance);
-            if (methodInfo == null)
-                throw new MissingMethodException($"Could not find \"{methodName}\"");
-
+            MethodInfo methodInfo = GetPrivateMethod(obj, methodName, instance) ?? throw new MissingMethodException($"Could not find \"{methodName}\"");
             return methodInfo;
         }
 
@@ -162,10 +182,7 @@ namespace RemoveTutorialFromMenu
 
         public static FieldInfo GetPrivateFieldOrThrow(Type obj, string fieldName, bool instance)
         {
-            FieldInfo fieldInfo = GetPrivateField(obj, fieldName, instance);
-            if (fieldInfo == null)
-                throw new MissingMethodException($"Could not find \"{fieldName}\"");
-
+            FieldInfo fieldInfo = GetPrivateField(obj, fieldName, instance) ?? throw new MissingMethodException($"Could not find \"{fieldName}\"");
             return fieldInfo;
         }
 

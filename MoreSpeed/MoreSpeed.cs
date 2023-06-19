@@ -4,8 +4,6 @@ using PlanetbaseModUtilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
-using System;
 
 namespace MoreSpeed
 {
@@ -15,12 +13,16 @@ namespace MoreSpeed
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            UpdateTimeScale();
+            //not used
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //nothing needed here
+            //not used
+        }
+        public override void OnGameStart(GameStateGame gameStateGame)
+        {
+            UpdateTimeScale();
         }
         private void UpdateTimeScale()
         {

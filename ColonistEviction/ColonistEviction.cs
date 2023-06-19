@@ -67,14 +67,13 @@ namespace ColonistEviction
         }
         public void RegisterStrings()
         {
-            //To-do: get an instance of type Colonist that wont crash the game with an NRE
-            Colonist colonist= (Colonist)Colonist.getFirstHuman();
-            StringUtils.RegisterString("message_eviction", GetMessageContent(colonist));
-            StringUtils.RegisterString("message_eviction_error","Cannot evict colonist. Can't be knocked out, an intruder or a visitor.");
+            //To-do: get an instance of type Colonist that wont throw a NullReferenceException
+            StringUtils.RegisterString("message_eviction", GetMessageContent(null));
+            StringUtils.RegisterString("message_eviction_error","Only aware colonists can be evicted.");
         }
-        public static string GetMessageContent(Colonist __instance)
+        public static string GetMessageContent(Colonist colonist)
         {
-            return $"Evicted {__instance.getName()} from colony. Specialization of evicted colonist: {__instance.getSpecialization()}";
+            return $"Evicted {colonist.getName()} from colony. Specialization of evicted colonist: {colonist.getSpecialization()}";
         }
     }
     public class CustomModule : Module
@@ -152,7 +151,7 @@ namespace ColonistEviction
                     }
                     else if(ColonistEviction.settings.stuckRescueQuickMode == false || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
-                        //To-do: implement a colonist ship spawning above the stuck colonist, despawn it (while keeping information about colonist like indicators and class) then move the ship to landing pad, respawn the colonist and make the ship depart
+                        //To-do: implement a colonist ship spawning above the stuck colonist, despawn it (while keeping information about colonist like race, gender, name and class) then move the ship to landing pad, respawn the colonist and make the ship depart
                     }
                 }
             }

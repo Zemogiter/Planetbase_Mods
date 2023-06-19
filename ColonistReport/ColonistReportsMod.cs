@@ -44,7 +44,6 @@ namespace ColonistReport
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
             WorkloadManager.getInstance().Update(timeStep);
-
             if (GameStateGame.mGameGui.getWindow() is GuiReportsMenu menu)
             {
                 menu.updateUi();

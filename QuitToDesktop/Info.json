@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "QuitToDesktop.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Quit To Desktop",
+  "EntryMethod": "QuitToDesktop.QuitToDesktop.Init",
+  "GameVersion": "1.3.8",
+  "HomePage": "",
+  "ID": "QuitToDesktop",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0"
+}
