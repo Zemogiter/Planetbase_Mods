@@ -1,24 +1,21 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Object = UnityEngine.Object;
+using Planetbase;
+using PlanetbaseModUtilities;
+using UnityEngine;
 using UnityModManagerNet;
-using UnityEngine.UI;
-using System.Linq;
+using static UnityModManagerNet.UnityModManager;
 
 namespace BioReactor
 {
-    public class Settings : UnityModManager.ModSettings, IDrawable
+    public class Settings : ModSettings, IDrawable
     {
+        // ReSharper disable FieldCanBeMadeReadOnly.Global
         [Draw("Use Custom Icon")] public bool UseCustomIcon = false;
-        [Draw("Power generation per burner")] public int burnerPowerGeneration = 1000;
-        [Draw("Water consumption per burner")] public int burnerWaterConsumption = 2000; 
+        [Draw("Power generation per burner")] public int BurnerPowerGeneration = 1000;
+        [Draw("Water consumption per burner")] public int BurnerWaterConsumption = 2000; 
         
-        public override void Save(UnityModManager.ModEntry modEntry)
+        public override void Save(ModEntry modEntry)
         {
             Save(this, modEntry);
         }
@@ -27,32 +24,33 @@ namespace BioReactor
         {
         }
     }
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class BioReactor : ModBase
     {
-        public const string NAME = "Bio Reactor";
-        public const string DESCRIPTION = "A dome fited with power cell arrays, designed to be powered by burning excess starch.";
+        public const string Name = "Bio Reactor";
+        public const string Description = "A dome fited with power cell arrays, designed to be powered by burning excess starch and other organic matter.";
 
         public static bool enabled;
         public static Settings settings;
 
-        public static new void Init(ModEntry modEntry)
+        public new static void Init(ModEntry modEntry)
         {
-            settings = Settings.Load<Settings>(modEntry);
+            settings = ModSettings.Load<Settings>(modEntry);
             modEntry.OnGUI = OnGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
             modEntry.OnToggle = OnToggle;
             InitializeMod(new BioReactor(), modEntry, "BioReactor");
         }
-        static void OnGUI(UnityModManager.ModEntry modEntry)
+        static void OnGUI(ModEntry modEntry)
         {
             settings.Draw(modEntry);
         }
 
-        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        static void OnSaveGUI(ModEntry modEntry)
         {
             settings.Save(modEntry);
         }
-        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        static bool OnToggle(ModEntry modEntry, bool value)
         {
             enabled = value;
 
@@ -93,8 +91,8 @@ namespace BioReactor
         }
         private static void RegisterStrings()
         {
-            StringUtils.RegisterString("bio_reactor", NAME);
-            StringUtils.RegisterString("tooltip_bio_reactor", DESCRIPTION);
+            StringUtils.RegisterString("bio_reactor", Name);
+            StringUtils.RegisterString("tooltip_bio_reactor", Description);
             StarchBurner.RegisterStrings();
             VegetableBurner.RegisterStrings();
         }
@@ -113,11 +111,11 @@ namespace BioReactor
         public ModuleTypeBioReactor()
         {
             string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\BioReactor\\Textures\\BioReactor.png";
-            if (File.Exists(path) && BioReactor.settings.UseCustomIcon == true)
+            if (File.Exists(path) && BioReactor.settings.UseCustomIcon)
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
-                tex.LoadImage(iconBytes);
+                tex.LoadRawTextureData(iconBytes);
                 mIcon = Util.applyColor(tex);
             }
             else
@@ -145,6 +143,7 @@ namespace BioReactor
             initStrings();
         }
     }
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class StarchBurner : ComponentType
     {
         public const string Name = "Starch Burner";
@@ -159,7 +158,7 @@ namespace BioReactor
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
-                tex.LoadImage(iconBytes);
+                tex.LoadRawTextureData(iconBytes);
                 this.mIcon = Util.applyColor(tex);
             }
             else
@@ -170,29 +169,22 @@ namespace BioReactor
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Metal>(), 1);
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Bioplastic>(), 1);
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Semiconductors>(), 1);
-            mResourceConsumption = new List<ResourceType>
-            {
-                TypeList<ResourceType, ResourceTypeList>.find<Starch>()
-            };
+            mResourceConsumption = [TypeList<ResourceType, ResourceTypeList>.find<Starch>()];
             addResourceProduction<Coins>();
             mEmbeddedResourceCount = 3;
             mResourceProductionPeriod = 1f;
             mPowerGeneration = 30000;
-            mWaterGeneration = BioReactor.settings.burnerWaterConsumption * -1;
+            mWaterGeneration = BioReactor.settings.BurnerWaterConsumption * -1;
             mFlags = 148510;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";
-            addUsageAnimation(CharacterAnimationType.WorkStanding, CharacterProp.Count, CharacterProp.Count);
+            addUsageAnimation(CharacterAnimationType.WorkStanding);
             initStrings();
         }
         public static void RegisterStrings()
         {
             StringUtils.RegisterString("component_starch_burner", Name);
             StringUtils.RegisterString("tooltip_starch_burner", Description);
-        }
-        public new Texture2D loadIcon()
-        {
-            return ResourceUtil.loadIconColor("Components/icon_" + NamingUtils.BioplasticProcessorTypeName);
         }
     }
     public class VegetableBurner : ComponentType
@@ -207,33 +199,30 @@ namespace BioReactor
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
-                tex.LoadImage(iconBytes);
+                tex.LoadRawTextureData(iconBytes);
                 this.mIcon = Util.applyColor(tex);
             }
             else
             {
-                this.mIcon = loadIcon();
+                this.mIcon = LoadIcon();
             }
             mConstructionCosts = new ResourceAmounts();
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Metal>(), 1);
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Bioplastic>(), 1);
             mConstructionCosts.add(TypeList<ResourceType, ResourceTypeList>.find<Semiconductors>(), 1);
-            mResourceConsumption = new List<ResourceType>
-            {
-                TypeList<ResourceType, ResourceTypeList>.find<Vegetables>()
-            };
+            mResourceConsumption = [TypeList<ResourceType, ResourceTypeList>.find<Vegetables>()];
             addResourceProduction<Coins>();
             mEmbeddedResourceCount = 2;
             mResourceProductionPeriod = 1f;
             mPowerGeneration = 30000;
-            mWaterGeneration = BioReactor.settings.burnerWaterConsumption * -1;
+            mWaterGeneration = BioReactor.settings.BurnerWaterConsumption * -1;
             mFlags = 108519;
             mOperatorSpecialization = TypeList<Specialization, SpecializationList>.find<Worker>();
             mPrefabName = "PrefabBioplasticProcessor";
-            addUsageAnimation(CharacterAnimationType.WorkStanding, CharacterProp.Count, CharacterProp.Count);
+            addUsageAnimation(CharacterAnimationType.WorkStanding);
             initStrings();
         }
-        public new Texture2D loadIcon()
+        public Texture2D LoadIcon()
         {
             return ResourceUtil.loadIconColor("Components/icon_" + NamingUtils.BioplasticProcessorTypeName);
         }

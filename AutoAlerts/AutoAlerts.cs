@@ -1,8 +1,8 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
+﻿using System.Collections.Generic;
+using Planetbase;
 using PlanetbaseModUtilities;
-using System.Collections.Generic;
 using UnityEngine;
+using static UnityModManagerNet.UnityModManager;
 
 namespace AutoAlerts
 {
@@ -23,7 +23,7 @@ namespace AutoAlerts
 
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-            if (ConstructionComponent.findOperational(TypeList<ComponentType, ComponentTypeList>.find<SecurityConsole>()) == null)
+            if (ConstructionComponent.findOperational(TypeList<ComponentType, ComponentTypeList>.find<SecurityConsole>()) == null) //if no functional Security Console component is in any Control Room on map, the mod does nothing
                 return;
 
             AlertState state = SecurityManager.getInstance().getAlertState();

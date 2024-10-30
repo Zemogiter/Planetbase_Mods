@@ -1,13 +1,13 @@
-﻿using Planetbase;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
+using BetterAI;
 using BetterAI.Schedules;
 using BetterAI.Tasks;
-using System;
-using System.Collections.Generic;
-using BetterAI;
+using Planetbase;
 using PlanetbaseModUtilities;
+using UnityEngine;
 
 namespace BetterAI
 {

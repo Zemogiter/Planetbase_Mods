@@ -1,5 +1,5 @@
-﻿using Planetbase;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Planetbase;
 
 namespace BetterAI.Tasks
 {

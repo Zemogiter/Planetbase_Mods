@@ -1,22 +1,22 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEngine;
 using HarmonyLib;
+using Planetbase;
+using PlanetbaseModUtilities;
+using UnityEngine;
+using static UnityModManagerNet.UnityModManager;
 
 namespace EarthlikePlanet
 {
     public class EarthlikePlanet : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new EarthlikePlanet(), modEntry, "EarthlikePlanet");
+        public new static void Init(ModEntry modEntry) => InitializeMod(new EarthlikePlanet(), modEntry, "EarthlikePlanet");
 
-        public const string planetName = "Earthlike Planet";
-        public const string planetDifficulty = "Medium";
-        public const string planetDescription = "A planet with a Earth-like gas composition, allowing for breathing without spacesuits. Small chance of previously encountered natural disasters.";
+        public const string PlanetName = "Earthlike Planet";
+        public const string PlanetDifficulty = "Medium";
+        public const string PlanetDescription = "A planet with a Earth-like gas composition, allowing for breathing without spacesuits. Small chance of previously encountered natural disasters.";
 
         public override void OnInitialized(ModEntry modEntry)
         {
@@ -29,9 +29,9 @@ namespace EarthlikePlanet
         }
         public void RegisterStrings()
         {
-            StringUtils.RegisterString("planet5_name", planetName);
-            StringUtils.RegisterString("planet5_difficulty", planetDifficulty);
-            StringUtils.RegisterString("planet5_description", planetDescription);
+            StringUtils.RegisterString("planet5_name", PlanetName);
+            StringUtils.RegisterString("planet5_difficulty", PlanetDifficulty);
+            StringUtils.RegisterString("planet5_description", PlanetDescription);
         }
     }
     public class PlanetClassE : Planet
@@ -80,7 +80,7 @@ namespace EarthlikePlanet
                 {
                     if(character.getLocation() is Location.Exterior)
                     {
-                        character.setModel(character.getSelectionModel()); //not sure how to force the suit-less models outside of bases, also not sure if the suitless models have a variant for disasters (colonists covering heads with their arms)
+                        character.setModel(character.getSelectionModel()); //not sure how to force the suit-less models outside of bases, also not sure if the suit-less models have a variant for disasters (colonists covering heads with their arms)
                     }
 
                 }
@@ -90,7 +90,7 @@ namespace EarthlikePlanet
     public class CustomCharacter : Character
     {
         //placeholders
-        public override List<string> getAnimationNames(CharacterAnimationType animationType)
+        protected override List<string> getAnimationNames(CharacterAnimationType animationType)
         {
             throw new NotImplementedException();
         }
@@ -125,7 +125,7 @@ namespace EarthlikePlanet
     [HarmonyPatch(typeof(GameStateLocationSelection), nameof(GameStateLocationSelection.placePlanets))]
     public class GameStateLocationSelectionPatch
     {
-        static bool Prefix(GameStateLocationSelection __instance)
+        static bool Prefix(GameStateLocationSelection instance)
         {
             var planetE = new PlanetClassE();
             TypeList<Planet, PlanetList>.get().Add(planetE);

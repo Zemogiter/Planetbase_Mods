@@ -1,5 +1,5 @@
-﻿using BetterAI.Tasks;
-using BetterAI;
+﻿using BetterAI;
+using BetterAI.Tasks;
 using Planetbase;
 
 namespace BetterAi.Tasks

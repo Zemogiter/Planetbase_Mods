@@ -1,17 +1,16 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Reflection;
+using HarmonyLib;
 using Planetbase;
-using System;
-using System.Collections.Generic;
+using PlanetbaseModUtilities;
 using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
-using System.Reflection;
-using PlanetbaseModUtilities;
 
 namespace CharacterCam
 {
     public class CharacterCam : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new CharacterCam(), modEntry, "CharacterCam");
+        public new static void Init(ModEntry modEntry) => InitializeMod(new CharacterCam(), modEntry, "CharacterCam");
 
         public override void OnInitialized(ModEntry modEntry)
 		{
@@ -26,7 +25,7 @@ namespace CharacterCam
 
     }
     [HarmonyPatch(typeof(Character), nameof(Character.isCloseCameraAvailable))]
-    public class CharacterPatch
+    public class CharacterPatch //to-do: research how to make the original function return true
     {
         public static bool Prefix(ref bool __result)
         {
@@ -37,7 +36,8 @@ namespace CharacterCam
     [HarmonyPatch(typeof(CloseCameraCinematic), nameof(CloseCameraCinematic.updateCharacter))]
     public class CloseCameraCinematicPatch
     {
-        private CloseCameraCinematicPatch(Selectable s, bool b) : base() { }
+        private CloseCameraCinematicPatch()
+        { }
         public static bool Prefix(Character character, float timeStep)
         {
             
@@ -52,7 +52,7 @@ namespace CharacterCam
             Vector3 newPos = characterTransform.position + Vector3.up * character.getHeight() + characterTransform.forward * 0.7f + horizontalBobbing * characterTransform.right;
             FieldInfo fi2 = typeof(CloseCameraCinematic).GetField("mFirstUpdate");
             Debug.Log(fi2);
-            if (Convert.ToBoolean(fi2) == true)
+            if (Convert.ToBoolean(fi2))
             {
                 cameraTransform.position = newPos;
                 cameraTransform.rotation = characterTransform.rotation;
@@ -62,7 +62,6 @@ namespace CharacterCam
             cameraTransform.position = Vector3.Lerp(cameraTransform.position, newPos, 0.1f);
             Vector3 lookAtDir = (characterTransform.position + characterTransform.forward * 1.4f + Vector3.up * (character.getHeight() * 0.85f) - cameraTransform.position).normalized;
             cameraTransform.rotation = Quaternion.RotateTowards(cameraTransform.rotation, Quaternion.LookRotation(lookAtDir), timeStep * 120f);
-            fiC = yAngle;
 
             return false;
         }

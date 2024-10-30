@@ -1,12 +1,12 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
-using System;
-using HarmonyLib;
-using System.Reflection;
-using Module = Planetbase.Module;
+﻿using System;
 using System.Linq;
+using System.Reflection;
+using HarmonyLib;
+using Planetbase;
+using PlanetbaseModUtilities;
 using static UnityEngine.UI.InputField;
+using static UnityModManagerNet.UnityModManager;
+using Module = Planetbase.Module;
 
 namespace OneIsEnough
 {

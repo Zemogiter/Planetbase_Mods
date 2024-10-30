@@ -1,7 +1,7 @@
-﻿using Planetbase;
-using PlanetbaseModUtilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Planetbase;
+using PlanetbaseModUtilities;
 using UnityEngine;
 
 namespace BetterAI

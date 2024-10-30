@@ -1,13 +1,13 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PlanetbaseModUtilities", "PlanetbaseModUtilities\PlanetbaseModUtilities.shproj", "{2A2596F6-59D3-4F92-A33B-6E9BB2372BEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterCam", "CharacterCam\CharacterCam.csproj", "{6F94447C-5A34-4759-A43C-215A6DE9E61B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterCam", "CharacterCam\CharacterCam.csproj", "{6F94447C-5A34-4759-A43C-215A6DE9E61B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EternalBots", "EternalBots\EternalBots.csproj", "{021003B9-D4FA-432C-97A3-35838F7CA298}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EternalBots", "EternalBots\EternalBots.csproj", "{021003B9-D4FA-432C-97A3-35838F7CA298}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastAirlock", "FastAirlock\FastAirlock.csproj", "{52A6E010-4378-4438-A5F9-3D5C4F2ACE43}"
 EndProject
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreColonists", "MoreColoni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoIntruders", "NoIntruders\NoIntruders.csproj", "{90C29248-D03F-4B5B-86B0-D520B89DB0BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeBuilding", "FreeBuilding\FreeBuilding.csproj", "{566024A0-0481-4067-9ADF-7DC4B7661EB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeBuilding", "FreeBuilding\FreeBuilding.csproj", "{566024A0-0481-4067-9ADF-7DC4B7661EB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterHours", "BetterHours\BetterHours.csproj", "{F0512735-204C-4EC9-B48B-D5793B57C618}"
 EndProject
@@ -25,11 +25,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExteriorO2Genereator", "Ext
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinersIgnoreYellow", "MinersIgnoreYellow\MinersIgnoreYellow.csproj", "{3B48152E-774C-451D-A343-0A9406A54580}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterGuards", "BetterGuards\BetterGuards.csproj", "{187BFAB8-C4B7-4E41-A0E5-80024ADA77F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterGuards", "BetterGuards\BetterGuards.csproj", "{187BFAB8-C4B7-4E41-A0E5-80024ADA77F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreSpeed", "MoreSpeed\MoreSpeed.csproj", "{0263144F-B6F2-4B18-BA97-EA2754916272}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterAI", "BetterAI\BetterAI.csproj", "{1811783C-2853-4886-8E0B-5197D30F0BB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterAI", "BetterAI\BetterAI.csproj", "{1811783C-2853-4886-8E0B-5197D30F0BB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeFurnishing", "FreeFurnishing\FreeFurnishing.csproj", "{8BADF58E-54B7-4090-8A1A-6152FB267CF6}"
 EndProject
@@ -47,9 +47,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnologyShip", "Technolog
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeSpeedDisplay", "TimeSpeedDisplay\TimeSpeedDisplay.csproj", "{F4E8CDCD-7278-4453-A727-11757B956CBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostNoSpares", "AlmostNoSpares\AlmostNoSpares.csproj", "{FB2E636C-2190-4972-846A-CDF1EC0FB64A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostNoSpares", "AlmostNoSpares\AlmostNoSpares.csproj", "{FB2E636C-2190-4972-846A-CDF1EC0FB64A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeteorsLeaveOres", "MeteorsLeaveOres\MeteorsLeaveOres.csproj", "{6D5E952A-CA54-4F20-B945-E7871E3A28F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeteorsLeaveOres", "MeteorsLeaveOres\MeteorsLeaveOres.csproj", "{6D5E952A-CA54-4F20-B945-E7871E3A28F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameplayConstantChanger", "GameplayConstantChanger\GameplayConstantChanger.csproj", "{2629F166-F5F1-49E4-9B57-62544D3E6A77}"
 EndProject
@@ -61,7 +61,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiderLoadMenu", "WiderLoadM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterCredits", "WaterCredits\WaterCredits.csproj", "{FDA66BF6-02B0-4292-AB75-815BEA0C64D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColonistEviction", "ColonistEviction\ColonistEviction.csproj", "{98C40F17-9308-4053-8B71-AF9FE168DE04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColonistEviction", "ColonistEviction\ColonistEviction.csproj", "{98C40F17-9308-4053-8B71-AF9FE168DE04}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerSaver", "PowerSaver\PowerSaver.csproj", "{88E06502-BBAB-42B5-B144-A1800B025F94}"
 EndProject
@@ -73,7 +73,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanelsWithoutModules", "Pan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassMineControl", "MassMineControl\MassMineControl.csproj", "{30C895A0-277C-4930-A37E-341367D5A8DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarthlikePlanet", "EarthlikePlanet\EarthlikePlanet.csproj", "{A9954F33-D717-4CB6-8BAE-95328D88ACB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EarthlikePlanet", "EarthlikePlanet\EarthlikePlanet.csproj", "{A9954F33-D717-4CB6-8BAE-95328D88ACB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTissueSynthesizers", "SmartTissueSynthesizers\SmartTissueSynthesizers.csproj", "{541B2B7C-3485-4510-969A-647AB246C8F6}"
 EndProject

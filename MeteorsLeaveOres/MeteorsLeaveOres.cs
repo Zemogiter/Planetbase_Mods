@@ -1,18 +1,18 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
-using System;
-using HarmonyLib;
-using ResourceType = Planetbase.ResourceType;
-using Resource = Planetbase.Resource;
-using System.Reflection;
-using UnityEngine;
-using System.Runtime.InteropServices;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityModManagerNet;
-using Module = Planetbase.Module;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
+using HarmonyLib;
+using Planetbase;
+using PlanetbaseModUtilities;
+using UnityEngine;
+using UnityModManagerNet;
+using static UnityModManagerNet.UnityModManager;
+using Module = Planetbase.Module;
+using Resource = Planetbase.Resource;
+using ResourceType = Planetbase.ResourceType;
 
 namespace MeteorsLeaveOres
 {

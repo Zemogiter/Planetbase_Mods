@@ -1,17 +1,17 @@
-﻿using Planetbase;
+﻿using System;
+using System.Collections.Generic;
+using HarmonyLib;
+using Planetbase;
+using PlanetbaseModUtilities;
 using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
-using HarmonyLib;
 using State = Planetbase.Character.State;
-using System.Collections.Generic;
-using System;
 
 namespace EternalBots
 {
 	public class EternalBots : ModBase
 	{
-        public static new void Init(ModEntry modEntry) => InitializeMod(new EternalBots(), modEntry, "EternalBots");
+        public new static void Init(ModEntry modEntry) => InitializeMod(new EternalBots(), modEntry, "EternalBots");
        
 		public override void OnInitialized(ModEntry modEntry)
 		{

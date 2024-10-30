@@ -1,11 +1,11 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
+﻿using System.Collections.Generic;
+using HarmonyLib;
+using Planetbase;
 using PlanetbaseModUtilities;
 using UnityEngine;
-using Module = Planetbase.Module;
-using HarmonyLib;
 using UnityModManagerNet;
-using System.Collections.Generic;
+using static UnityModManagerNet.UnityModManager;
+using Module = Planetbase.Module;
 
 namespace FreeFurnishing
 {

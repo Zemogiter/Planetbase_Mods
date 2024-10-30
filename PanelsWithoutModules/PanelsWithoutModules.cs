@@ -1,9 +1,9 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
+﻿using System.Reflection;
 using HarmonyLib;
-using System.Reflection;
+using Planetbase;
+using PlanetbaseModUtilities;
 using static Planetbase.ModuleType;
+using static UnityModManagerNet.UnityModManager;
 
 namespace PanelsWithoutModules
 {

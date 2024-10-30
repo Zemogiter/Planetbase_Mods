@@ -1,21 +1,16 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
+﻿using System.Reflection;
+using Planetbase;
 using PlanetbaseModUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using System.Reflection;
 using UnityModManagerNet;
+using static UnityModManagerNet.UnityModManager;
 
 namespace AlmostNoSpares
 {
-    public class Settings : UnityModManager.ModSettings, IDrawable
+    public class Settings : ModSettings, IDrawable
     {
-        [Draw("New decay time for solar panels")] public float solarPanelDecayTime = 14000f;
-        [Draw("New decay time for wind turbines")] public float windTurbineDeacyTime = 14000f;
-        public override void Save(UnityModManager.ModEntry modEntry)
+        [Draw("New decay time for solar panels")] public readonly float SolarPanelDecayTime = 14000f;
+        [Draw("New decay time for wind turbines")] public readonly float WindTurbineDecayTime = 14000f;
+        public override void Save(ModEntry modEntry)
         {
             Save(this, modEntry);
         }
@@ -27,25 +22,26 @@ namespace AlmostNoSpares
     public class AlmostNoSpares : ModBase
     {
         public static bool enabled;
+        // ReSharper disable once MemberCanBePrivate.Global
         public static Settings settings;
-        public static new void Init(ModEntry modEntry)
+        public new static void Init(ModEntry modEntry)
         {
-            settings = Settings.Load<Settings>(modEntry);
+            settings = ModSettings.Load<Settings>(modEntry);
             modEntry.OnGUI = OnGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
             modEntry.OnToggle = OnToggle;
             InitializeMod(new AlmostNoSpares(), modEntry, "AlmostNoSpares");
         }
-        static void OnGUI(UnityModManager.ModEntry modEntry)
+        static void OnGUI(ModEntry modEntry)
         {
             settings.Draw(modEntry);
         }
 
-        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        static void OnSaveGUI(ModEntry modEntry)
         {
             settings.Save(modEntry);
         }
-        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        static bool OnToggle(ModEntry modEntry, bool value)
         {
             enabled = value;
 
@@ -54,16 +50,16 @@ namespace AlmostNoSpares
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            ModuleName solar = ModuleName.SolarPanel;
+            ModuleType solar = new ModuleTypeSolarPanel();
             typeof(ModuleTypeSolarPanel)
                 .GetField("mCondicionDecayTime", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(solar, settings.solarPanelDecayTime);
-            ModuleName wind = ModuleName.WindTurbine;
+                ?.SetValue(solar, settings.SolarPanelDecayTime);
+            ModuleType wind = new ModuleTypeWindTurbine();
             typeof(ModuleTypeWindTurbine)
                 .GetField("mCondicionDecayTime", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(wind, settings.windTurbineDeacyTime);
+                ?.SetValue(wind, settings.WindTurbineDecayTime);
         }
-
+        
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
             //nothing needed here

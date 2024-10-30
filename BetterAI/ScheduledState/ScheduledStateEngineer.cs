@@ -1,5 +1,5 @@
-﻿using BetterAI.Schedules;
-using BetterAI;
+﻿using BetterAI;
+using BetterAI.Schedules;
 
 namespace BetterAI
 {

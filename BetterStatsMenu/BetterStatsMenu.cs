@@ -1,20 +1,15 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
+﻿using HarmonyLib;
+using Planetbase;
 using PlanetbaseModUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using HarmonyLib;
+using static UnityModManagerNet.UnityModManager;
 
 namespace BetterStatsMenu
 {
     public class BetterStatsMenu : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new BetterStatsMenu(), modEntry, "BetterStatsMenu");
+        public new static void Init(ModEntry modEntry) => InitializeMod(new BetterStatsMenu(), modEntry, "BetterStatsMenu");
 
-        public const string MESSAGE = "Manufacture limit";
+        public const string Message = "Manufacture limit";
 
         public override void OnInitialized(ModEntry modEntry)
         {
@@ -27,7 +22,7 @@ namespace BetterStatsMenu
         }
         private static void RegisterStrings()
         {
-            StringUtils.RegisterString("tooltip_manufacture_limit_F2", MESSAGE);
+            StringUtils.RegisterString("tooltip_manufacture_limit_F2", Message);
         }
     }
     [HarmonyPatch(typeof(GuiStatsWindow), nameof(GuiStatsWindow.addSpecializationItem))]
@@ -35,7 +30,6 @@ namespace BetterStatsMenu
     {
         public static bool Prefix(Specialization specialization, GuiWindowItem parentItem)
         {
-            int armedCount = Character.getArmedCount(specialization);
             int botLimitsCarrier = Singleton<ManufactureLimits>.getInstance().getBotLimit(TypeList<Specialization, SpecializationList>.find<Carrier>()).get();
             int botLimitsConstructor = Singleton<ManufactureLimits>.getInstance().getBotLimit(TypeList<Specialization, SpecializationList>.find<Constructor>()).get();
             int botLimitsDriller = Singleton<ManufactureLimits>.getInstance().getBotLimit(TypeList<Specialization, SpecializationList>.find<Driller>()).get();
@@ -53,21 +47,21 @@ namespace BetterStatsMenu
                 string textBots = text;
                 text = textBots + " (" + botLimitsCarrier + ")";
                 textBots = text2;
-                text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.MESSAGE) + ": " + botLimitsCarrier + ")";
+                text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.Message) + ": " + botLimitsCarrier + ")";
             }
             if (botLimitsConstructor > 0 && specialization == TypeList<Specialization, SpecializationList>.find<Constructor>())
             {
                 string textBots = text;
                 text = textBots + " (" + botLimitsConstructor + ")";
                 textBots = text2;
-                text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.MESSAGE) + ": " + botLimitsConstructor + ")";
+                text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.Message) + ": " + botLimitsConstructor + ")";
             }
             if (botLimitsDriller > 0 && specialization == TypeList<Specialization, SpecializationList>.find<Driller>())
             {
                 string textBots = text;
                 text = textBots + " (" + botLimitsDriller + ")";
                 textBots = text2;
-                text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.MESSAGE) + ": " + botLimitsDriller + ")";
+                text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.Message) + ": " + botLimitsDriller + ")";
             }
             parentItem.addChild(new GuiLabelItem(text, specialization.getIcon(), text2));
             return false;

@@ -1,25 +1,22 @@
-﻿using Planetbase;
-using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
+using Planetbase;
+using PlanetbaseModUtilities;
+using UnityEngine;
+using UnityEngine.Windows;
 using UnityModManagerNet;
-using UnityEngine.UI;
-using Selectable = Planetbase.Selectable;
+using static UnityModManagerNet.UnityModManager;
 
 namespace ColonistEviction
 {
-    public class Settings : UnityModManager.ModSettings, IDrawable
+    [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
+    public class Settings : ModSettings, IDrawable
     {
-        [Draw("Eviction Keybind")] public KeyCode evictionKeybind = KeyCode.M;
+        [Draw("Eviction Key bind")] public KeyCode EvictionKeybind = KeyCode.M;
         [Draw("Eviction quick mode (delete evicted colonist without animations)")] public bool EvictionQuickMode = true;
-        [Draw("Stuck rescue keybind")] public KeyCode stuckRescueKeybind = KeyCode.T;
-        [Draw("Stuck rescue quick mode (teleport colonist to closest landing pad without animations)")] public bool stuckRescueQuickMode = true;
-        public override void Save(UnityModManager.ModEntry modEntry)
+        [Draw("Stuck rescue key bind")] public KeyCode StuckRescueKeybind = KeyCode.T;
+        [Draw("Stuck rescue quick mode (teleport colonist to closest landing pad without animations)")] public bool StuckRescueQuickMode = true;
+        public override void Save(ModEntry modEntry)
         {
             Save(this, modEntry);
         }
@@ -32,24 +29,24 @@ namespace ColonistEviction
     {
         public static bool enabled;
         public static Settings settings;
-        public static new void Init(ModEntry modEntry)
+        public new static void Init(ModEntry modEntry)
         {
-            settings = Settings.Load<Settings>(modEntry);
+            settings = ModSettings.Load<Settings>(modEntry);
             modEntry.OnGUI = OnGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
             modEntry.OnToggle = OnToggle;
             InitializeMod(new ColonistEviction(), modEntry, "ColonistEviction");
         }
-        static void OnGUI(UnityModManager.ModEntry modEntry)
+        static void OnGUI(ModEntry modEntry)
         {
             settings.Draw(modEntry);
         }
 
-        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        static void OnSaveGUI(ModEntry modEntry)
         {
             settings.Save(modEntry);
         }
-        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        static bool OnToggle(ModEntry modEntry, bool value)
         {
             enabled = value;
 
@@ -67,9 +64,9 @@ namespace ColonistEviction
         }
         public void RegisterStrings()
         {
-            //To-do: get an instance of type Colonist that wont throw a NullReferenceException
+            //To-do: get an instance of type Colonist that won't throw a NullReferenceException
             StringUtils.RegisterString("message_eviction", GetMessageContent(null));
-            StringUtils.RegisterString("message_eviction_error","Only aware colonists can be evicted.");
+            StringUtils.RegisterString("message_eviction_error","Only colonists that aren't KOed can be evicted.");
         }
         public static string GetMessageContent(Colonist colonist)
         {
@@ -78,7 +75,7 @@ namespace ColonistEviction
     }
     public class CustomModule : Module
     {
-        public static Module findClosestLandingPad(Vector3 position)
+        public static Module FindClosestLandingPad(Vector3 position)
         {
             float num = float.MaxValue;
             Module result = null;
@@ -112,10 +109,10 @@ namespace ColonistEviction
         {
             if(__instance.isSelected() && __instance.getState() != Character.State.Ko && __instance.getSpecialization() != SpecializationList.IntruderInstance && __instance.getSpecialization() != SpecializationList.VisitorInstance) //we want this to work on non-downed colonists only
             {
-                if (Input.GetKeyUp(ColonistEviction.settings.evictionKeybind))
+                if (Input.GetKeyUp(ColonistEviction.settings.EvictionKeybind))
                 {
                     //the part after || is there in case colonist is stuck in a dead space between modules and corridors
-                    if (ColonistEviction.settings.EvictionQuickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
+                    if (ColonistEviction.settings.EvictionQuickMode || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         __instance.destroyInteractions();
                         __instance.destroy();
@@ -124,11 +121,11 @@ namespace ColonistEviction
                     else if(ColonistEviction.settings.EvictionQuickMode == false || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         //To-do: implement spawning the colonist ship (with animation) and evicted colonist walking to it, despawning and ship taking off;
-                        var landingPadPosition = CustomModule.findClosestLandingPad(__instance.getPosition());
+                        var landingPadPosition = CustomModule.FindClosestLandingPad(__instance.getPosition());
                         var colonistShipEviction = ColonistShip.create<ColonistShip>(landingPadPosition, LandingShip.Size.Regular);
                         //not sure if this Target will work as intended (pointing to colonistShipEviction)
                         Target evictionTarget = __instance.getTarget();
-                        CharacterUtils.SetTarget(__instance,evictionTarget);
+                        __instance.SetTarget(evictionTarget);
                         //probably need to check if evicted colonist is close enough to ship
                         if (Vector3.Distance(__instance.getPosition(), landingPadPosition.getPosition()) < 2)
                         {
@@ -142,14 +139,14 @@ namespace ColonistEviction
                 {
                     Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction_error"), ResourceList.StaticIcons.Disable, 8));
                 }
-                if (Input.GetKeyUp(ColonistEviction.settings.stuckRescueKeybind))
+                if (Input.GetKeyUp(ColonistEviction.settings.StuckRescueKeybind))
                 {
-                    if(ColonistEviction.settings.stuckRescueQuickMode == true || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
+                    if(ColonistEviction.settings.StuckRescueQuickMode || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         __instance.destroyInteractions();
-                        __instance.setPosition(CustomModule.findClosestLandingPad(__instance.getPosition()).getPosition());
+                        __instance.setPosition(CustomModule.FindClosestLandingPad(__instance.getPosition()).getPosition());
                     }
-                    else if(ColonistEviction.settings.stuckRescueQuickMode == false || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
+                    else if(ColonistEviction.settings.StuckRescueQuickMode == false || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
                         //To-do: implement a colonist ship spawning above the stuck colonist, despawn it (while keeping information about colonist like race, gender, name and class) then move the ship to landing pad, respawn the colonist and make the ship depart
                     }

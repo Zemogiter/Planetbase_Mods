@@ -1,23 +1,20 @@
-﻿using Planetbase;
-using UnityEngine;
-using static UnityModManagerNet.UnityModManager;
-using PlanetbaseModUtilities;
-using HarmonyLib;
+﻿using System;
 using System.Collections.Generic;
-using Module = Planetbase.Module;
-using System;
-using UnityEngine.UI;
+using HarmonyLib;
+using Planetbase;
+using PlanetbaseModUtilities;
+using UnityEngine;
 using UnityModManagerNet;
-using Mono.Cecil.Cil;
-using System.Linq;
+using static UnityModManagerNet.UnityModManager;
+using Module = Planetbase.Module;
 
 namespace FreeBuilding
 {
-    public class Settings : UnityModManager.ModSettings, IDrawable
+    public class Settings : ModSettings, IDrawable
     {
-        [Draw("Construction rotation keybind")] public KeyCode constructionRotation = KeyCode.T;
-        [Draw("Disable modules upon construction?")] public bool turnOffOnBuilt = false;
-        [Draw("Experimental Mode (lifts airlock placement restrictions, very buggy)")] public bool experimentalMode = true;
+        [Draw("Construction rotation keybind")] public KeyCode ConstructionRotation = KeyCode.T;
+        [Draw("Disable modules upon construction?")] public bool TurnOffOnBuilt = false;
+        [Draw("Experimental Mode (lifts airlock placement restrictions, very buggy)")] public bool ExperimentalMode = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -66,18 +63,18 @@ namespace FreeBuilding
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //allows module rotaion pre-placement
+            //allows module rotation pre-placement
             if (GameManager.getInstance().getGameState() is GameStateGame gameState)
             {
                 if (GameManager.getInstance().mState != GameManager.State.Updating)
                     return;
 
-                if (gameState == null || gameState.mMode != GameStateGame.Mode.PlacingModule || gameState.mActiveModule == null)
+                if (gameState != null || gameState.IsMode(GameStateUtils.Mode.PlacingModule) || gameState.mActiveModule == null)
                     return;
 
                 Module activeModule = gameState.mActiveModule;
                 List<Vector3> connectionPositions = new();
-                for (int i = 0; i < Construction.mConstructions.Count; ++i)
+                for (int i = 0; i < Construction.getCount(); ++i)
                 {
                     if (Construction.mConstructions[i] is Module module && module != activeModule && Connection.canLink(activeModule, module))
                     {
@@ -89,12 +86,12 @@ namespace FreeBuilding
                     return;
 
                 connectionCount = Math.Min(connectionCount, connectionPositions.Count - 1);
-                if (Input.GetKeyUp(FreeBuilding.settings.constructionRotation))
+                if (Input.GetKeyUp(settings.ConstructionRotation))
                 {
                     connectionCount = ++connectionCount % connectionPositions.Count;
                 }
 
-                activeModule.mObject.transform.localRotation = Quaternion.LookRotation((connectionPositions[connectionCount] - activeModule.getPosition()).normalized);
+                activeModule.getGameObject().transform.localRotation = Quaternion.LookRotation((connectionPositions[connectionCount] - activeModule.getPosition()).normalized);
             }
         }
     }
@@ -105,7 +102,7 @@ namespace FreeBuilding
         public static void Postfix(Module __instance)
         {
             //turns building off upon construction
-            if (FreeBuilding.settings.turnOffOnBuilt == true)
+            if (FreeBuilding.settings.TurnOffOnBuilt == true)
             {
                 __instance.setEnabled(false);
             }
@@ -139,7 +136,7 @@ namespace FreeBuilding
             bool isMine = __instance.hasFlag(ModuleType.FlagMine);
             bool isAirlock = __instance.hasFlag(ModuleType.FlagAirlock);
 
-            if (isAirlock && GameManager.getInstance().getGameState() is GameStateGame gameState && FreeBuilding.settings.experimentalMode )
+            if (isAirlock && GameManager.getInstance().getGameState() is GameStateGame gameState && FreeBuilding.settings.ExperimentalMode )
             {
                 return true;
             }
