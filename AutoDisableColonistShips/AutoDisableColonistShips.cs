@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Timers;
-using HarmonyLib;
-using Planetbase;
-using PlanetbaseModUtilities;
+﻿using Planetbase;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
+using PlanetbaseModUtilities;
 
 namespace AutoDisableColonistShips
 {
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
-        [Draw("Trigger Value (max oxygen genration - oxygen usage)")] public int TriggerValue = 4;
+        [Draw("Trigger Value (if max oxygen genration - oxygen usage is equal or less than this number, mod will trigger)")] public int TriggerValue = 4;
         [Draw("Re-enable ships once you go above trigger value?")] public bool ReEnableShips = false;
         [Draw("Disallow visitor ships as well?")] public bool DisallowVisitorShips = false;
         [Draw("Manual Override (enable colonist/visitor ships even when below trigger value)")] public bool manualOverride = false;
@@ -28,7 +24,8 @@ namespace AutoDisableColonistShips
     {
         public static bool enabled;
         public static Settings settings;
-        //needed so that we wont display the same message over and over
+
+        //these bools are needed so that we wont display the same message over and over
         public static bool messageDisplayed = false;
         public static bool messageDisplayedNormal = false;
 
@@ -71,6 +68,7 @@ namespace AutoDisableColonistShips
         {
             if(GameManager.getInstance().getGameState() is GameStateGame)
             {
+                //getting the necessary bools out of the RefBool type
                 var landingPermissions = LandingShipManager.getInstance().getLandingPermissions();
                 var refBool = landingPermissions.getColonistRefBool();
                 var refBoolVisitors = landingPermissions.getVisitorRefBool();
@@ -79,11 +77,11 @@ namespace AutoDisableColonistShips
                 {
                     return;
                 }
-                //we also need to check if we even have oxygen generators on map and basic base functions covered to avoid unnecessary messages
+                //checking if we even have oxygen generators on map as well as other basic base functions covered to avoid unnecessary messages
                 if (Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeOxygenGenerator>()) > 0 && Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeWaterExtractor>()) > 0 && Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeSolarPanel>()) > 0 || Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeWindTurbine>()) > 0)
                 {
                     //without visitor ships
-                    if (refBool.mValue == true && settings.DisallowVisitorShips == false && CountOxygenUsers() <= settings.TriggerValue)
+                    if (refBool.get() == true && settings.DisallowVisitorShips == false && CountOxygenUsers() <= settings.TriggerValue)
                     {
                         refBool.set(false);
                         if (messageDisplayed == false)
@@ -99,7 +97,7 @@ namespace AutoDisableColonistShips
                         }
                     }    
                     //with vistior ships
-                    else if (refBool.mValue == true && settings.DisallowVisitorShips == true && CountOxygenUsers() <= settings.TriggerValue)
+                    else if (refBool.get() == true && settings.DisallowVisitorShips == true && CountOxygenUsers() <= settings.TriggerValue)
                     {
                         refBool.set(false);
                         refBoolVisitors.set(false);
@@ -116,6 +114,7 @@ namespace AutoDisableColonistShips
                             messageDisplayedNormal = true;
                         }
                     }
+                    // setting these back to false so that if the condition ever happens again during gameplay, mod will be ready to trigger again
                     messageDisplayedNormal= false;
                     messageDisplayed = false;
                 }
@@ -129,7 +128,7 @@ namespace AutoDisableColonistShips
             StringUtils.RegisterString("message_oxygen_level_normal", MESSAGE3);
             StringUtils.RegisterString("message_oxygen_level_normal_2", MESSAGE4);
         }
-        public int CountOxygenUsers()
+        public int CountOxygenUsers() //strangely enough, this function dosen't exist in the game (apparently)
         {
             int numberofColonists = Character.getHumanCount();
             int maxNumber = Module.getOverallOxygenGeneration();

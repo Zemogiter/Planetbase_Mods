@@ -3,7 +3,7 @@
   "Author": "Zemogiter",
   "DisplayName": "Auto Disable Colonist Ships",
   "EntryMethod": "AutoDisableColonistShips.AutoDisableColonistShips.Init",
-  "GameVersion": "1.3.8",
+  "GameVersion": "1.4.0",
   "HomePage": "",
   "ID": "AutoDisableColonistShips",
   "Repository": "",
