@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
+using System;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
-using State = Planetbase.Character.State;
 
 namespace EternalBots
 {
-	public class EternalBots : ModBase
+    public class EternalBots : ModBase
 	{
         public new static void Init(ModEntry modEntry) => InitializeMod(new EternalBots(), modEntry, "EternalBots");
        
 		public override void OnInitialized(ModEntry modEntry)
 		{
-            TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= 32768;
+            //TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= 32768;
             Debug.Log("[MOD] EternalBots activated");
         }
 		
@@ -28,64 +28,83 @@ namespace EternalBots
     {
         public static void PrivateUpdate(Bot __instance, float timeStep)
         {
-            if (__instance.mTarget != null)
+            if (__instance.getTarget() != null)
             {
-                Selectable selectable = __instance.mTarget.getSelectable();
+                Selectable selectable = __instance.getTarget().getSelectable();
                 if (selectable != null && selectable.isDestroyed())
                 {
                     __instance.setIdle();
                 }
             }
-            if (__instance.mQueuedAnimation != null)
+            if (__instance.getUsageAnimations() != null)
             {
-                __instance.mAnimationQueueTime -= timeStep;
-                if (__instance.mAnimationQueueTime < 0f)
+                Type typecontroller = typeof(Bot);
+                FieldInfo finfo = typecontroller.GetField("mAnimationQueueTime", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
+                float animationTime = (float)finfo.GetValue(finfo);
+                finfo.SetValue(finfo, animationTime -  timeStep);
+                if (animationTime < 0f)
                 {
-                    __instance.playAnimation(__instance.mQueuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
-                    if (__instance.mQueuedAnchorPoint != null)
+                    FieldInfo quotedAnimation = typecontroller.GetField("mQueuedAnimation", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
+                    CharacterAnimation characterAnimation = (CharacterAnimation)quotedAnimation.GetValue(quotedAnimation);
+                    __instance.playAnimation(characterAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
+                    if (__instance.getAnchorPoint() != null)
                     {
-                        __instance.setTransform(__instance.mQueuedAnchorPoint.getPosition(), __instance.mQueuedAnchorPoint.getRotation());
-                        __instance.mQueuedAnchorPoint = null;
+                        __instance.setTransform(__instance.getAnchorPoint().position, __instance.getAnchorPoint().rotation);
+                        FieldInfo queuedAnchorPoint = typecontroller.GetField("mQueuedAnchorPoint", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
+                        queuedAnchorPoint.SetValue(queuedAnchorPoint, null);
                     }
-                    __instance.mQueuedAnimation = null;
+                    quotedAnimation.SetValue(quotedAnimation, null);
                 }
             }
-            if (__instance.mState == State.Walking)
+            if (__instance.getState() == State.Walking)
             {
-                __instance.updateWalking(timeStep);
+                CoreUtils.InvokeMethod<Character>("updateWalking", __instance, timeStep);
+                //__instance.updateWalking(timeStep);
+                MethodInfo dynMethod = __instance.GetType().GetMethod("updateWalking", BindingFlags.NonPublic | BindingFlags.Instance);
+                dynMethod.Invoke(__instance, [timeStep]);
             }
-            else if (__instance.mState == State.Interacting)
+            else if (__instance.getState() == State.Interacting)
             {
-                __instance.updateInteracting(timeStep);
+                CoreUtils.InvokeMethod<Character>("updateInteracting", __instance, timeStep);
+                //__instance.updateInteracting(timeStep);
+                MethodInfo dynMethod = __instance.GetType().GetMethod("updateInteracting", BindingFlags.NonPublic | BindingFlags.Instance);
+                dynMethod.Invoke(__instance, [timeStep]);
             }
-            else if (__instance.mState == State.Dead)
+            else if (__instance.getState() == State.Dead)
             {
-                __instance.updateDead(timeStep);
+                CoreUtils.InvokeMethod<Character>("updateDead", __instance, timeStep);
+                //__instance.updateDead(timeStep);
+                MethodInfo dynMethod = __instance.GetType().GetMethod("updateDead", BindingFlags.NonPublic | BindingFlags.Instance);
+                dynMethod.Invoke(__instance, [timeStep]);
             }
-            else if (__instance.mState == State.Idle)
+            else if (__instance.getState() == State.Idle)
             {
-                __instance.updateIdle(timeStep);
+                CoreUtils.InvokeMethod<Character>("updateIdle", __instance, timeStep);
+                //__instance.updateIdle(timeStep);
+                MethodInfo dynMethod = __instance.GetType().GetMethod("updateIdle", BindingFlags.NonPublic | BindingFlags.Instance);
+                dynMethod.Invoke(__instance, [timeStep]);
             }
         }
     }
     [HarmonyPatch(typeof(Bot), nameof(Bot.update))]
-    public class BotPatch : Bot
+    public class BotPatch
     {
         public static bool Prefix(Bot __instance, float timeStep)
 		{
             CustomBot.PrivateUpdate(__instance, timeStep);
 
-            //Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
-            //indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
-            //MyCharacter.mIndicators[7] = indicator;
-
-            Indicator indicator = new(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Normal, 1f, 1f, SignType.Condition);
+            var indicators = __instance.getIndicators().ToList();
+            Indicator indicator = indicators.Find(i => i.getName() == "Integrity");
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
             indicator.setOrientation(IndicatorOrientation.Vertical);
-            CharacterIndicator IntegrityIndicator = CharacterIndicator.Integrity;
-            __instance.getIndicator(IntegrityIndicator).setValue(indicator.getMax());
+            indicator.setValue(indicator.getMax());
 
-            if (__instance.shouldDecay())
+            Type type = typeof(Bot);
+            var boolInstance = Activator.CreateInstance(type);
+            MethodInfo method = type.GetMethod("shouldDecay", BindingFlags.NonPublic | BindingFlags.Instance);
+            bool result = (bool)method.Invoke(boolInstance, null);
+
+            if (result)
             {
                 __instance.decayIndicator(CharacterIndicator.Condition, timeStep / 480f);
             }
@@ -99,7 +118,9 @@ namespace EternalBots
             {
                 __instance.decayIndicator(CharacterIndicator.Condition, timeStep * solarFlare.getIntensity() / 180f);
             }
-            __instance.updateDustParticles(timeStep);
+            //__instance.updateDustParticles(timeStep);
+            MethodInfo dynMethod = __instance.GetType().GetMethod("updateDustParticles", BindingFlags.NonPublic | BindingFlags.Instance);
+            dynMethod.Invoke(__instance, [timeStep]);
 
             return false;
         }

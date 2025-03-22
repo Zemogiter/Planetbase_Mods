@@ -122,7 +122,8 @@ namespace EarthlikePlanet
         }
     }
     //makes the planet show up on new game menu
-    [HarmonyPatch(typeof(GameStateLocationSelection), nameof(GameStateLocationSelection.placePlanets))]
+    //To-do: fix the nameof(), update() is not a valid option
+    [HarmonyPatch(typeof(GameStateLocationSelection), nameof(GameStateLocationSelection.update))]
     public class GameStateLocationSelectionPatch
     {
         static bool Prefix(GameStateLocationSelection instance)
