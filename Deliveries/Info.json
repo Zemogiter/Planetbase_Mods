@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "Deliveries.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Deliveries",
+  "EntryMethod": "Deliveries.Deliveries.Init",
+  "GameVersion": "1.4.0",
+  "HomePage": "",
+  "ID": "Deliveries",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0"
+}
