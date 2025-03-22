@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Planetbase;
 using PlanetbaseModUtilities;
-using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
 
 namespace AutoAlerts
@@ -18,7 +18,7 @@ namespace AutoAlerts
             m_activatedState = AlertState.NoAlert;
             m_autoActivated = false;
 
-            Debug.Log("[MOD] AutoAlerts activated");
+            Debug.WriteLine("[MOD] AutoAlerts activated");
         }
 
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
