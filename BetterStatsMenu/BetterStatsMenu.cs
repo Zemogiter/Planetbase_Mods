@@ -18,30 +18,38 @@ namespace BetterStatsMenu
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-
+            //nothing required here
+            //to-do: add a method that improves the tooltips when hovering over the numbers of specializations in the F2 menu (it displays when hovering over the number but not the icon)
+            //will probably need to create CustomMethod:Method for this
         }
         private static void RegisterStrings()
         {
             StringUtils.RegisterString("tooltip_manufacture_limit_F2", Message);
         }
     }
-    [HarmonyPatch(typeof(GuiStatsWindow), nameof(GuiStatsWindow.addSpecializationItem))]
+    //main patch, replaces the original method to display the number of ordered bots in the same way vanilla game displays the number of armed guards in F2 menu
+    [HarmonyPatch(typeof(GuiStatsWindow), "addSpecializationItem")]
     public class BotDisplayPatch
     {
         public static bool Prefix(Specialization specialization, GuiWindowItem parentItem)
         {
+            // getting the numbers of ordered bots to display them next to the number of currently online bots
             int botLimitsCarrier = Singleton<ManufactureLimits>.getInstance().getBotLimit(TypeList<Specialization, SpecializationList>.find<Carrier>()).get();
             int botLimitsConstructor = Singleton<ManufactureLimits>.getInstance().getBotLimit(TypeList<Specialization, SpecializationList>.find<Constructor>()).get();
             int botLimitsDriller = Singleton<ManufactureLimits>.getInstance().getBotLimit(TypeList<Specialization, SpecializationList>.find<Driller>()).get();
+
+            // part of the original method
+            int armedCount = Character.getArmedCount(specialization);
             string text = Character.getCountOfSpecialization(specialization).ToString();
             string text2 = specialization.getNamePlural();
+
             if (armedCount > 0)
             {
-                string text3 = text;
-                text = text3 + " (" + armedCount + ")";
-                text3 = text2;
-                text2 = text3 + " (" + StringList.get("tooltip_armed") + ": " + armedCount + ")";
+                text = text + " (" + armedCount + ")";
+                text2 = text2 + " (" + StringList.get("tooltip_armed") + ": " + armedCount + ")";
             }
+
+            // adding the numbers of ordered bots to the text
             if (botLimitsCarrier > 0 && specialization == TypeList<Specialization, SpecializationList>.find<Carrier>())
             {
                 string textBots = text;
@@ -65,34 +73,6 @@ namespace BetterStatsMenu
             }
             parentItem.addChild(new GuiLabelItem(text, specialization.getIcon(), text2));
             return false;
-        }  
-    }
-    /*[HarmonyPatch(typeof(GuiStatsWindow), nameof(GuiStatsWindow.updateUi))]
-    public class ResourceDisplayPatch
-    {
-        public static void Postfix(GuiStatsWindow __instance)
-        {
-            foreach (ResourceType item in TypeList<ResourceType, ResourceTypeList>.get())
-            {
-                int amount = totalAmounts.getAmount(item);
-                int amount2 = resourceAmounts.getAmount(item);
-                string text2 = amount2.ToString();
-                string tooltip = item.getName() + ": " + amount;
-                if (amount != amount2 && item.hasFlag(128))
-                {
-                    string text3 = text2;
-                    text2 = text3 + " (" + amount + ")";
-                    tooltip = StringList.get("tooltip_resource_usable", item.getName(), amount2.ToString(), amount.ToString());
-                }
-                guiRowItem.addChild(new GuiLabelItem(text2, item.getIcon(), tooltip));
-                num++;
-                if (num >= num2)
-                {
-                    guiRowItem = new GuiRowItem(num2);
-                    guiSectionItem4.addChild(guiRowItem);
-                    num = 0;
-                }
-            }
         }
-    }*/
+    }
 }
