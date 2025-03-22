@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
@@ -13,7 +14,7 @@ namespace MinersIgnoreYellow
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            Debug.Log("[MOD] Miners Ignore Yellow activated");
+            Debug.WriteLine("[MOD] Miners Ignore Yellow activated");
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
@@ -32,9 +33,9 @@ namespace MinersIgnoreYellow
         {
             int maxTargeters = ((TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().getMaxUsers() - 1));
             Module module = Module.findMine(character, true, maxTargeters);
-            if (state == AlertState.YellowAlert && character.isMining())
+            if (state == AlertState.YellowAlert && character.isProtected())
             {
-                return AiRule.goTarget(character, new Target(module));
+                //return AiRule.goTarget(character, new Target(module));
             }
             return true;
         }

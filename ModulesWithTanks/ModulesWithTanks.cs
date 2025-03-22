@@ -69,23 +69,26 @@ namespace ModulesWithTanks
         static void Postfix(Module __instance)
         {
             var moduleList = BuildableUtils.GetAllModules();
-            var waterUsersList = moduleList.Where(a => a.getWaterGeneration() < 0 || a.getComponentWaterGeneration() < 0).ToList();
+            var waterUsersList = moduleList.Where(a => a.getWaterGeneration() < 0).ToList();
             foreach ( Module waterUser in waterUsersList ) 
             {
+                var waterIndicator = waterUser.getIndicators().Where(a => a.getName().Equals(IndicatorType.WaterGrid)) as Indicator;
+                waterIndicator.setOrientation(IndicatorOrientation.Horizontal);
+                //waterIndicator.setLevels();
+                
                 if (waterUser.getSizeIndex() > 0)
                 {
-                    waterUser.mWaterStorageIndicator.setOrientation(IndicatorOrientation.Horizontal);
-                    //waterUser.mWaterStorageIndicator.setLevels();
-                    waterUser.mWaterStorageIndicator.setMax(ModulesWithTanks.settings.waterStorageCapacity * waterUser.getSizeIndex());
+                    waterIndicator.setMax(ModulesWithTanks.settings.waterStorageCapacity * waterUser.getSizeIndex());
                 }
                 else
                 {
-                    waterUser.mWaterStorageIndicator.setOrientation(IndicatorOrientation.Horizontal);
-                    waterUser.mWaterStorageIndicator.setMax(ModulesWithTanks.settings.waterStorageCapacity);
+                    waterIndicator.setOrientation(IndicatorOrientation.Horizontal);
+                    waterIndicator.setMax(ModulesWithTanks.settings.waterStorageCapacity);
                 }
             }
         }
     }
+    /*
     [HarmonyPatch(typeof(ModuleType), nameof(ModuleType.getWaterStorageCapacity))]
     public class ModuleTypeTankClass
     {
@@ -95,8 +98,9 @@ namespace ModulesWithTanks
             var waterUsersList = moduleTypeList.Where(a => a.getWaterGeneration(0) < 0).ToList();
             foreach( ModuleType waterUser in waterUsersList )
             {
-                waterUser.mWaterStorageCapacity = ModulesWithTanks.settings.waterStorageCapacity;
+                waterUser.getWaterStorageCapacity() = ModulesWithTanks.settings.waterStorageCapacity;
             }
         }
     }
+    */
 }

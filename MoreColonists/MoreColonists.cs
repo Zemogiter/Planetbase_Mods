@@ -92,8 +92,7 @@ namespace MoreColonists
     [HarmonyPatch(typeof(Character), nameof(Character.update))]
     public class VisitorPatch
     {
-        //fix for the issue that makes visitors lose their ship ownership upon save load and occupy the base, this should set the ownership to the nearest visitor ship
-        //and from there the regular game code should work
+        //fix for the issue that makes visitors lose their ship ownership upon save load and occupy the base, this should set the ownership to the nearest visitor ship and from there the regular game code should work
         static void Postfix()
         {
             var visitorList = Character.getSpecializationCharacters(TypeList<Specialization, SpecializationList>.find<Visitor>());

@@ -22,7 +22,7 @@ namespace QuitToDesktop
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-
+            //nothing needed here
         }
         private static void RegisterStrings()
         {
@@ -34,8 +34,8 @@ namespace QuitToDesktop
     {
         public static void OnQuitPM(object parameter)
         {
-            Application.Quit();
             Debug.Log("Application quitting from the pause menu");
+            Application.Quit();
         }
         public static void Postfix(GuiGameMenu __instance)
         {

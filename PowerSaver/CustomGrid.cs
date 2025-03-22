@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Planetbase;
 
 namespace PowerSaver
 {
     public abstract class CustomGrid : Grid
     {
-        public new void calculateBalance(GridResource gridResource)
+        public void CalculateBalance(GridResource gridResource)
         {
             bool consoleExists = false;
-            foreach (ConstructionComponent component in ConstructionComponent.mComponents)
+            ComponentType componentType = ComponentTypeList.find("GridManagementConsole");
+            foreach (ConstructionComponent component in )
             {
-                bool lowCondition = component.mConditionIndicator.isValidValue() && component.mConditionIndicator.isExtremelyLow();
-                if (component.getComponentType().GetType() == typeof(GridManagementConsole) && component.isBuilt() && !lowCondition && component.isEnabled() && component.mParentConstruction.isBuilt() && component.mParentConstruction.isEnabled() && !component.mParentConstruction.isExtremelyDamaged())
+                if (component.getComponentType().GetType() == typeof(GridManagementConsole) && component.isBuilt() && component.isEnabled() && !component.isDestroyed() && component.getParentConstruction().isBuilt() && component.getParentConstruction().isEnabled() && !component.getParentConstruction().isExtremelyDamaged())
                 {
                     consoleExists = true;
                     break;
@@ -34,12 +33,12 @@ namespace PowerSaver
             float amountCreated = 0f;
             float amountConsumed = 0f;
 
-            foreach (Construction construction in mConstructions)
+            foreach (Construction construction in Module.getCategoryModules(Module.Category.Count))
             {
                 if (construction.isBuilt() && construction.isEnabled() && !construction.isExtremelyDamaged())
                 {
                     // amountGenerated can be either created or consumed
-                    float amountGenerated = getGeneration(construction, gridResource);
+                    float amountGenerated = getGeneration(gridResource);
                     resourceBalance += amountGenerated;
 
                     if (amountGenerated > 0f)
@@ -47,14 +46,14 @@ namespace PowerSaver
                     else
                         amountConsumed -= amountGenerated;
 
-                    setResourceAvailable(construction, gridResource, true);
+                    //setResourceAvailable(construction, gridResource, true);
 
                     if (construction is Connection)
                         continue;
 
                     Module module = construction as Module;
                     List<Module> list;
-                    if (constructionsByType.TryGetValue(module.mModuleType.GetType(), out list))
+                    if (constructionsByType.TryGetValue(module.getModuleType().GetType(), out list))
                     {
                         list.Add(module);
                     }
@@ -62,17 +61,17 @@ namespace PowerSaver
                     {
                         list = new List<Module>();
                         list.Add(module);
-                        constructionsByType[module.mModuleType.GetType()] = list;
+                        constructionsByType[module.getModuleType().GetType()] = list;
                     }
                 }
                 else
                 {
-                    setResourceAvailable(construction, gridResource, false);
+                    //setResourceAvailable(construction, gridResource, false);
                 }
             }
 
-            GridResourceData resourceData = getData(gridResource);
-            resourceData.setCollector(findCollector(gridResource, resourceBalance));
+            GridResourceData resourceData = get(gridResource);
+            //resourceData.setCollector(findCollector(gridResource, resourceBalance));
             resourceData.setBalance(resourceBalance);
             resourceData.setGeneration(amountCreated);
             resourceData.setConsumption(amountConsumed);
@@ -88,20 +87,20 @@ namespace PowerSaver
                     {
                         foreach (Module module in constructions)
                         {
-                            if (consoleModule == null && module.mModuleType is ModuleTypeControlCenter)
+                            if (consoleModule == null && module.getModuleType() is ModuleTypeControlCenter)
                             {
-                                if (module.mComponents.FirstOrDefault(c => c.mComponentType is GridManagementConsole) != null)
+                                if (module.getComponents().FirstOrDefault(c => c.getComponentType() is GridManagementConsole) != null)
                                 {
                                     consoleModule = module;
                                     continue;
                                 }
                             }
 
-                            float generation = getGeneration(module, gridResource);
+                            float generation = getGeneration(gridResource);
                             if (generation < 0f && module.isEnabled())
                             {
                                 resourceBalance -= generation;
-                                setResourceAvailable(module, gridResource, false);
+                                //setResourceAvailable(module, gridResource, false);
 
                                 if (resourceBalance > 0f)
                                     return;

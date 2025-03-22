@@ -91,11 +91,11 @@ namespace FreeFurnishing
                 if (FreeFurnishing.settings.rotateByIncrements == true)
                 {
                     //rotation by increments
-                    if (Input.GetKeyUp(FreeFurnishing.settings.rotateUpKeybind))
+                    if (InputAction.isValidKey(FreeFurnishing.settings.rotateUpKeybind))
                     {
                         component.getTransform().Rotate(Vector3.up * FreeFurnishing.settings.rotationAngle);
                     }
-                    if (Input.GetKeyUp(FreeFurnishing.settings.rotateDownKeybind))
+                    if (InputAction.isValidKey(FreeFurnishing.settings.rotateDownKeybind))
                     {
                         component.getTransform().Rotate(Vector3.down * FreeFurnishing.settings.rotationAngle);
                     }

@@ -11,7 +11,7 @@ namespace Planetbase_Template_Mod
 {
     public class Planetbase_Template_Mod : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new Planetbase_Template_Mod(), modEntry, "Planetbase_Template_Mod");
+        public static new void Init(ModEntry modEntry) => InitializeMod(new Planetbase_Template_Mod(), modEntry, "" + typeof(Planetbase_Template_Mod).Name);
 
         public override void OnInitialized(ModEntry modEntry)
         {

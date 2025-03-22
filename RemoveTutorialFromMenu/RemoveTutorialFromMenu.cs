@@ -35,7 +35,7 @@ namespace RemoveTutorialFromMenu
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             CodeMatcher matcher = new CodeMatcher(instructions);
-            matcher.MatchStartForward(new CodeMatch(OpCodes.Stloc_S, 11));
+            matcher.MatchStartForward(matches: new CodeMatch(OpCodes.Stloc_S, 11));
             if (matcher.IsValid)
             {
                 matcher.RemoveInstructionsInRange(1,26);

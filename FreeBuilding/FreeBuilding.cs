@@ -66,10 +66,7 @@ namespace FreeBuilding
             //allows module rotation pre-placement
             if (GameManager.getInstance().getGameState() is GameStateGame gameState)
             {
-                if (GameManager.getInstance().mState != GameManager.State.Updating)
-                    return;
-
-                if (gameState != null || gameState.IsMode(GameStateUtils.Mode.PlacingModule) || gameState.mActiveModule == null)
+                if (gameState != null || gameState.IsMode(GameStateUtils.Mode.PlacingModule) || gameState.GetCurrentModuleSize() == null)
                     return;
 
                 Module activeModule = gameState.mActiveModule;
@@ -86,7 +83,7 @@ namespace FreeBuilding
                     return;
 
                 connectionCount = Math.Min(connectionCount, connectionPositions.Count - 1);
-                if (Input.GetKeyUp(settings.ConstructionRotation))
+                if (InputAction.isValidKey(settings.ConstructionRotation))
                 {
                     connectionCount = ++connectionCount % connectionPositions.Count;
                 }

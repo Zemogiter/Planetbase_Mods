@@ -3,10 +3,10 @@
   "Author": "Zemogiter",
   "DisplayName": "Panels Without Modules",
   "EntryMethod": "PanelsWithoutModules.PanelsWithoutModules.Init",
-  "GameVersion": "1.3.8",
+  "GameVersion": "1.4.0",
   "HomePage": "",
   "ID": "PanelsWithoutModules",
   "Repository": "",
   "Requirements": [],
-  "Version": "1.0.0.0"
+  "Version": "1.0.0.1"
 }

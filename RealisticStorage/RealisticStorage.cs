@@ -14,6 +14,7 @@ namespace RealisticStorage
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Hardcore mode(destroys food if storage module is damaged)")] public bool hardcoreMode = true;
+        [Draw("Debug mode")] public bool debugMode = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
