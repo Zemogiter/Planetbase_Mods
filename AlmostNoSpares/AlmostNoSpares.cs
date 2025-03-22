@@ -8,8 +8,8 @@ namespace AlmostNoSpares
 {
     public class Settings : ModSettings, IDrawable
     {
-        [Draw("New decay time for solar panels")] public readonly float SolarPanelDecayTime = 14000f;
-        [Draw("New decay time for wind turbines")] public readonly float WindTurbineDecayTime = 14000f;
+        [Draw("New decay time for solar panels")] public float SolarPanelDecayTime = 14000f;
+        [Draw("New decay time for wind turbines")] public float WindTurbineDecayTime = 14000f;
         public override void Save(ModEntry modEntry)
         {
             Save(this, modEntry);

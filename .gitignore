@@ -341,3 +341,4 @@ ASALocalRun/
 healthchecksdb
 *.zip
 *.cache
+/*/obj
