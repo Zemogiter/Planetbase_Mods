@@ -7,10 +7,10 @@ Mods currently available to download from Nexus:
 - [AutoAlerts Remake](https://www.nexusmods.com/planetbase/mods/59)
 - [Better Guards](https://www.nexusmods.com/planetbase/mods/63) (made by me)
 - [CharacterCam Remake](https://www.nexusmods.com/planetbase/mods/64)
+- [FastAirlock Remake](https://www.nexusmods.com/planetbase/mods/68)
 - [FreeBuilding Remake](https://www.nexusmods.com/planetbase/mods/65)
 - [Mass Mine Control](https://www.nexusmods.com/planetbase/mods/66) (made by me)
 - [Panels Without Modules](https://www.nexusmods.com/planetbase/mods/67) (made by me)
-- [FastAirlock Remake](https://www.nexusmods.com/planetbase/mods/68)
 
 ## Additional Info
-Uses PlanetbaseModUtilites from https://github.com/JCoil/PlanetbaseMods
+Uses PlanetbaseModUtilites from https://github.com/JCoil/PlanetbaseMods as a submodule.
