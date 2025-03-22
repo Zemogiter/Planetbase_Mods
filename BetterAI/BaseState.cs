@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Planetbase;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace BetterAI
 {

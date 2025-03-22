@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using BetterAI;
 using BetterAI.Schedules;
 using BetterAI.Tasks;
 using Planetbase;
@@ -417,7 +416,7 @@ namespace BetterAI
             throw new NotImplementedException();
         }
 
-        public override List<string> getAnimationNames(CharacterAnimationType animationType)
+        protected override List<string> getAnimationNames(CharacterAnimationType animationType)
         {
             throw new NotImplementedException();
         }

@@ -30,7 +30,7 @@ namespace BetterHours
         {
             double dayHours = 24.0;
             PlanetManager pManager = Singleton<PlanetManager>.getInstance();
-            if (pManager != null && pManager.mCurrentPlanet != null && pManager.mCurrentPlanet.mDefinition != null)
+            if (pManager != null && pManager.getCurrentPlanetIndex() != null && pManager..mDefinition != null)
             {
                 dayHours = pManager.mCurrentPlanet.mDefinition.DayHours + pManager.mCurrentPlanet.mDefinition.NightHours;
             }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using JetBrains.Annotations;
 using Planetbase;
 using PlanetbaseModUtilities;
 using UnityEngine;
@@ -81,7 +83,7 @@ namespace BetterAI
 
             // todo
 
-            Debug.Log("conditions mask: " + mConditions.ToString());
+            System.Diagnostics.Debug.WriteLine("conditions mask: " + mConditions.ToString());
         }
 
         private void GatherSurvivalConditions()
@@ -242,8 +244,8 @@ namespace BetterAI
             }
 
             Resource storable;
-
-            foreach (ResourceType resourceType in ResourceTypeList.getInstance().mTypeList)
+            
+            foreach (ResourceType resourceType in ResourceTypeList.getInstance())
             {
                 ConstructionComponent storageComponent = Module.findStorageComponent(mCharacter, resourceType);
                 if (storageComponent != null)

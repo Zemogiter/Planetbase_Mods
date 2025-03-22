@@ -1,11 +1,10 @@
-﻿using System;
+﻿using System.Linq;
 using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
 using UnityEngine;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
-// ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace BetterGuards
 {
@@ -13,7 +12,7 @@ namespace BetterGuards
     {
         [Draw("Enable gun drops?")] public bool EnableGunDrops = true;
         [Draw("Intruders have better guns?")] public bool IntruderGunHighDurability = false;
-        [Draw("Health multiplier for guards")] public float Healthmult = 4.2f;
+        [Draw("Health multiplier for guards")] public float Healthmult = 2f;
         public override void Save(ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -73,13 +72,12 @@ namespace BetterGuards
             }
             if (instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>())
             {
-                Indicator indicator = new(StringList.get("health"), ResourceList.StaticIcons.Health, IndicatorType.Normal, 1f, BetterGuards.settings.Healthmult, SignType.Health);
-                Console.WriteLine("The new indicator is " + indicator);
-                indicator.setLevels(0.1f, 0.5f, 0.7f, 0.8f);
-                Console.WriteLine("New indicator's levels " + indicator.getLevels());
+                var indicators = instance.getIndicators();
+                Indicator indicator = (Indicator)indicators.Where(indicator => indicator.getSignType() == SignType.Health);
+                Debug.Log("The indicator before the changes is " + indicator);
+                indicator.setMax(indicator.getMax() * BetterGuards.settings.Healthmult);
+                Debug.Log("New indicator's levels " + indicator.getLevels());
                 indicator.setOrientation(IndicatorOrientation.Vertical);
-                CharacterIndicator healthIndicator = CharacterIndicator.Health;
-                instance.getIndicator(healthIndicator).setValue(indicator.getMax());
             }
         }
     }
