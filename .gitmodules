@@ -1,0 +1,3 @@
+[submodule "PlanetbaseMods"]
+	path = PlanetbaseMods/PlanetbaseModUtilities
+	url = https://github.com/JCoil/PlanetbaseMods
