@@ -1,6 +1,6 @@
 {
   "EntryMethod": "CharacterCam.CharacterCam.Init",
-  "Version": "1.0.1.0",
+  "Version": "1.0.2.0",
   "Requirements": [],
   "ID": "CharacterCam",
   "DisplayName": "Character Cam",

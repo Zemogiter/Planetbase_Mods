@@ -10,19 +10,24 @@ namespace CharacterCam
 {
     public class CharacterCam : ModBase
     {
+        public const string MESSAGE = "Disengaging character camera from visitor.";
         public new static void Init(ModEntry modEntry) => InitializeMod(new CharacterCam(), modEntry, "CharacterCam");
 
         public override void OnInitialized(ModEntry modEntry)
 		{
-            StringUtils.RegisterString("CharacterCam", "Character Cam");
-            Debug.Log("[MOD] CharacterCam activated");
+            RegisterStrings();
+            System.Diagnostics.Debug.WriteLine("[MOD] CharacterCam activated");
         }
 
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
             
         }
-
+        private static void RegisterStrings()
+        {
+            StringUtils.RegisterString("message_disengaging_visitor_cam", MESSAGE);
+            StringUtils.RegisterString("CharacterCam", "Character Cam");
+        }
     }
     [HarmonyPatch(typeof(Character), nameof(Character.isCloseCameraAvailable))]
     public class CharacterPatch //to-do: research how to make the original function return true
@@ -36,8 +41,6 @@ namespace CharacterCam
     [HarmonyPatch(typeof(CloseCameraCinematic), nameof(CloseCameraCinematic.updateCharacter))]
     public class CloseCameraCinematicPatch
     {
-        private CloseCameraCinematicPatch()
-        { }
         public static bool Prefix(Character character, float timeStep)
         {
             
@@ -64,6 +67,20 @@ namespace CharacterCam
             cameraTransform.rotation = Quaternion.RotateTowards(cameraTransform.rotation, Quaternion.LookRotation(lookAtDir), timeStep * 120f);
 
             return false;
+        }
+    }
+    //a patch to make the camera disengage from visitors upon returning to the ship, otherwise the game will crash
+    [HarmonyPatch(typeof(AiRuleGoBackToShip), nameof(AiRuleGoBackToShip.update))]
+    public class DisengageVisitorCamera
+    {
+        public static void Postfix(Character __instance)
+        {
+            if (__instance.isSelected() && __instance.getSpecialization() == SpecializationList.VisitorInstance)
+            {
+                var i2 = GameManager.getInstance().getGameState() as GameStateGame;
+                i2.endCloseCamera();
+                Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_disengaging_visitor_cam", CharacterCam.MESSAGE), ResourceList.StaticIcons.Visitor, 1));
+            }
         }
     }
 }

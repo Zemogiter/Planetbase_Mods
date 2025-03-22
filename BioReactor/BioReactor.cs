@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Planetbase;
 using PlanetbaseModUtilities;
@@ -65,7 +66,7 @@ namespace BioReactor
             RegisterNewBuilding();
             AddNewComponentsToBuilding();
 
-            Debug.Log("[MOD] BioReactor activated");
+            UnityEngine.Debug.Log("[MOD] BioReactor activated");
         }
         private void RegisterNewBuilding()
         {
@@ -100,10 +101,7 @@ namespace BioReactor
         
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            if (GameManager.getInstance().getGameState() is GameStateGame)
-            {
-                BioReactorBehaviour.BioReactorPowerGeneration();
-            }
+            
         }
     }
     public class ModuleTypeBioReactor : ModuleType
