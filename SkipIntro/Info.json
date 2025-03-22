@@ -1,0 +1,14 @@
+{
+  "AssemblyName": "SkipIntro.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Skip Intro",
+  "EntryMethod": "SkipIntro.SkipIntro.Init",
+  "GameVersion": "1.4.0",
+  "HomePage": "",
+  "ID": "SkipIntro",
+  "Repository": "",
+  "Requirements": [
+    "PBUtilities"
+  ],
+  "Version": "1.0"
+}
