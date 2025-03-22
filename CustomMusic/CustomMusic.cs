@@ -24,12 +24,21 @@ namespace CustomMusic
 
         }
     }
-    [HarmonyPatch(typeof(AudioPlayer), nameof(AudioPlayer.update))]
+    [HarmonyPatch(typeof(AudioPlayer), nameof(AudioPlayer))]
     public class AddMusic
     {
-        static void Postfix()
+        public static Prefix()
         {
-
+            mParentSourceObject = new GameObject();
+            mParentSourceObject.name = "Audio Sources";
+            mMusicSlot = new AudioSlot(mParentSourceObject, "Music Source");
+            mAudioSlots = new AudioSlot[32];
+            for (int i = 0; i < 32; i++)
+            {
+                mAudioSlots[i] = new AudioSlot(mParentSourceObject, "Source " + i);
+            }
+            mMusicVolume = Singleton<Profile>.getInstance().getMusicVolumeNormalized();
+            mSfxVolume = Singleton<Profile>.getInstance().getSfxVolumeNormalized();
         }
     }
 }

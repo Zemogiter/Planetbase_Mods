@@ -109,7 +109,7 @@ namespace ColonistEviction
         {
             if(__instance.isSelected() && __instance.getState() != Character.State.Ko && __instance.getSpecialization() != SpecializationList.IntruderInstance && __instance.getSpecialization() != SpecializationList.VisitorInstance) //we want this to work on non-downed colonists only
             {
-                if (Input.GetKeyUp(ColonistEviction.settings.EvictionKeybind))
+                if (InputAction.isValidKey(ColonistEviction.settings.EvictionKeybind))
                 {
                     //the part after || is there in case colonist is stuck in a dead space between modules and corridors
                     if (ColonistEviction.settings.EvictionQuickMode || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
@@ -139,7 +139,7 @@ namespace ColonistEviction
                 {
                     Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction_error"), ResourceList.StaticIcons.Disable, 8));
                 }
-                if (Input.GetKeyUp(ColonistEviction.settings.StuckRescueKeybind))
+                if (InputAction.isValidKey(ColonistEviction.settings.StuckRescueKeybind))
                 {
                     if(ColonistEviction.settings.StuckRescueQuickMode || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {

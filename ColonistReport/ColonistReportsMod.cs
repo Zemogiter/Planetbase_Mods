@@ -16,13 +16,11 @@ namespace ColonistReport
 
             ReportsMenu = new GuiReportsMenu();
             InitializeMod(new ColonistReportsMod(), modEntry, "Colonist Reports Mod");
-
-            Debug.Log("[MOD] Colonist Reports activated");
         }
 
         public void OnGameStart()
         {
-            if (GuiMenuSystem.mMenuBaseManagement is GuiMenu menuBaseManagement)
+            if (GuiMenuSystem is GuiMenu menuBaseManagement)
             {
                 if (!menuBaseManagement.mItems.Contains(ReportsMenuItem))
                 {
@@ -52,9 +50,9 @@ namespace ColonistReport
 
         private void RegisterStrings()
         {
-            StringList.mStrings.Add("reports", "Base Reports");
-            StringList.mStrings.Add("reports_workload", "Colonist Workload");
-            StringList.mStrings.Add("reports_worker_workload", "Worker Workload");
+            StringUtils.RegisterString("reports", "Base Reports");
+            StringUtils.RegisterString("reports_workload", "Colonist Workload");
+            StringUtils.RegisterString("reports_worker_workload", "Worker Workload");
         }
 
         private void OnReportsMenuOpen(object parameter)
