@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "PlanetbaseMultiplayer.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "PlanetbaseMultiplayer",
+  "EntryMethod": "PlanetbaseMultiplayer.Patcher.Execute",
+  "GameVersion": "1.4.0",
+  "HomePage": "",
+  "ID": "PlanetbaseMultiplayer",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0"
+}
