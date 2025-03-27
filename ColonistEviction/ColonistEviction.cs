@@ -65,7 +65,7 @@ namespace ColonistEviction
         public void RegisterStrings()
         {
             //To-do: get an instance of type Colonist that won't throw a NullReferenceException
-            StringUtils.RegisterString("message_eviction", GetMessageContent(null));
+            //StringUtils.RegisterString("message_eviction", GetMessageContent(null));
             StringUtils.RegisterString("message_eviction_error","Only colonists that aren't KOed can be evicted.");
         }
         public static string GetMessageContent(Colonist colonist)
