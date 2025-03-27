@@ -3,12 +3,10 @@
   "Author": "Zemogiter",
   "DisplayName": "Free Furnishing",
   "EntryMethod": "FreeFurnishing.FreeFurnishing.Init",
-  "GameVersion": "1.3.8",
+  "GameVersion": "1.4.0",
   "HomePage": "",
   "ID": "FreeFurnishing",
   "Repository": "",
-  "Requirements": [
-    "PBUtilities"
-  ],
-  "Version": "0.2.0.2223"
+  "Requirements": [],
+  "Version": "1.0.0.0"
 }

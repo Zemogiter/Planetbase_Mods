@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
@@ -71,22 +72,22 @@ namespace FreeFurnishing
         }
         public static bool ReplacementMethod(Module __instance, ConstructionComponent component)
         {
-            List<ComponentType> types = new()
-            {
+            List<ComponentType> forbiddenComponents =
+            [
                 new VideoScreen(),
-                new SickBayBed(),
-                new MedicalCabinet(),
-                new SecurityConsole(),
-                new Armory(),
-                new TelescopeConsole(),
-                new RadioConsole(),
-                new Bed(),
-                new Bunk(),
-                new Workbench(),
-                new TissueSynthesizer()
-            };
+                //new SickBayBed(),
+                //new MedicalCabinet(),
+                //new SecurityConsole(),
+                //new Armory(),
+                //new TelescopeConsole(),
+                //new RadioConsole(),
+                //new Bed(),
+                //new Bunk(),
+                //new Workbench(),
+                //new TissueSynthesizer()
+            ];
             //checking if selected component is on the excluded list
-            if (!types.Contains(component.mComponentType) || FreeFurnishing.settings.unsafeMode == true)
+            if (FreeFurnishing.settings.unsafeMode == true && !forbiddenComponents.Contains(component.getComponentType()))
             {
                 if (FreeFurnishing.settings.rotateByIncrements == true)
                 {
@@ -103,11 +104,11 @@ namespace FreeFurnishing
                 else
                 {
                     //continious rotation while key is pressed
-                    if (Input.GetKey(FreeFurnishing.settings.rotateUpKeybind))
+                    if (InputAction.isValidKey(FreeFurnishing.settings.rotateUpKeybind))
                     {
                         component.getTransform().Rotate(Vector3.up * 5f);
                     }
-                    if (Input.GetKey(FreeFurnishing.settings.rotateDownKeybind))
+                    if (InputAction.isValidKey(FreeFurnishing.settings.rotateDownKeybind))
                     {
                         component.getTransform().Rotate(Vector3.down * 5f);
                     }
@@ -121,13 +122,14 @@ namespace FreeFurnishing
             else
             {
                 bool flag = true;
-                if (__instance.mComponentLocations != null)
+                var componentLocations = CoreUtils.GetMember<Module, SimpleTransform[]>("mComponentLocations", __instance);
+                if (componentLocations != null)
                 {
-                    __instance.snapToComponentLocation(component);
+                    CoreUtils.InvokeMethod<Module>("clampComponentPosition", __instance, component);
                 }
                 else
                 {
-                    __instance.clampComponentPosition(component);
+                    CoreUtils.InvokeMethod<Module>("clampComponentPosition", __instance, component);
                     flag = __instance.isValidLayoutPosition(component);
                 }
                 return !CoreUtils.InvokeMethod<Module, bool>("intersectsAnyComponents", __instance, component);

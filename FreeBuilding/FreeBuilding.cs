@@ -36,7 +36,7 @@ namespace FreeBuilding
             modEntry.OnGUI = OnGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
             modEntry.OnToggle = OnToggle;
-            TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= ModuleType.FlagAutoRotate;
+            
             InitializeMod(new FreeBuilding(), modEntry, "FreeBuilding");
         }
 
@@ -58,7 +58,7 @@ namespace FreeBuilding
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= ModuleType.FlagAutoRotate;
+            TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().hasFlag(ModuleType.FlagAutoRotate);
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
@@ -66,16 +66,17 @@ namespace FreeBuilding
             //allows module rotation pre-placement
             if (GameManager.getInstance().getGameState() is GameStateGame gameState)
             {
-                if (gameState != null || gameState.IsMode(GameStateUtils.Mode.PlacingModule) || gameState.GetCurrentModuleSize() == null)
+                if (gameState.IsMode(GameStateUtils.Mode.PlacingModule))
                     return;
 
-                Module activeModule = gameState.mActiveModule;
-                List<Vector3> connectionPositions = new();
+                Module activeModule = CoreUtils.GetMember<GameStateGame,Module>("mActiveModule", gameState);
+                List<Vector3> connectionPositions = [];
                 for (int i = 0; i < Construction.getCount(); ++i)
                 {
-                    if (Construction.mConstructions[i] is Module module && module != activeModule && Connection.canLink(activeModule, module))
+                    var constructionList = BuildableUtils.GetAllModules();
+                    if (constructionList[i] != activeModule && Connection.canLink(activeModule, constructionList[i]))
                     {
-                        connectionPositions.Add(module.getPosition());
+                        connectionPositions.Add(constructionList[i].getPosition());
                     }
                 }
 
@@ -125,7 +126,9 @@ namespace FreeBuilding
             __result = ReplacementMethod(__instance, position, normal, size);
             return false;
         }
+#pragma warning disable IDE0060 // Remove unused parameter
         public static bool ReplacementMethod(Module __instance,Vector3 position, Vector3 normal, float size)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             float floorHeight = Singleton<TerrainGenerator>.getInstance().getFloorHeight();
             float heightDiff = position.y - floorHeight;
@@ -133,7 +136,7 @@ namespace FreeBuilding
             bool isMine = __instance.hasFlag(ModuleType.FlagMine);
             bool isAirlock = __instance.hasFlag(ModuleType.FlagAirlock);
 
-            if (isAirlock && GameManager.getInstance().getGameState() is GameStateGame gameState && FreeBuilding.settings.ExperimentalMode )
+            if (isAirlock && GameManager.getInstance().getGameState() is GameStateGame && FreeBuilding.settings.ExperimentalMode )
             {
                 return true;
             }
@@ -154,8 +157,8 @@ namespace FreeBuilding
             // here we're approximating the circumference of the structure with 8 points and will check that all these points are level with the floor
             float reducedRadius = size * 0.75f;
             float angledReducedRadius = reducedRadius * 1.41421354f * 0.5f;
-            Vector3[] circumference = new Vector3[]
-            {
+            Vector3[] circumference =
+            [
                 position + new Vector3(reducedRadius, 0f, 0f),
                 position + new Vector3(-reducedRadius, 0f, 0f),
                 position + new Vector3(0f, 0f, reducedRadius),
@@ -164,7 +167,7 @@ namespace FreeBuilding
                 position + new Vector3(angledReducedRadius, 0f, -angledReducedRadius),
                 position + new Vector3(-angledReducedRadius, 0f, angledReducedRadius),
                 position + new Vector3(-angledReducedRadius, 0f, -angledReducedRadius)
-            };
+            ];
             if (isMine)
             {
                 // above we verified that it is a bit elevated
