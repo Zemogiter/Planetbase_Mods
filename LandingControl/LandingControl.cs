@@ -25,7 +25,7 @@ namespace LandingControl
         }
 
     }
-    [HarmonyPatch(typeof(GuiInfoPanelRenderer), nameof(GuiInfoPanelRenderer.onPanelCallback))]
+    [HarmonyPatch(typeof(GuiInfoPanelRenderer), nameof("onPanelCallback"))]
     public class GuiInfoPanelRendererPatch : GuiInfoPanelRenderer
     {
         public GuiInfoPanelRendererPatch(GuiRenderer guiRenderer) : base(guiRenderer)
@@ -50,7 +50,7 @@ namespace LandingControl
             return false;
         }
     }
-    [HarmonyPatch(typeof(GuiLandingPermissions), nameof(GuiLandingPermissions.onReset))]
+    [HarmonyPatch(typeof(GuiLandingPermissions), nameof("onReset"))]
     public class GuiLandingPermissionsPatch
     {
         public static bool Prefix()
