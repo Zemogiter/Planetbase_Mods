@@ -88,7 +88,7 @@ namespace GameplayConstantChanger
         [Draw("Intruder leave time")] public const float IntruderLeaveTime = 120f;
         [Draw("Minimal lifetime of a bot")] public const float BotLifetimeMin = 9600f;
         [Draw("Maximal lifetime of a bot")] public const float BotLifetimeMax = 19200f;
-        [Draw("Decay time of resources outside storage (for regular resources, not thoes from colony landers)")] public const float ResourceDecayTime = 3600f;
+        [Draw("Decay time of resources outside storage (for regular resources, not those from colony landers)")] public const float ResourceDecayTime = 3600f;
         [Draw("Slow Colonist Population")] public const int SlowColonistPopulation = 300;
         [Draw("Population slow factor")] public const float PopulationSlowFactor = 2f;
         [Draw("Build speed")] public const float BuildSpeed = 0.4f;
