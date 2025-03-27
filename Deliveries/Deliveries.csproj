@@ -66,6 +66,7 @@
     <Compile Include="Deliveries.cs" />
     <Compile Include="Patches\CameraPatches.cs" />
     <Compile Include="Patches\GuiPatches.cs" />
+    <Compile Include="Patches\KeybindPaches.cs" />
     <Compile Include="Patches\ShipPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 {
   "AssemblyName": "Deliveries.dll",
-  "Author": "Zemogiter",
+  "Author": "Zemogiter & solidDoWant",
   "DisplayName": "Deliveries",
   "EntryMethod": "Deliveries.Deliveries.Init",
   "GameVersion": "1.4.0",

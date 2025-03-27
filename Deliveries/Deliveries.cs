@@ -2,13 +2,16 @@
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using UnityModManagerNet;
+using UnityEngine;
+using System.Linq;
 
 namespace Deliveries
 {
-    public class Settings : UnityModManager.ModSettings, IDrawable
+    public class Settings : ModSettings, IDrawable
     {
         [Draw("Cheat mode (deliveries are free)")] public bool cheatMode = false;
-        public override void Save(UnityModManager.ModEntry modEntry)
+        [Draw("Delivery keybind")] public KeyCode DeliveryKey = KeyCode.J;
+        public override void Save(ModEntry modEntry)
         {
             Save(this, modEntry);
         }
@@ -34,16 +37,16 @@ namespace Deliveries
             InitializeMod(new Deliveries(), modEntry, "Deliveries");
         }
 
-        static void OnGUI(UnityModManager.ModEntry modEntry)
+        static void OnGUI(ModEntry modEntry)
         {
             settings.Draw(modEntry);
         }
 
-        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        static void OnSaveGUI(ModEntry modEntry)
         {
             settings.Save(modEntry);
         }
-        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        static bool OnToggle(ModEntry modEntry, bool value)
         {
             enabled = value;
 
@@ -52,7 +55,7 @@ namespace Deliveries
 
         public const string DeliveryLabel = "Send a delivery.";
         public const string DeliveryErrorMessage = "A landing pad of any kind is needed.";
-        public const string DeliveryErrorMessage2 = "Not enough coins to fund the delivery costs.";
+        public const string DeliveryErrorMessage2 = "No free landing facility found.";
 
         public override void OnInitialized(ModEntry modEntry)
         {
@@ -73,6 +76,8 @@ namespace Deliveries
         {
             StringUtils.RegisterString("menu_deliver", DeliveryLabel);
             StringUtils.RegisterString("delivery_error", DeliveryErrorMessage);
+            StringUtils.RegisterString("delivery_cheater", "Delivery ship dispatched in cheat mode.");
+            StringUtils.RegisterString("delivery_error2", DeliveryErrorMessage2);
         }
     }
 }

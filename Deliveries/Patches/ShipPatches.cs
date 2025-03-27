@@ -10,7 +10,7 @@ namespace Deliveries.Patches
     /// This class disabled recycling until the ship has actually landed
     /// </summary>
 
-    [HarmonyPatch(typeof(global::Planetbase.ColonyShip))]
+    [HarmonyPatch(typeof(Planetbase.ColonyShip))]
     [HarmonyPatch("isDeleteable")]
     public class IsDeleteable
     {

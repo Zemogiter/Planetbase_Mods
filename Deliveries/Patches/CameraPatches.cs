@@ -11,7 +11,7 @@ namespace Deliveries.Patches
     /// This class causes the camera to NOT focus on the landing ship during deliveries.
     /// </summary>
 
-    [HarmonyPatch(typeof(global::Planetbase.CameraManager))]
+    [HarmonyPatch(typeof(CameraManager))]
     [HarmonyPatch("setCinematic")]
     public class SetCinematic
     {
