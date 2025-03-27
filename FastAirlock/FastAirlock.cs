@@ -79,77 +79,9 @@ namespace FastAirlock
     [HarmonyPatch(typeof(InteractionAirlock), nameof(InteractionAirlock.update))]
     public class InteractionAirlockPatch
     {
-        public static bool Prefix(InteractionAirlock __instance, ref bool __result, float timeStep)
+        public static void Prefix(ref float timeStep)
         {
-            __result = ReplacementMethod(__instance, timeStep);
-            return false;
-        }
-        public static bool ReplacementMethod(InteractionAirlock __instance, float timeStep)
-        {
-            if (__instance == null)
-            {
-                return false;
-            }
-            timeStep *= FastAirlock.settings.speedmult;
-            if (__instance.mSelectable is Construction construction && !construction.isPowered() && __instance.mStage == InteractionAirlock.Stage.Wait)
-            {
-                return true;
-            }
-            if (__instance != null && __instance.mSelectable.getFirstInteraction() == __instance)
-            {
-                __instance.mStageProgress += timeStep;
-                if (__instance.mStageProgress > 1f || __instance.mStage == InteractionAirlock.Stage.Wait)
-                {
-                    bool flag = __instance.mStage == InteractionAirlock.Stage.Exit;
-                    __instance.onStageDone();
-                    __instance.mStageProgress = 0f;
-                    if (flag)
-                    {
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                __instance.mStage = InteractionAirlock.Stage.Wait;
-                __instance.mTarget = __instance.getQueuePosition(__instance.mSelectable.getInteractionIndex(__instance));
-            }
-            Vector3 direction = __instance.mTarget - __instance.mCharacter.getPosition();
-            float magnitude = direction.magnitude;
-            float d = Mathf.Min(4f * timeStep, magnitude);
-            if (magnitude > 0.25f)
-            {
-                Vector3 target;
-                if (__instance.mStage == InteractionAirlock.Stage.Wait && magnitude < 1f)
-                {
-                    target = (__instance.mSelectable.getPosition() - __instance.mCharacter.getPosition()).flatDirection();
-                }
-                else
-                {
-                    target = direction.flatDirection();
-                }
-                Vector3 direction2 = __instance.mCharacter.getDirection();
-                __instance.mCharacter.setPosition(__instance.mCharacter.getPosition() + direction.normalized * d);
-                __instance.mCharacter.setDirection(Vector3.RotateTowards(direction2, target, 6.28318548f * timeStep, 0.1f));
-                if (__instance.mAnimationType != CharacterAnimationType.Walk)
-                {
-                    __instance.mAnimationType = CharacterAnimationType.Walk;
-                    __instance.mCharacter.playWalkAnimation();
-                }
-            }
-            else
-            {
-                if (__instance.mStage == InteractionAirlock.Stage.GoEntry)
-                {
-                    __instance.mStageProgress = 1f;
-                }
-                if (__instance.mAnimationType != CharacterAnimationType.Idle)
-                {
-                    __instance.mAnimationType = CharacterAnimationType.Idle;
-                    __instance.mCharacter.playIdleAnimation(CharacterAnimation.PlayMode.CrossFade);
-                }
-            }
-            return false;
+            timeStep = FastAirlock.settings.speedmult;
         }
     }
 }

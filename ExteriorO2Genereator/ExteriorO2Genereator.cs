@@ -47,7 +47,7 @@ namespace ExteriorO2Genereator
             {
                 byte[] iconBytes = File.ReadAllBytes(path);
                 Texture2D tex = new(0, 0);
-                tex.LoadImage(iconBytes);
+                tex.LoadRawTextureData(iconBytes);
                 this.mIcon = Util.applyColor(tex);
             }
             else
