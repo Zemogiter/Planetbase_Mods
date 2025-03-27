@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "BetterStart.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Better Start",
+  "EntryMethod": "BetterStart.BetterStart.Init",
+  "GameVersion": "1.4.0",
+  "HomePage": "",
+  "ID": "BetterStart",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0"
+}
