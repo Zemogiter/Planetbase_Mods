@@ -66,57 +66,22 @@ namespace AutoDisableColonistShips
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            if(GameManager.getInstance().getGameState() is GameStateGame)
+            if(GameManager.getInstance().getGameState() is GameStateGame gameStateGame)
             {
-                //getting the necessary bools out of the RefBool type
+                //getting the necessary variables
                 var landingPermissions = LandingShipManager.getInstance().getLandingPermissions();
                 var refBool = landingPermissions.getColonistRefBool();
                 var refBoolVisitors = landingPermissions.getVisitorRefBool();
 
-                if(settings.manualOverride == true)
+                if (settings.manualOverride == true)
                 {
                     return;
                 }
                 //checking if we even have oxygen generators on map as well as other basic base functions covered to avoid unnecessary messages
-                if (Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeOxygenGenerator>()) > 0 && Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeWaterExtractor>()) > 0 && Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeSolarPanel>()) > 0 || Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeWindTurbine>()) > 0)
+                if (Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeOxygenGenerator>()) > 0 && Module.getOperationalCountOfType(ModuleTypeList.find<ModuleTypeWaterExtractor>()) > 0 && Module.getOverallPowerBalance() > 0)
                 {
-                    //without visitor ships
-                    if (refBool.get() == true && settings.DisallowVisitorShips == false && CountOxygenUsers() <= settings.TriggerValue)
-                    {
-                        refBool.set(false);
-                        if (messageDisplayed == false)
-                        {
-                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled",MESSAGE), ResourceList.StaticIcons.Oxygen, 1));
-                            messageDisplayed = true;
-                        }
-                        if (settings.ReEnableShips == true && settings.DisallowVisitorShips == false && CountOxygenUsers() >= settings.TriggerValue && messageDisplayedNormal == false)
-                        {
-                            refBool.set(true);
-                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal", MESSAGE3), ResourceList.StaticIcons.Oxygen, 8));
-                            messageDisplayedNormal = true;
-                        }
-                    }    
-                    //with vistior ships
-                    else if (refBool.get() == true && settings.DisallowVisitorShips == true && CountOxygenUsers() <= settings.TriggerValue)
-                    {
-                        refBool.set(false);
-                        refBoolVisitors.set(false);
-                        if (messageDisplayed == false)
-                        {
-                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled_2",MESSAGE2), ResourceList.StaticIcons.Oxygen, 8));
-                            messageDisplayed = true;
-                        }
-                        if (settings.ReEnableShips == true && settings.DisallowVisitorShips == true && CountOxygenUsers() >= settings.TriggerValue && messageDisplayedNormal == false)
-                        {
-                            refBool.set(true);
-                            refBoolVisitors.set(true);
-                            Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal_2", MESSAGE4), ResourceList.StaticIcons.Oxygen, 8));
-                            messageDisplayedNormal = true;
-                        }
-                    }
-                    // setting these back to false so that if the condition ever happens again during gameplay, mod will be ready to trigger again
-                    messageDisplayedNormal= false;
-                    messageDisplayed = false;
+                    LowOxygenCheck(refBool, refBoolVisitors, gameStateGame);
+                    HighOxygenCheck(refBool, refBoolVisitors, gameStateGame);
                 }
             }
         }
@@ -128,7 +93,65 @@ namespace AutoDisableColonistShips
             StringUtils.RegisterString("message_oxygen_level_normal", MESSAGE3);
             StringUtils.RegisterString("message_oxygen_level_normal_2", MESSAGE4);
         }
-        public int CountOxygenUsers() //strangely enough, this function dosen't exist in the game (apparently)
+        private void LowOxygenCheck(RefBool refBool, RefBool refBoolVisitors, GameStateGame gameStateGame)
+        {
+            //without visitor ships
+            if (refBool.get() == true && settings.DisallowVisitorShips == false && CountOxygenUsers() <= settings.TriggerValue)
+            {
+                refBool.set(false);
+                if (messageDisplayed == false)
+                {
+                    //CoreUtils.InvokeMethod("addToast", gameStateGame, [MESSAGE, 3f]);
+                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled", MESSAGE), ResourceList.StaticIcons.Oxygen, 1));
+                    messageDisplayed = true;
+                    messageDisplayedNormal = false;
+                }
+            }
+            //with vistior ships
+            else if (refBool.get() == true && settings.DisallowVisitorShips == true && CountOxygenUsers() <= settings.TriggerValue)
+            {
+                refBool.set(false);
+                refBoolVisitors.set(false);
+                if (messageDisplayed == false)
+                {
+                    //CoreUtils.InvokeMethod("addToast", gameStateGame, [MESSAGE2, 3f]);
+                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_low_oxygen_landing_disabled_2", MESSAGE2), ResourceList.StaticIcons.Oxygen, 8));
+                    messageDisplayed = true;
+                    messageDisplayedNormal = false;
+                }
+            }
+        }
+        private void HighOxygenCheck(RefBool refBool, RefBool refBoolVisitors, GameStateGame gameStateGame)
+        {
+            //without visitor ships
+            if (settings.ReEnableShips == true && settings.DisallowVisitorShips == false && CountOxygenUsers() >= settings.TriggerValue && messageDisplayed == true)
+            {
+                refBool.set(true);
+                if (messageDisplayedNormal == false)
+                {
+                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal", MESSAGE3), ResourceList.StaticIcons.Oxygen, 8));
+                    messageDisplayedNormal = true;
+                    messageDisplayed = false;
+                }
+                
+            }
+            //with vistior ships
+            else if (settings.ReEnableShips == true && settings.DisallowVisitorShips == true && CountOxygenUsers() >= settings.TriggerValue && messageDisplayedNormal == false && messageDisplayed == true)
+            {
+                refBool.set(true);
+                refBoolVisitors.set(true);
+                if (messageDisplayedNormal == false)
+                {
+                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_oxygen_level_normal_2", MESSAGE4), ResourceList.StaticIcons.Oxygen, 8));
+                    messageDisplayedNormal = true;
+                    messageDisplayed = false;
+                }
+            }
+            // setting these back to false so that if the condition ever happens again during gameplay, mod will be ready to trigger again
+            messageDisplayedNormal = false;
+            messageDisplayed = false;
+        }
+        public int CountOxygenUsers() //strangely enough, this function dosen't exist in the game
         {
             int numberofColonists = Character.getHumanCount();
             int maxNumber = Module.getOverallOxygenGeneration();
