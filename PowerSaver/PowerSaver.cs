@@ -17,8 +17,8 @@ namespace PowerSaver
         public static string CONSOLE_ICON_PATH = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Planetbase\\Mods\\PowerSaver\\Textures\\GridManagementConsoleIcon.png";
 
 
-        public static List<Type> DEFAULT_POWER_PRIORITY_LIST = new Type[]
-        {
+        public static List<Type> DEFAULT_POWER_PRIORITY_LIST =
+        [
             typeof(ModuleTypeBasePad),
             typeof(ModuleTypeSignpost),
             typeof(ModuleTypeStarport),
@@ -44,28 +44,22 @@ namespace PowerSaver
             typeof(ModuleTypeAirlock),
             typeof(ModuleTypeOxygenGenerator),
             typeof(ModuleTypeWaterExtractor)
-        }.ToList();
+        ];
 
-        public static List<Type> DEFAULT_WATER_PRIORITY_LIST = new Type[]
-        {
+        public static List<Type> DEFAULT_WATER_PRIORITY_LIST =
+        [
             typeof(ModuleTypeLab),
             typeof(ModuleTypeBar),
             typeof(ModuleTypeMultiDome),
             typeof(ModuleTypeCanteen),
             typeof(ModuleTypeBioDome),
             typeof(ModuleTypeOxygenGenerator)
-        }.ToList();
+        ];
 
-        public class SavingMode
+        public class SavingMode(int trigger)
         {
-            public int trigger;
-            public List<Type> typesToShutDown;
-
-            public SavingMode(int trigger)
-            {
-                this.trigger = trigger;
-                typesToShutDown = new List<Type>();
-            }
+            public int trigger = trigger;
+            public List<Type> typesToShutDown = [];
         }
 
         public static List<SavingMode> mPowerSavingModes;
@@ -92,86 +86,84 @@ namespace PowerSaver
                 return;
             }
 
-            mPowerSavingModes = new List<SavingMode>();
-            mWaterSavingModes = new List<SavingMode>();
-            mPowerPriorityList = new List<Type>();
-            mWaterPriorityList = new List<Type>();
+            mPowerSavingModes = [];
+            mWaterSavingModes = [];
+            mPowerPriorityList = [];
+            mWaterPriorityList = [];
 
             try
             {
                 System.Reflection.Assembly gameAssembly = System.Reflection.Assembly.GetCallingAssembly();
-                using (XmlReader reader = XmlReader.Create(PRIORITY_LIST_PATH))
+                using XmlReader reader = XmlReader.Create(PRIORITY_LIST_PATH);
+
+                // Read Power saving modes
+                reader.ReadToFollowing("PowerSavingModes");
+                XmlReader powerSavingModes = reader.ReadSubtree();
+                while (powerSavingModes.ReadToFollowing("SavingMode"))
                 {
+                    powerSavingModes.MoveToFirstAttribute();
+                    powerSavingModes.ReadAttributeValue();
+                    if (!powerSavingModes.HasValue)
+                        continue;
 
-                    // Read Power saving modes
-                    reader.ReadToFollowing("PowerSavingModes");
-                    XmlReader powerSavingModes = reader.ReadSubtree();
-                    while (powerSavingModes.ReadToFollowing("SavingMode"))
+                    int trigger = Int32.Parse(powerSavingModes.Value);
+                    if (powerSavingModes.ReadToFollowing("Module"))
                     {
-                        powerSavingModes.MoveToFirstAttribute();
-                        powerSavingModes.ReadAttributeValue();
-                        if (!powerSavingModes.HasValue)
-                            continue;
-
-                        int trigger = Int32.Parse(powerSavingModes.Value);
-                        if (powerSavingModes.ReadToFollowing("Module"))
+                        SavingMode mode = new(trigger);
+                        do
                         {
-                            SavingMode mode = new SavingMode(trigger);
-                            do
-                            {
-                                Type type = gameAssembly.GetType("Planetbase.ModuleType" + powerSavingModes.ReadElementContentAsString(), false, true);
-                                if (type != null)
-                                    mode.typesToShutDown.Add(type);
-                            } while (powerSavingModes.ReadToNextSibling("Module"));
+                            Type type = gameAssembly.GetType("Planetbase.ModuleType" + powerSavingModes.ReadElementContentAsString(), false, true);
+                            if (type != null)
+                                mode.typesToShutDown.Add(type);
+                        } while (powerSavingModes.ReadToNextSibling("Module"));
 
-                            mPowerSavingModes.Add(mode);
-                        }
+                        mPowerSavingModes.Add(mode);
                     }
+                }
 
-                    // Read water saving modes
-                    reader.ReadToFollowing("WaterSavingModes");
-                    XmlReader waterSavingModes = reader.ReadSubtree();
-                    while (waterSavingModes.ReadToFollowing("SavingMode"))
+                // Read water saving modes
+                reader.ReadToFollowing("WaterSavingModes");
+                XmlReader waterSavingModes = reader.ReadSubtree();
+                while (waterSavingModes.ReadToFollowing("SavingMode"))
+                {
+                    waterSavingModes.MoveToFirstAttribute();
+                    waterSavingModes.ReadAttributeValue();
+                    if (!waterSavingModes.HasValue)
+                        continue;
+
+                    int trigger = Int32.Parse(waterSavingModes.Value);
+                    if (waterSavingModes.ReadToFollowing("Module"))
                     {
-                        waterSavingModes.MoveToFirstAttribute();
-                        waterSavingModes.ReadAttributeValue();
-                        if (!waterSavingModes.HasValue)
-                            continue;
-
-                        int trigger = Int32.Parse(waterSavingModes.Value);
-                        if (waterSavingModes.ReadToFollowing("Module"))
+                        SavingMode mode = new(trigger);
+                        do
                         {
-                            SavingMode mode = new SavingMode(trigger);
-                            do
-                            {
-                                Type type = gameAssembly.GetType("Planetbase.ModuleType" + waterSavingModes.ReadElementContentAsString(), false, true);
-                                if (type != null)
-                                    mode.typesToShutDown.Add(type);
-                            } while (waterSavingModes.ReadToFollowing("Module"));
+                            Type type = gameAssembly.GetType("Planetbase.ModuleType" + waterSavingModes.ReadElementContentAsString(), false, true);
+                            if (type != null)
+                                mode.typesToShutDown.Add(type);
+                        } while (waterSavingModes.ReadToFollowing("Module"));
 
-                            mWaterSavingModes.Add(mode);
-                        }
+                        mWaterSavingModes.Add(mode);
                     }
+                }
 
-                    // Read power priority list
-                    reader.ReadToFollowing("PowerList");
-                    XmlReader powerList = reader.ReadSubtree();
-                    while (powerList.ReadToFollowing("Module"))
-                    {
-                        Type type = gameAssembly.GetType("Planetbase.ModuleType" + powerList.ReadElementContentAsString(), false, true);
-                        if (type != null)
-                            mPowerPriorityList.Add(type);
-                    }
+                // Read power priority list
+                reader.ReadToFollowing("PowerList");
+                XmlReader powerList = reader.ReadSubtree();
+                while (powerList.ReadToFollowing("Module"))
+                {
+                    Type type = gameAssembly.GetType("Planetbase.ModuleType" + powerList.ReadElementContentAsString(), false, true);
+                    if (type != null)
+                        mPowerPriorityList.Add(type);
+                }
 
-                    // Read water priority list
-                    reader.ReadToFollowing("WaterList");
-                    XmlReader waterList = reader.ReadSubtree();
-                    while (waterList.ReadToFollowing("Module"))
-                    {
-                        Type type = gameAssembly.GetType("Planetbase.ModuleType" + waterList.ReadElementContentAsString(), false, true);
-                        if (type != null)
-                            mWaterPriorityList.Add(type);
-                    }
+                // Read water priority list
+                reader.ReadToFollowing("WaterList");
+                XmlReader waterList = reader.ReadSubtree();
+                while (waterList.ReadToFollowing("Module"))
+                {
+                    Type type = gameAssembly.GetType("Planetbase.ModuleType" + waterList.ReadElementContentAsString(), false, true);
+                    if (type != null)
+                        mWaterPriorityList.Add(type);
                 }
             }
             catch (Exception e)
@@ -179,8 +171,8 @@ namespace PowerSaver
                 Debug.Log("<MOD> PowerManager failed to load the settings file. Exception: " + e.Message);
                 return;
             }
-            mPowerSavingModes = mPowerSavingModes.OrderBy(m => m.trigger).ToList();
-            mWaterSavingModes = mWaterSavingModes.OrderBy(m => m.trigger).ToList();
+            mPowerSavingModes = [.. mPowerSavingModes.OrderBy(m => m.trigger)];
+            mWaterSavingModes = [.. mWaterSavingModes.OrderBy(m => m.trigger)];
             mActivePowerSavingMode = null;
             mActiveWaterSavingMode = null;
 
@@ -196,11 +188,11 @@ namespace PowerSaver
                     mWaterPriorityList.Insert(0, type);
             }
 
-            TypeList<ComponentType, ComponentTypeList>.getInstance().add(new GridManagementConsole());
+            TypeList<ComponentType, ComponentTypeList>.getInstance().AddType(new GridManagementConsole());
             ModuleTypeControlCenter controlCenter = TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeControlCenter>() as ModuleTypeControlCenter;
-            List<ComponentType> components = controlCenter.mComponentTypes.ToList();
+            List<ComponentType> components = [.. controlCenter.GetComponentTypes()];
             components.Insert(3, TypeList<ComponentType, ComponentTypeList>.find<GridManagementConsole>());
-            controlCenter.mComponentTypes = components.ToArray();
+            controlCenter.mComponentTypes = [.. components];
 
             Debug.Log("[MOD] PowerSaver activated");
         }
@@ -310,7 +302,7 @@ namespace PowerSaver
             {
                 if (construction.isBuilt() && !construction.isExtremelyDamaged())
                 {
-                    float generation = grid.getGeneration(construction, resource);
+                    float generation = grid.getGeneration(resource);
                     if (generation < 0f)
                         total -= generation;
                 }

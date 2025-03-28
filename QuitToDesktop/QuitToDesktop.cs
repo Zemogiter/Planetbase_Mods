@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
 using UnityEngine;
@@ -36,6 +32,8 @@ namespace QuitToDesktop
         {
             Debug.Log("Application quitting from the pause menu");
             Application.Quit();
+            //GameManager.getInstance().onQuit();
+            //CoreUtils.InvokeMethod<GameBehaviour>("OnApplicationQuit", GameBehaviour..getInstance());
         }
         public static void Postfix(GuiGameMenu __instance)
         {

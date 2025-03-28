@@ -45,7 +45,7 @@ namespace PowerSaver
             {
                 byte[] iconBytes = File.ReadAllBytes(iconPath);
                 Texture2D tex = new(0, 0);
-                tex.LoadImage(iconBytes);
+                tex.LoadRawTextureData(iconBytes);
                 this.mIcon = Util.applyColor(tex);
             }
             else 

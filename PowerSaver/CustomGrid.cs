@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Planetbase;
+using PlanetbaseModUtilities;
 
 namespace PowerSaver
 {
@@ -10,8 +11,7 @@ namespace PowerSaver
         public void CalculateBalance(GridResource gridResource)
         {
             bool consoleExists = false;
-            ComponentType componentType = ComponentTypeList.find("GridManagementConsole");
-            foreach (ConstructionComponent component in )
+            foreach (ConstructionComponent component in BuildableUtils.GetAllComponents())
             {
                 if (component.getComponentType().GetType() == typeof(GridManagementConsole) && component.isBuilt() && component.isEnabled() && !component.isDestroyed() && component.getParentConstruction().isBuilt() && component.getParentConstruction().isEnabled() && !component.getParentConstruction().isExtremelyDamaged())
                 {
@@ -21,14 +21,14 @@ namespace PowerSaver
             }
 
             if (consoleExists)
-                advancedCalculateBalance(gridResource);
+                AdvancedCalculateBalance(gridResource);
             else
-                basicCalculateBalance(gridResource);
+                BasicCalculateBalance(gridResource);
         }
 
-        public void advancedCalculateBalance(GridResource gridResource)
+        public void AdvancedCalculateBalance(GridResource gridResource)
         {
-            Dictionary<Type, List<Module>> constructionsByType = new Dictionary<Type, List<Module>>();
+            Dictionary<Type, List<Module>> constructionsByType = [];
             float resourceBalance = 0f;
             float amountCreated = 0f;
             float amountConsumed = 0f;
@@ -52,15 +52,13 @@ namespace PowerSaver
                         continue;
 
                     Module module = construction as Module;
-                    List<Module> list;
-                    if (constructionsByType.TryGetValue(module.getModuleType().GetType(), out list))
+                    if (constructionsByType.TryGetValue(module.getModuleType().GetType(), out List<Module> list))
                     {
                         list.Add(module);
                     }
                     else
                     {
-                        list = new List<Module>();
-                        list.Add(module);
+                        list = [module];
                         constructionsByType[module.getModuleType().GetType()] = list;
                     }
                 }
@@ -82,8 +80,7 @@ namespace PowerSaver
                 List<Type> priorityList = gridResource == GridResource.Power ? PowerSaver.mPowerPriorityList : PowerSaver.mWaterPriorityList;
                 foreach (Type type in priorityList)
                 {
-                    List<Module> constructions;
-                    if (constructionsByType.TryGetValue(type, out constructions))
+                    if (constructionsByType.TryGetValue(type, out List<Module> constructions))
                     {
                         foreach (Module module in constructions)
                         {
@@ -107,11 +104,13 @@ namespace PowerSaver
 
                                 foreach (Construction connection in module.getLinks())
                                 {
-                                    if (isResourceAvailable(connection, gridResource))
+                                    bool isResourceAvailable = CoreUtils.InvokeMethod<Grid, bool>("isResourceAvailable", this, connection, gridResource);
+                                    if (isResourceAvailable)
                                     {
-                                        generation = getGeneration(connection, gridResource);
+                                        CoreUtils.InvokeMethod<Grid, float>("getGeneration", this, [connection, gridResource]);
+                                        //generation = getGeneration(connection, gridResource);
                                         resourceBalance -= generation;
-                                        setResourceAvailable(connection, gridResource, false);
+                                        CoreUtils.InvokeMethod<Grid>("setResourceAvailable", this, [connection, gridResource, false]);
 
                                         if (resourceBalance > 0f)
                                             return;
@@ -125,24 +124,28 @@ namespace PowerSaver
                 // if we reach this point, we still don't have a positive balance
                 // and the only module active is the control center with the grid management console
                 if (consoleModule != null)
-                    setResourceAvailable(consoleModule, gridResource, false);
+                {
+                    //setResourceAvailable(consoleModule, gridResource, false);
+                    CoreUtils.InvokeMethod<Grid>("setResourceAvailable", this, [consoleModule, gridResource, false]);
+                }
             }
         }
 
-        public void basicCalculateBalance(GridResource gridResource)
+        public void BasicCalculateBalance(GridResource gridResource)
         {
-            HashSet<Construction> constructionsLackingResource = new HashSet<Construction>();
-            GridResourceData resourceData = this.getData(gridResource);
+            HashSet<Construction> constructionsLackingResource = [];
+            //GridResourceData resourceData = Grid.getData(gridResource);
+            GridResourceData resourceData = CoreUtils.InvokeMethod<Grid, GridResourceData>("getData", this, gridResource);
             float resourceBalance = 0f;
             float amountCreated = 0f;
             float amountConsumed = 0f;
 
-            foreach (Construction construction in mConstructions)
+            foreach (Construction construction in BuildableUtils.GetAllConstructions())
             {
                 if (construction.isBuilt() && construction.isEnabled() && !construction.isExtremelyDamaged())
                 {
                     // amountGenerated can be either created or consumed
-                    float amountGenerated = getGeneration(construction, gridResource);
+                    float amountGenerated = getGeneration(gridResource);
                     resourceBalance += amountGenerated;
 
                     if (amountGenerated > 0f)
@@ -150,29 +153,33 @@ namespace PowerSaver
                     else
                         amountConsumed -= amountGenerated;
 
-                    if (!isResourceAvailable(construction, gridResource))
+                    bool isResourceAvailable = CoreUtils.InvokeMethod<Grid, bool>("isResourceAvailable", this, construction, gridResource);
+                    if (!isResourceAvailable)
                         constructionsLackingResource.Add(construction);
 
-                    setResourceAvailable(construction, gridResource, true);
+                    CoreUtils.InvokeMethod<Grid>("setResourceAvailable", this, [construction, gridResource, false]);
+                    //setResourceAvailable(construction, gridResource, true);
                 }
                 else
                 {
-                    setResourceAvailable(construction, gridResource, false);
+                    //setResourceAvailable(construction, gridResource, false);
+                    CoreUtils.InvokeMethod<Grid>("setResourceAvailable", this, [construction, gridResource, false]);
                 }
             }
 
             // if resourceBalance is positive, returns the first collector that is not full.
             // Otherwise, returns the first collector that has available resource
-            Construction collector = findCollector(gridResource, resourceBalance);
-
+            //Construction collector = findCollector(gridResource, resourceBalance);
+            Construction collector = CoreUtils.InvokeMethod<Grid, Construction>("findCollector", this, gridResource, resourceBalance);
             if (resourceBalance < 0f && collector == null)
             {
-                HashSet<Construction> constructionsToShutDown = new HashSet<Construction>();
-                foreach (Construction construction in mConstructions)
+                HashSet<Construction> constructionsToShutDown = [];
+                foreach (Construction construction in BuildableUtils.GetAllConstructions())
                 {
-                    if (getGeneration(construction, gridResource) < 0f && construction.isEnabled())
+                    if (getGeneration(gridResource) < 0f && construction.isEnabled())
                     {
-                        setResourceAvailable(construction, gridResource, false);
+                        //setResourceAvailable(construction, gridResource, false);
+                        CoreUtils.InvokeMethod<Grid>("setResourceAvailable", this, [construction, gridResource, false]);
                         if (!constructionsToShutDown.Contains(construction))
                             constructionsToShutDown.Add(construction);
                     }
@@ -183,18 +190,20 @@ namespace PowerSaver
                 while (somethingChanged)
                 {
                     somethingChanged = false;
-                    foreach (Construction construction in mConstructions)
+                    foreach (Construction construction in BuildableUtils.GetAllConstructions())
                     {
-                        if (getGeneration(construction, gridResource) < 0f && construction.isEnabled() && !isResourceAvailable(construction, gridResource))
+                        bool isResourceAvailable = CoreUtils.InvokeMethod<Grid, bool>("isResourceAvailable", this, construction, gridResource);
+                        if (getGeneration(gridResource) < 0f && construction.isEnabled() && !isResourceAvailable)
                         {
                             foreach (Construction linkedConstruction in construction.getLinks())
                             {
-                                if (linkedConstruction.isPowered() || getGeneration(linkedConstruction, gridResource) > 0f)
+                                if (linkedConstruction.isPowered() || getGeneration(gridResource) > 0f)
                                 {
-                                    float absAmountUsed = -getGeneration(construction, gridResource);
+                                    float absAmountUsed = -getGeneration(gridResource);
                                     if (absAmountUsed < amountAvailable)
                                     {
-                                        setResourceAvailable(construction, gridResource, true);
+                                        //setResourceAvailable(construction, gridResource, true);
+                                        CoreUtils.InvokeMethod<Grid>("setResourceAvailable", this, [construction, gridResource, false]);
                                         if (constructionsToShutDown.Contains(construction))
                                         {
                                             constructionsToShutDown.Remove(construction);
@@ -213,7 +222,8 @@ namespace PowerSaver
                     (gridResource == GridResource.Power && !MessageLog.getInstance().contains(Message.StructuresNoPower)))
                 {
                     constructionsToShutDown.UnionWith(constructionsLackingResource);
-                    addMessage(constructionsToShutDown, gridResource);
+                    //addMessage(constructionsToShutDown, gridResource);
+                    CoreUtils.InvokeMethod<Grid>("addMessage", this, [constructionsToShutDown, gridResource]);
                 }
             }
 
