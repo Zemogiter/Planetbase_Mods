@@ -1,32 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
-using UnityEngine;
-using static Planetbase.ModuleType;
 using static UnityModManagerNet.UnityModManager;
 
 namespace NoIntruders
 {
-    
     public class NoIntruders : ModBase
     {
 		public static new void Init(ModEntry modEntry) => InitializeMod(new NoIntruders(), modEntry, "NoIntruders");
 
 		public override void OnInitialized(ModEntry modEntry)
 		{
-
-		}
-
-		public override void OnUpdate(ModEntry modEntry, float timeStep)
-		{
-
+            //nothing to do here
         }
-	}
-	[HarmonyPatch(typeof(Character), nameof(Character.getFirstCharacter))]
+
+        public override void OnUpdate(ModEntry modEntry, float timeStep)
+		{
+            //nothing to do here
+        }
+    }
+	/*[HarmonyPatch(typeof(Character), nameof(Character.getFirstCharacter))]
 	public class CharacterPatch
 	{
 		public static void Postfix(Character __instance)
@@ -54,15 +47,13 @@ namespace NoIntruders
                 return;
             }
         }
-	}
+	}*/
 	[HarmonyPatch(typeof(Planet), nameof(Planet.getIntruderMinPrestige))]
 	public class PlanetPatch
 	{
-		public static bool Prefix(Planet __instance)
+		public static void Prefix(Planet __instance)
 		{
             CoreUtils.SetMember("mIntruderMinPrestige", __instance, 2000f);
-			Console.WriteLine("Minimum prestige for intruders to appear is = " + __instance.mIntruderMinPrestige.ToString());
-            return false;
         }
 	}
 }
