@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
@@ -59,8 +57,8 @@ namespace MassMineControl
 
         public const string MESSAGE = "All mines disabled.";
         public const string MESSAGE2 = "All mines enabled.";
-        public const string MESSAGE3 = "Setting all mines to high-priority.";
-        public const string MESSAGE4 = "Setting all mines to normal-priority.";
+        public const string MESSAGE3 = "Setting all mines to high priority.";
+        public const string MESSAGE4 = "Setting all mines to normal priority.";
 
         public override void OnInitialized(ModEntry modEntry)
         {
@@ -69,7 +67,7 @@ namespace MassMineControl
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-
+            //nothing needed here
         }
         public void RegisterStrings()
         {
@@ -87,16 +85,15 @@ namespace MassMineControl
             var originalList = BuildableUtils.GetAllModules();
             var mineType = BuildableUtils.FindModuleType<ModuleTypeMine>();
             var mineList = originalList.Where(a => a.getModuleType() == mineType).ToList();
-
-            if (MassMineControl.settings.ignoreSelected == true)
-            {
-                //To-do: find a way to access currently selected module
-                //var currentlySelected = ;
-                //mineList.Remove(currentlySelected);
-            }
+            //var gameManager = GameManager.getInstance().getGameState() as GameStateGame;
+            //var currentlySelected = GameStateUtils.GetPlacedModuleType(gameManager);
 
             foreach (Module mine in mineList)
             {
+                /*if (MassMineControl.settings.ignoreSelected == true && currentlySelected == BuildableUtils.FindModuleType<ModuleTypeMine>())
+                {
+                    mineList.Remove(mine);
+                }*/
                 if (InputAction.isValidKey(MassMineControl.settings.disableMines) && mine.isEnabled() == true)
                 {
                     mine.setEnabled(false);
