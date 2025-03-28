@@ -7,8 +7,6 @@
   "HomePage": "",
   "ID": "MoreSpeed",
   "Repository": "",
-  "Requirements": [
-    "PBUtilities"
-  ],
+  "Requirements": [],
   "Version": "1.0.0"
 }

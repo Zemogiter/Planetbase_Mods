@@ -24,6 +24,7 @@ namespace MoreSpeed
     {
         public static bool enabled;
         public static Settings settings;
+
         public static new void Init(ModEntry modEntry)
         {
             settings = Settings.Load<Settings>(modEntry);
@@ -57,7 +58,19 @@ namespace MoreSpeed
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            //not used
+            TimeManager instance = Singleton<TimeManager>.getInstance();
+            List<float> list = (instance.GetPrivateFieldValue<object>("TimeScales") as IEnumerable<float>).ToList();
+            //10 speed glitches out ship landing, making them hover over landing pads/starports indefinitly, therefore it's not avaialble by default
+            if (MoreSpeed.settings.UnsafeMode)
+            {
+                list.Add(10f);
+            }
+            if (!MoreSpeed.settings.UnsafeMode && list.Contains(10f))
+            {
+                list.Remove(10f);
+            }
+            instance.SetPrivateFieldValue("TimeScales", list.ToArray());
+            instance.GetPrivateFieldValue<object>("TimeScales");
         }
         public override void OnGameStart(GameStateGame gameStateGame)
         {
@@ -70,14 +83,14 @@ namespace MoreSpeed
             list.Add(6f);
             list.Add(8f);
             //10 speed glitches out ship landing, making them hover over landing pads/starports indefinitly, therefore it's not avaialble by default
-            if (MoreSpeed.settings.UnsafeMode)
+            /*if (MoreSpeed.settings.UnsafeMode)
             {
                 list.Add(10f);
             }
-            if(!MoreSpeed.settings.UnsafeMode && list.Contains(12f))
+            if(!MoreSpeed.settings.UnsafeMode && list.Contains(10f))
             {
-                list.Remove(12f);
-            }
+                list.Remove(10f);
+            }*/
             instance.SetPrivateFieldValue("TimeScales", list.ToArray());
             instance.GetPrivateFieldValue<object>("TimeScales");
         }
