@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
 using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
@@ -28,7 +23,7 @@ namespace MeteorsLeaveOres
         {
         }
     }
-    public class MeteorsLeaveOres : ModBase
+    public class MeteorsLeaveOres : ModBase // ModBase is defined in PlanetbaseModUtilities
     {
         public static bool enabled;
         public static Settings settings;
@@ -109,4 +104,5 @@ namespace MeteorsLeaveOres
             }
         }
     }
+    //[HarmonyPatch(typeof(MeteorBehaviour), nameof(MeteorBehaviour))]
 }
