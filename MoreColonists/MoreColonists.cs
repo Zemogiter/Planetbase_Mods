@@ -18,7 +18,7 @@ namespace MoreColonists
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Extra colonists (number is double for bigger ships)")] public int moreColonist = 5;
-        [Draw("As above but for visitors")] public int visitors = 5;
+        [Draw("As above but for visitors")] public int moreVisitors = 5;
         [Draw("Random chance for colonist ships to contain bots(same as visitors having flu)")] public bool botColonistsMode = true;
         [Draw("Display a message if colonist ship contain bots")] public bool displayBotColonist = true;
         [Draw("Enable to decrease number of intruders on board of visitor/colonist ships")] public bool noIntruders = true;
@@ -37,7 +37,6 @@ namespace MoreColonists
 	{
         public static bool enabled;
         public static Settings settings;
-        public const string MESSAGE = "Bots arrived on the colonist ship. Count: ";
         public static new void Init(ModEntry modEntry)
         {
             settings = Settings.Load<Settings>(modEntry);
@@ -67,32 +66,27 @@ namespace MoreColonists
         }
 		public override void OnUpdate(ModEntry modEntry, float timeStep)
 		{
-            //removal of glitched visitor ships
-            var shipList = VisitorShip.mShips.Where(a => a.getName() is "VisitorShip");
-            if (GameManager.getInstance().getGameState() is GameStateGame && Module.getBuiltCountOfType(TypeList < ModuleType, ModuleTypeList>.find<ModuleTypeLandingPad>()) > 0 || Module.getBuiltCountOfType(TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeStarport>()) > 0 && shipList != null)
-            {
-#pragma warning disable IDE0220 // Add explicit cast
-                foreach (VisitorShip ship in shipList)
-                {
-                    if (ship.mState is VisitorShip.State.Landed && ship.getPendingVisitorCount() <= 0)
-                    {
-                        ship.onClosingDoor();
-                        ship.setState(LandingShip.State.TakingOff);
-                        ship.destroy();
-                    }
-                }
-#pragma warning restore IDE0220 // Add explicit cast
-            }
-		}
-        public void RegisterStrings()
+            //nothing for now
+        }
+    }
+    [HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.setIntruders), MethodType.Constructor)]
+    public class VisitorShipFixPatch
+    {
+        //fix for the issue that makes visitor ships not fly off once the counter reaches zero
+        public static void Postfix(VisitorShip __instance)
         {
-            StringUtils.RegisterString("message_bot_colonists", MESSAGE);
+            if (__instance.isLanded() && __instance.getPendingVisitorCount() == 0)
+            {
+                __instance.onClosingDoor();
+                __instance.onTakeOff();
+                __instance.destroy();
+            }
         }
     }
     [HarmonyPatch(typeof(Character), nameof(Character.update))]
     public class VisitorPatch
     {
-        //fix for the issue that makes visitors lose their ship ownership upon save load and occupy the base, this should set the ownership to the nearest visitor ship and from there the regular game code should work
+        //fix for the issue that makes visitors lose their ship ownership upon save load and occupy the base, this should set it to the nearest visitor ship
         static void Postfix()
         {
             var visitorList = Character.getSpecializationCharacters(TypeList<Specialization, SpecializationList>.find<Visitor>());
@@ -116,9 +110,9 @@ namespace MoreColonists
 		{
             float value = Singleton<Colony>.getInstance().getWelfareIndicator().getValue();
             int num = 10;
-            if (MoreColonists.settings.visitors != 0)
+            if (MoreColonists.settings.moreVisitors != 0)
             {
-                num = MoreColonists.settings.visitors;
+                num = MoreColonists.settings.moreVisitors;
             }
             if (value > 0.9f)
             {
@@ -128,11 +122,11 @@ namespace MoreColonists
             {
                 num += Random.Range(1, 3);
             }
-            if (__instance.mSize == Size.Large)
+            if (CoreUtils.GetMember<LandingShip,Size>("mSize",__instance) == Size.Large)
             {
                 num *= 2;
             }
-            if (__instance.mIntruders)
+            if (CoreUtils.GetMember<LandingShip,bool>("mIntruders",__instance))
             {
                 if (MoreColonists.settings.noIntruders == true)
                 {
@@ -152,7 +146,8 @@ namespace MoreColonists
             CoreUtils.SetMember<VisitorShip, int>("mPendingVisitors", __instance, num);
             for (int j = 0; j < num; j++)
             {
-                Guest guest = (Guest)Character.create(TypeList<Specialization, SpecializationList>.find<Visitor>(), __instance.getSpawnPosition(j), Location.Exterior);
+                Vector3 spawnPosition = CoreUtils.InvokeMethod<VisitorShip, Vector3>("getSpawnPosition", __instance, j);
+                Guest guest = (Guest)Character.create(TypeList<Specialization, SpecializationList>.find<Visitor>(), spawnPosition, Location.Exterior);
                 guest.decayIndicator(CharacterIndicator.Nutrition, Random.Range(0f, 0.75f));
                 guest.decayIndicator(CharacterIndicator.Morale, Random.Range(0f, 1f));
                 guest.decayIndicator(CharacterIndicator.Hydration, Random.Range(0f, 0.75f));
@@ -181,11 +176,11 @@ namespace MoreColonists
             {
                 num += Random.Range(2, 5);
             }
-            if (__instance.mSize == Size.Large)
+            if (CoreUtils.GetMember<LandingShip, Size>("mSize", __instance) == Size.Large)
             {
                 num *= 2;
             }
-            if (__instance.mIntruders)
+            if (CoreUtils.GetMember<LandingShip, bool>("mIntruders", __instance))
             {
                 if (MoreColonists.settings.noIntruders == true)
                 {
@@ -200,14 +195,15 @@ namespace MoreColonists
             for (int i = 0; i < num; i++)
             {
                 MethodInfo getMethod = __instance.GetType().GetMethod("calculateSpecialization", BindingFlags.NonPublic | BindingFlags.Instance);
-                var calculation = getMethod.Invoke(__instance, new object[] {});
-                Specialization specialization = (Specialization)((!__instance.mIntruders) ? calculation : TypeList<Specialization, SpecializationList>.find<Intruder>());
+                var calculation = getMethod.Invoke(__instance, []);
+                Specialization specialization = (Specialization)((!CoreUtils.GetMember<LandingShip, bool>("mIntruders", __instance)) ? calculation : TypeList<Specialization, SpecializationList>.find<Intruder>());
                 if (specialization != null)
                 {
-                    Character.create(specialization, __instance.getSpawnPosition(i), Location.Exterior);
+                    Vector3 spawnPosition = CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, i);
+                    Character.create(specialization, spawnPosition, Location.Exterior);
                 }
             }
-            if(MoreColonists.settings.botColonistsMode == true && Random.Range(0, 20) == 0 || MoreColonists.settings.debugMode == true)
+            if(MoreColonists.settings.botColonistsMode == true && Random.Range(0, 20) == 0)
             {
                 int max = Mathf.RoundToInt(Random.value);
                 for (int j = 0; j < max; j++)
@@ -221,7 +217,7 @@ namespace MoreColonists
                 }
                 if (MoreColonists.settings.displayBotColonist == true)
                 {
-                    Message message = new(StringList.get("message_water_transaction", MoreColonists.MESSAGE + max), ResourceList.StaticIcons.Bot, 8);
+                    Message message = new(StringList.get("New colonists arrived with " + max.ToString() + " bots on board."), ResourceList.StaticIcons.Bot, 8);
                     Singleton<MessageLog>.getInstance().addMessage(message);
                 }
             }
