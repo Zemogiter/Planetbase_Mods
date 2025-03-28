@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "PauseMod.dll",
+  "Author": "Zemogiter & solidDoWant",
+  "DisplayName": "PauseMod",
+  "EntryMethod": "PauseMod.PauseMod.Init",
+  "GameVersion": "1.4.0",
+  "HomePage": "",
+  "ID": "PauseMod",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0"
+}
