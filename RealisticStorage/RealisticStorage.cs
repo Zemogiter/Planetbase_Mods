@@ -82,9 +82,9 @@ namespace RealisticStorage
                     storedResources.GetSlots().ForEach(slot => slot.GetResources().ToList().ForEach(resource => resource.setState(Resource.State.Idle)));
                     if (RealisticStorage.settings.hardcoreMode)
                     {
-                        //generates a list of resources that are vegetables, then destroys the elements of that list
+                        //generates a list of resources that are vegetables/meals/drinks, then destroys the elements of that list
                         //To-do: test this
-                        storedResources.GetSlots().ForEach(slot => slot.GetResources().ToList().Where(resource => resource.getResourceType() is Vegetables).ToList().ForEach(resource => resource.destroy()));
+                        storedResources.GetSlots().ForEach(slot => slot.GetResources().ToList().Where(resource => resource.getResourceType() is Vegetables || resource.getResourceType() is Meal || resource.getResourceType() is AlcoholicDrink).ToList().ForEach(resource => resource.destroy()));
                     }
                 }
             }
