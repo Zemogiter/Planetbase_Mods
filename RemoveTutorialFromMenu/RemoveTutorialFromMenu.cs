@@ -6,139 +6,154 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
-using UnityEngine;
+using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 
 namespace RemoveTutorialFromMenu
 {
+    public class Settings : UnityModManager.ModSettings, IDrawable
+    {
+        [Draw("Debug mode")] public bool debugMode = false;
+        [Draw("Spread menu buttons fuirther apart")] public bool spreadMenuButtons = true;
+        public override void Save(UnityModManager.ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        void IDrawable.OnChange()
+        {
+        }
+    }
     public class RemoveTutorialFromMenu : ModBase
     {
-        public static new void Init(ModEntry modEntry) => InitializeMod(new RemoveTutorialFromMenu(), modEntry, "RemoveTutorialFromMenu");
+        public static bool enabled;
+        public static Settings settings;
+        public static new void Init(ModEntry modEntry)
+        {
+            settings = Settings.Load<Settings>(modEntry);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+            modEntry.OnToggle = OnToggle;
+            if (settings.debugMode) Harmony.DEBUG = true;
+            InitializeMod(new RemoveTutorialFromMenu(), modEntry, "RemoveTutorialFromMenu");
+            Harmony harmony = new Harmony(modEntry.Info.Id);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+        }
+
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        {
+            enabled = value;
+
+            return true;
+        }
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            
+            Profile.getInstance().setTutorialPlayed();
+            Profile.getInstance().setTutorialCompleted();
         }
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-
+            //nothing to do here
         }
-        
     }
     [HarmonyPatch(typeof(GameStateTitle), "onGui")]
     [HarmonyDebug]
     public class MainMenuPatch
     {
-        [HarmonyTranspiler]
-        [HarmonyDebug]
+        //main code that removes the tutorial button from the main menu
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            CodeMatcher matcher = new CodeMatcher(instructions);
-            matcher.MatchStartForward(matches: new CodeMatch(OpCodes.Stloc_S, 11));
-            if (matcher.IsValid)
+            if (RemoveTutorialFromMenu.settings.debugMode) Console.WriteLine("MainMenuPatch Transpiler is being executed.");
+
+            var codes = new List<CodeInstruction>(instructions);
+            MethodBase targetMethod = typeof(GameManager).GetMethod("setGameStateGameNew", BindingFlags.Instance | BindingFlags.Public);
+
+            for (int i = 0; i < codes.Count; i++)
             {
-                matcher.RemoveInstructionsInRange(1,26);
+                // Identify the start of the if block
+                if (i + 10 < codes.Count && codes[i + 10].opcode == OpCodes.Ldstr && codes[i + 10].operand.ToString() == "tutorial")
+                {
+                    // Remove the if block instructions
+                    int endIndex = i + 3;
+#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
+                    while (endIndex < codes.Count && !(codes[endIndex].opcode == OpCodes.Callvirt && codes[endIndex].operand == targetMethod))
+                    {
+                        endIndex++;
+                    }
+#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
+                    if (endIndex < codes.Count)
+                    {
+                        var rangeToRemove = codes.GetRange(i, endIndex - i + 1);
+                        codes.RemoveRange(i, endIndex - i + 1);
+
+                        // Adjust branch targets
+                        for (int j = 0; j < codes.Count; j++)
+                        {
+                            if (codes[j].operand is Label label)
+                            {
+                                int targetIndex = codes.FindIndex(ci => ci.labels.Contains(label));
+                                if (targetIndex >= i && targetIndex <= endIndex)
+                                {
+                                    if (codes[endIndex].labels.Any())
+                                    {
+                                        codes[j].operand = codes[endIndex].labels.First();
+                                    }
+                                    else
+                                    {
+                                        // Handle case where there are no labels
+                                        Label newLabel = new Label();
+                                        codes[endIndex].labels.Add(newLabel);
+                                        codes[j].operand = newLabel;
+                                    }
+                                }
+                            }
+                        }
+                        if (RemoveTutorialFromMenu.settings.debugMode)
+                        {
+                            Console.WriteLine(endIndex - i + 1 + " instructions removed.");
+                            foreach (var instruction in rangeToRemove)
+                            {
+                                Console.WriteLine("Removed instruction: " + instruction.ToString());
+                            }
+                        }
+                    }
+                    break;
+                }
             }
-            else
-            {
-                Console.WriteLine($"Failed to find matching instructions. Either another mod has already transpiled this or the game's/Unity's code has changed.");
-            }
-            return instructions;
+            return codes.AsEnumerable();
         }
-        /*
-        public static bool Prefix(GameStateTitle __instance)
+        //secondary code that spreads the menu buttons further apart
+        static IEnumerable<CodeInstruction> Transpiler2(IEnumerable<CodeInstruction> instructions)
         {
-            Type instanceType = __instance.GetType();
+            if (RemoveTutorialFromMenu.settings.debugMode) Console.WriteLine("MainMenuPatch Transpiler2 is being executed.");
 
-            FieldInfo mGuiRendererInfo = Reflection.GetPrivateFieldOrThrow(instanceType, "mGuiRenderer", true);
-            FieldInfo mAlphaInfo = Reflection.GetPrivateFieldOrThrow(instanceType, "mAlpha", true);
-            FieldInfo mRightOffsetInfo = Reflection.GetPrivateFieldOrThrow(instanceType, "mRightOffset", true);
-            FieldInfo mConfirmWindowInfo = Reflection.GetPrivateFieldOrThrow(instanceType, "mConfirmWindow", true);
-            FieldInfo mAnySavegamesInfo = Reflection.GetPrivateFieldOrThrow(instanceType, "mAnySavegames", true);
-            MethodInfo canAlreadyPlayInfo = Reflection.GetPrivateMethodOrThrow(instanceType, "canAlreadyPlay", true);
-            MethodInfo renderTutorialRequestWindowInfo = Reflection.GetPrivateMethodOrThrow(instanceType, "renderTutorialRequestWindow", true);
+            var codes = new List<CodeInstruction>(instructions);
 
-            GuiRenderer mGuiRenderer = (GuiRenderer)Reflection.GetInstanceFieldValue(__instance, mGuiRendererInfo);
-
-            if (mGuiRenderer == null)
+            for (int i = 0; i < codes.Count; i++)
             {
-                mGuiRenderer = new GuiRenderer();
-                Reflection.SetInstanceFieldValue(__instance, mGuiRendererInfo, mGuiRenderer);
+                if (codes[i].opcode == OpCodes.Ldc_R4 && (float)codes[i].operand == 1.3f && RemoveTutorialFromMenu.settings.spreadMenuButtons)
+                {
+                    codes[i].operand = 4.0f;
+                    if (RemoveTutorialFromMenu.settings.debugMode)
+                    {
+                        Console.WriteLine("Changed instruction: " + codes[i].ToString());
+                    }
+                    break;
+                }
             }
-            ResourceList instance = ResourceList.getInstance();
-            TitleTextures title = instance.Title;
-            Texture2D gameTitle = title.GameTitle;
-            Vector2 menuButtonSize = GuiRenderer.getMenuButtonSize(FontSize.Huge);
-            Vector2 titleLocation = Singleton<TitleScene>.getInstance().getTitleLocation();
-            Vector2 menuLocation = Singleton<TitleScene>.getInstance().getMenuLocation();
-            float num = (float)(Screen.height * gameTitle.height) / 1080f;
-            float num2 = num * (float)gameTitle.width / (float)gameTitle.height;
-            GUI.color = new Color(1f, 1f, 1f, (float)Reflection.GetInstanceFieldValue(__instance, mAlphaInfo));
-            GUI.DrawTexture(new Rect(titleLocation.x - num2 * 0.5f, titleLocation.y, num2, num), gameTitle);
-            GUI.color = Color.white;
-            Texture2D backgroundRight = title.BackgroundRight;
-            float num3 = (float)(Screen.height * backgroundRight.height) / 1080f;
-            float num4 = num3 * (float)backgroundRight.width / (float)backgroundRight.height;
-            GUI.DrawTexture(new Rect((float)Screen.width - num4 + (float)Reflection.GetInstanceFieldValue(__instance, mRightOffsetInfo), ((float)Screen.height - num3) * 0.75f, num4, num3), backgroundRight);
-            float num5 = menuLocation.y * 0.95f;
-            float num6 = menuButtonSize.y * 1.2f;
-            menuLocation.x -= menuButtonSize.x;
-            menuLocation.x += (float)Reflection.GetInstanceFieldValue(__instance, mRightOffsetInfo);
-            if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("new_game"), FontSize.Huge, true))
-            {
-                GameManager.getInstance().setGameStateLocationSelection();
-            }
-            GUI.enabled = (bool)Reflection.GetInstanceFieldValue(__instance, mAnySavegamesInfo);
-            num5 += num6;
-            if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("continue_game"), FontSize.Huge, true))
-            {
-                GameManager.getInstance().setGameStateGameContinue();
-            }
-            num5 += num6;
-            if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("load_game"), FontSize.Huge, true))
-            {
-                GameManager.getInstance().setGameStateLoadGame();
-            }
-            GUI.enabled = true;
-            num5 += num6;
-            if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("challenges"), FontSize.Huge, true))
-            {
-                GameManager.getInstance().setGameStateChallengeSelection();
-            }
-            num5 += num6;
-            if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("settings"), FontSize.Huge, true))
-            {
-                GameManager.getInstance().setGameStateSettings();
-            }
-            num5 += num6;
-            if (mGuiRenderer.renderTitleButton(new Rect(menuLocation.x, num5, menuButtonSize.x, menuButtonSize.y), StringList.get("quit"), FontSize.Huge, true))
-            {
-                Application.Quit();
-            }
-            if ((GuiConfirmWindow)Reflection.GetInstanceFieldValue(__instance, mConfirmWindowInfo) != null)
-            {
-                mGuiRenderer.renderWindow((GuiConfirmWindow)Reflection.GetInstanceFieldValue(__instance, mConfirmWindowInfo), null);
-            }
-            int num7 = 3;
-            float num8 = menuButtonSize.y * 0.75f;
-            float num9 = menuButtonSize.y * 0.25f;
-            Vector2 vector = new Vector2(((float)Screen.width - (float)num7 * num8 - (float)(num7 - 1) * num9) * 0.5f, (float)Screen.height - num8 - num9 + (float)Reflection.GetInstanceFieldValue(__instance, mRightOffsetInfo) * 0.5f);
-            Rect rect = new Rect(vector.x, vector.y, num8, num8);
-            if (mGuiRenderer.renderButton(rect, new GUIContent(null, instance.Icons.Credits, StringList.get("credits")), null))
-            {
-                GameManager.getInstance().setGameStateCredits();
-            }
-            rect.x += num8 + num9;
-            if (mGuiRenderer.renderButton(rect, new GUIContent(null, instance.Icons.SwitchPlanet, StringList.get("switch_planet")), null))
-            {
-                Singleton<TitleScene>.getInstance().switchPlanet();
-            }
-            rect.x += num8 + num9;
-
-            return false;
+            return codes.AsEnumerable();
         }
-        */
     }
     public static class Reflection
     {
