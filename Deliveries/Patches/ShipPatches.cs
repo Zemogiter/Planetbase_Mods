@@ -7,17 +7,19 @@ using System.Text;
 namespace Deliveries.Patches
 {
     /// <summary>
-    /// This class disabled recycling until the ship has actually landed
+    /// This class disables recycling until the ship has actually landed
     /// </summary>
 
     [HarmonyPatch(typeof(Planetbase.ColonyShip))]
     [HarmonyPatch("isDeleteable")]
     public class IsDeleteable
     {
-        public static void Postfix(out bool buttonEnabled, ref bool __result)
+        public static void Postfix(ref bool __result)
         {
-            __result = __result && Deliveries.Ship.isDone();
-            buttonEnabled = __result;
+            if (Deliveries.Ship != null)
+            {
+                __result = __result && Deliveries.Ship.isDone();
+            }
         }
     }
 }

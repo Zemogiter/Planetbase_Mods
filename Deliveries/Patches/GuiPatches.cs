@@ -26,7 +26,7 @@ namespace Deliveries.Patches
             var buildingCheck2 = BuildableUtils.GetAllModules().FirstOrDefault((Module module) => buildingCheck.anyTargeters() == false);
             int colonyShipResourcesValue = PlanetManager.getCurrentPlanet().getStartingResources().getValue();
             //to-do: need to find out a way to get the player's current coins
-            //int colonyCoins = Resource.find(ResourceType.FlagCurrency).get;
+            int colonyCoins = ResourceTypeList.CoinsInstance.getValue();
             if (Deliveries.ActiveDeliveryShip) return; //if there is already a delivery ship active, dont do anything)
             if (buildingCheck == null) //checking if we have Landing Pad/Starport on map
             {
