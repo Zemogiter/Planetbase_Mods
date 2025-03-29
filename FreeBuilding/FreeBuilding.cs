@@ -5,6 +5,7 @@ using Planetbase;
 using PlanetbaseModUtilities;
 using UnityEngine;
 using UnityModManagerNet;
+using static Planetbase.GameManager;
 using static UnityModManagerNet.UnityModManager;
 using Module = Planetbase.Module;
 
@@ -14,7 +15,8 @@ namespace FreeBuilding
     {
         [Draw("Construction rotation keybind")] public KeyCode ConstructionRotation = KeyCode.T;
         [Draw("Disable modules upon construction?")] public bool TurnOffOnBuilt = false;
-        [Draw("Experimental Mode (lifts airlock placement restrictions, very buggy)")] public bool ExperimentalMode = true;
+        [Draw("Experimental Mode (lifts airlock placement restrictions, very buggy)")] public bool ExperimentalMode = false;
+        [Draw("Debug Mode (prints debug messages)")] public bool DebugMode = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -30,13 +32,13 @@ namespace FreeBuilding
         public static bool enabled;
         public static Settings settings;
 
-        public static new void Init(ModEntry modEntry) 
+        public static new void Init(ModEntry modEntry)
         {
             settings = Settings.Load<Settings>(modEntry);
             modEntry.OnGUI = OnGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
             modEntry.OnToggle = OnToggle;
-            
+
             InitializeMod(new FreeBuilding(), modEntry, "FreeBuilding");
         }
 
@@ -66,20 +68,32 @@ namespace FreeBuilding
             //allows module rotation pre-placement
             if (GameManager.getInstance().getGameState() is GameStateGame gameState)
             {
-                if (gameState.IsMode(GameStateUtils.Mode.PlacingModule))
+                var managerInstance = GameManager.getInstance();
+                if (managerInstance == null)
+                    return;
+                if(FreeBuilding.settings.DebugMode)Console.WriteLine("FreeBuilding - The value of managerInstance is: " + managerInstance);
+                var state = CoreUtils.GetMember<GameManager, State>("mState", managerInstance);
+                if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - The value of state is: " + state);
+                if (state != GameManager.State.Updating)
                     return;
 
-                Module activeModule = CoreUtils.GetMember<GameStateGame,Module>("mActiveModule", gameState);
+                Module activeModule = CoreUtils.GetMember<GameStateGame, Module>("mActiveModule", gameState);
+                if (activeModule == null)
+                    return;
+                if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - Curently trying to place: " + activeModule.getModuleType().getName());
                 List<Vector3> connectionPositions = [];
                 for (int i = 0; i < Construction.getCount(); ++i)
                 {
                     var constructionList = BuildableUtils.GetAllModules();
-                    if (constructionList[i] != activeModule && Connection.canLink(activeModule, constructionList[i]))
+                    if (constructionList[i] != null && activeModule != null && constructionList[i] != activeModule && Connection.canLink(activeModule, constructionList[i]))
                     {
                         connectionPositions.Add(constructionList[i].getPosition());
                     }
                 }
-
+                foreach (var connection in connectionPositions)
+                {
+                    if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - Outputing connectionPositions: " + connection);
+                }
                 if (connectionPositions.Count == 0)
                     return;
 
@@ -93,7 +107,6 @@ namespace FreeBuilding
             }
         }
     }
-
     [HarmonyPatch(typeof(Module), nameof(Module.onBuilt))]
     public class OnBuiltPatch
     {
