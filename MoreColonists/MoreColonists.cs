@@ -75,7 +75,7 @@ namespace MoreColonists
         //fix for the issue that makes visitor ships not fly off once the counter reaches zero
         public static void Postfix(VisitorShip __instance)
         {
-            if (__instance.isLanded() && __instance.getPendingVisitorCount() == 0)
+            if (__instance != null && __instance.isLanded() && __instance.getPendingVisitorCount() == 0)
             {
                 __instance.onClosingDoor();
                 __instance.onTakeOff();
@@ -92,7 +92,7 @@ namespace MoreColonists
             var visitorList = Character.getSpecializationCharacters(TypeList<Specialization, SpecializationList>.find<Visitor>());
             if (visitorList != null)
             {
-                foreach (Human visitor in visitorList.Cast<Human>())
+                foreach (Human visitor in visitorList)
                 {
                     if (visitor.getOwnedShip() == null && visitor.getState() != Character.State.Ko)
                     {
