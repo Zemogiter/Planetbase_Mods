@@ -1,15 +1,56 @@
 ﻿using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
+using System;
+using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 
 namespace NoIntruders
 {
+    public class Settings : ModSettings, IDrawable
+    {
+        [Draw("Enable for challenges?")] public bool affectChallenges = true;
+
+        public override void Save(ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        void IDrawable.OnChange()
+        {
+        }
+    }
     public class NoIntruders : ModBase
     {
-		public static new void Init(ModEntry modEntry) => InitializeMod(new NoIntruders(), modEntry, "NoIntruders");
+        public static bool enabled;
+        public static Settings settings;
+        public static new void Init(ModEntry modEntry)
+        {
+            settings = Settings.Load<Settings>(modEntry);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+            modEntry.OnToggle = OnToggle;
 
-		public override void OnInitialized(ModEntry modEntry)
+            InitializeMod(new NoIntruders(), modEntry, "NoIntruders");
+        }
+
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+        }
+
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        {
+            enabled = value;
+
+            return true;
+        }
+
+        public override void OnInitialized(ModEntry modEntry)
 		{
             //nothing to do here
         }
@@ -19,40 +60,16 @@ namespace NoIntruders
             //nothing to do here
         }
     }
-	/*[HarmonyPatch(typeof(Character), nameof(Character.getFirstCharacter))]
-	public class CharacterPatch
-	{
-		public static void Postfix(Character __instance)
-		{
-            List<Character> intruders = Character.getSpecializationCharacters(SpecializationList.IntruderInstance);
-            var assemblyList = Assembly.GetExecutingAssembly().GetTypes().Select(t => t.Namespace).ToArray();
-            string assemblyToFind = "MoreColonists";
-            var result = Array.Find(assemblyList, element => element == assemblyToFind);
-            if (intruders != null && result == null)
-            {
-                Console.WriteLine("More Colonists mod not found, can execute the CharacterPatch.Postfix without risk of a crash");
-                foreach (Character intruder in intruders)
-                {
-                    // kill intruders instantly.
-                    if (intruder != null && !intruder.isDead())
-                    {
-                        intruder.setArmed(false);
-						CoreUtils.InvokeMethod<Character>("setDead", __instance);
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("More Colonists mod found, can't run CharacterPatch.Postfix.");
-                return;
-            }
-        }
-	}*/
 	[HarmonyPatch(typeof(Planet), nameof(Planet.getIntruderMinPrestige))]
 	public class PlanetPatch
 	{
 		public static void Prefix(Planet __instance)
 		{
+            if (ChallengeManager.getInstance().isChallengeEnabled() && NoIntruders.settings.affectChallenges == false)
+            {
+                Console.WriteLine("We're in a challenge and the mod is currently set to not affect them.");
+                return;
+            }
             CoreUtils.SetMember("mIntruderMinPrestige", __instance, 2000f);
         }
 	}
