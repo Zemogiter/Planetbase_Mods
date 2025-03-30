@@ -50,21 +50,21 @@ namespace BetterStatsMenu
             }
 
             // adding the numbers of ordered bots to the text
-            if (botLimitsCarrier > 0 && specialization == TypeList<Specialization, SpecializationList>.find<Carrier>())
+            if (botLimitsCarrier > 0 && botLimitsCarrier != int.MaxValue && specialization == TypeList<Specialization, SpecializationList>.find<Carrier>())
             {
                 string textBots = text;
                 text = textBots + " (" + botLimitsCarrier + ")";
                 textBots = text2;
                 text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.Message) + ": " + botLimitsCarrier + ")";
             }
-            if (botLimitsConstructor > 0 && specialization == TypeList<Specialization, SpecializationList>.find<Constructor>())
+            if (botLimitsConstructor > 0 && botLimitsConstructor != int.MaxValue && specialization == TypeList<Specialization, SpecializationList>.find<Constructor>())
             {
                 string textBots = text;
                 text = textBots + " (" + botLimitsConstructor + ")";
                 textBots = text2;
                 text2 = textBots + " (" + StringList.get("tooltip_manufacture_limit_F2", BetterStatsMenu.Message) + ": " + botLimitsConstructor + ")";
             }
-            if (botLimitsDriller > 0 && specialization == TypeList<Specialization, SpecializationList>.find<Driller>())
+            if (botLimitsDriller > 0 && botLimitsDriller != int.MaxValue && specialization == TypeList<Specialization, SpecializationList>.find<Driller>())
             {
                 string textBots = text;
                 text = textBots + " (" + botLimitsDriller + ")";
