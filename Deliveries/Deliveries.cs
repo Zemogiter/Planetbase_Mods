@@ -11,6 +11,7 @@ namespace Deliveries
     {
         [Draw("Cheat mode (deliveries are free)")] public bool cheatMode = false;
         [Draw("Delivery keybind")] public KeyCode DeliveryKey = KeyCode.J;
+        [Draw("Debug mode")] public bool debugMode = true;
         public override void Save(ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -26,6 +27,8 @@ namespace Deliveries
         public static Settings settings;
         public static bool ActiveDeliveryShip { get; set; }
         public static ColonyShip Ship { get; set; }
+        public float LandingZoneX;
+        public float LandingZoneY;
 
         public static new void Init(ModEntry modEntry)
         {
@@ -54,8 +57,7 @@ namespace Deliveries
         }
 
         public const string DeliveryLabel = "Send a delivery.";
-        public const string DeliveryErrorMessage = "A landing pad of any kind is needed.";
-        public const string DeliveryErrorMessage2 = "No free landing facility found.";
+        public const string DeliveryErrorMessage = "No free landing pad/starport found.";
 
         public override void OnInitialized(ModEntry modEntry)
         {
@@ -77,7 +79,6 @@ namespace Deliveries
             StringUtils.RegisterString("menu_deliver", DeliveryLabel);
             StringUtils.RegisterString("delivery_error", DeliveryErrorMessage);
             StringUtils.RegisterString("delivery_cheater", "Delivery ship dispatched in cheat mode.");
-            StringUtils.RegisterString("delivery_error2", DeliveryErrorMessage2);
         }
     }
 }
