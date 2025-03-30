@@ -74,7 +74,7 @@ namespace RealisticStorage
 
             foreach ( Module module in storageModuleList ) 
             {
-                if(module.isExtremelyDamaged()) //if storage module is hit by meteor or lighting
+                if(module != null && module.isExtremelyDamaged()) //if storage module is hit by meteor or lighting
                 {
                     var storedResources = module.GetResourceStorageObject();
                     //gets slots from storage object, generates list of stored resources and then changes the state for each element of that list
