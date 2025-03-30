@@ -38,51 +38,34 @@ namespace EternalBots
             }
             if (__instance.getUsageAnimations() != null)
             {
-                Type typecontroller = typeof(Bot);
-                FieldInfo finfo = typecontroller.GetField("mAnimationQueueTime", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
-                float animationTime = (float)finfo.GetValue(finfo);
-                finfo.SetValue(finfo, animationTime -  timeStep);
+                var animationTime = CoreUtils.GetMember<Character, float>("mAnimationQueueTime", __instance);
+                CoreUtils.SetMember<Character, float>("mAnimationQueueTime", __instance, animationTime - timeStep);
                 if (animationTime < 0f)
                 {
-                    FieldInfo quotedAnimation = typecontroller.GetField("mQueuedAnimation", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
-                    CharacterAnimation characterAnimation = (CharacterAnimation)quotedAnimation.GetValue(quotedAnimation);
-                    __instance.playAnimation(characterAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
+                    var queuedAnimation = CoreUtils.GetMember<Character, CharacterAnimation>("mQueuedAnimation", __instance);
+                    __instance.playAnimation(queuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
                     if (__instance.getAnchorPoint() != null)
                     {
-                        __instance.setTransform(__instance.getAnchorPoint().position, __instance.getAnchorPoint().rotation);
-                        FieldInfo queuedAnchorPoint = typecontroller.GetField("mQueuedAnchorPoint", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
-                        queuedAnchorPoint.SetValue(queuedAnchorPoint, null);
+                        CoreUtils.SetMember<Character, SimpleTransform>("mQueuedAnchorPoint", __instance, null);
                     }
-                    quotedAnimation.SetValue(quotedAnimation, null);
+                    CoreUtils.SetMember<Character, CharacterAnimation>("mQueuedAnimation", __instance, null);
                 }
             }
             if (__instance.getState() == State.Walking)
             {
                 CoreUtils.InvokeMethod<Character>("updateWalking", __instance, timeStep);
-                //__instance.updateWalking(timeStep);
-                MethodInfo dynMethod = __instance.GetType().GetMethod("updateWalking", BindingFlags.NonPublic | BindingFlags.Instance);
-                dynMethod.Invoke(__instance, [timeStep]);
             }
             else if (__instance.getState() == State.Interacting)
             {
                 CoreUtils.InvokeMethod<Character>("updateInteracting", __instance, timeStep);
-                //__instance.updateInteracting(timeStep);
-                MethodInfo dynMethod = __instance.GetType().GetMethod("updateInteracting", BindingFlags.NonPublic | BindingFlags.Instance);
-                dynMethod.Invoke(__instance, [timeStep]);
             }
             else if (__instance.getState() == State.Dead)
             {
                 CoreUtils.InvokeMethod<Character>("updateDead", __instance, timeStep);
-                //__instance.updateDead(timeStep);
-                MethodInfo dynMethod = __instance.GetType().GetMethod("updateDead", BindingFlags.NonPublic | BindingFlags.Instance);
-                dynMethod.Invoke(__instance, [timeStep]);
             }
             else if (__instance.getState() == State.Idle)
             {
                 CoreUtils.InvokeMethod<Character>("updateIdle", __instance, timeStep);
-                //__instance.updateIdle(timeStep);
-                MethodInfo dynMethod = __instance.GetType().GetMethod("updateIdle", BindingFlags.NonPublic | BindingFlags.Instance);
-                dynMethod.Invoke(__instance, [timeStep]);
             }
         }
     }
@@ -91,20 +74,23 @@ namespace EternalBots
     {
         public static bool Prefix(Bot __instance, float timeStep)
 		{
+            //PrivateUpdate
             CustomBot.PrivateUpdate(__instance, timeStep);
 
-            var indicators = __instance.getIndicators().ToList();
-            Indicator indicator = indicators.Find(i => i.getName() == "Integrity");
+            Indicator indicator = new Indicator(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
-            indicator.setOrientation(IndicatorOrientation.Vertical);
-            indicator.setValue(indicator.getMax());
+            var targetIndicator = __instance.getIndicators().ToList();
+            Console.WriteLine("Integrity indicator before: " + targetIndicator[7]);
+            targetIndicator[7] = indicator;
+            Console.WriteLine("Integrity indicator after: " + targetIndicator[7]);
+            //var indicators = __instance.getIndicators().ToList();
+            //Indicator indicator = (Indicator)indicators.Where(indicator => indicator.getSignType() == SignType.Health);
+            //Indicator indicator = (Indicator)indicators.Where(indicator => indicator.getName() == "Integrity");
+            //indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
+            //indicator.setOrientation(IndicatorOrientation.Vertical);
+            //indicator.setValue(indicator.getMax());
 
-            Type type = typeof(Bot);
-            var boolInstance = Activator.CreateInstance(type);
-            MethodInfo method = type.GetMethod("shouldDecay", BindingFlags.NonPublic | BindingFlags.Instance);
-            bool result = (bool)method.Invoke(boolInstance, null);
-
-            if (result)
+            if (CoreUtils.InvokeMethod<Bot, bool>("shouldDecay", __instance))
             {
                 __instance.decayIndicator(CharacterIndicator.Condition, timeStep / 480f);
             }
@@ -118,9 +104,7 @@ namespace EternalBots
             {
                 __instance.decayIndicator(CharacterIndicator.Condition, timeStep * solarFlare.getIntensity() / 180f);
             }
-            //__instance.updateDustParticles(timeStep);
-            MethodInfo dynMethod = __instance.GetType().GetMethod("updateDustParticles", BindingFlags.NonPublic | BindingFlags.Instance);
-            dynMethod.Invoke(__instance, [timeStep]);
+            CoreUtils.InvokeMethod<Bot>("updateDustParticles", __instance, timeStep);
 
             return false;
         }
