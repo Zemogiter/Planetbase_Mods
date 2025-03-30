@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
-using Module = Planetbase.Module;
 using Random = UnityEngine.Random;
 
 namespace MoreColonists
@@ -90,9 +87,16 @@ namespace MoreColonists
         static void Postfix()
         {
             var visitorList = Character.getSpecializationCharacters(TypeList<Specialization, SpecializationList>.find<Visitor>());
+            if (MoreColonists.settings.debugMode)
+            {
+                foreach (var visitor in visitorList)
+                {
+                    Console.WriteLine(visitor);
+                }
+            }
             if (visitorList != null)
             {
-                foreach (Human visitor in visitorList)
+                foreach (var visitor in visitorList.Cast<Human>())
                 {
                     if (visitor.getOwnedShip() == null && visitor.getState() != Character.State.Ko)
                     {
@@ -103,6 +107,7 @@ namespace MoreColonists
             }
         }
     }
+    // main code for visitors
     [HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.onLandedGeneric))]
 	public class VisitorShipPatch : VisitorShip
     {
@@ -161,6 +166,7 @@ namespace MoreColonists
             }
         }
 	}
+    //main code for colonists
     [HarmonyPatch(typeof(ColonistShip), nameof(ColonistShip.onLanded))]
     public class ColonistShipPatch : ColonistShip
     {
@@ -203,21 +209,35 @@ namespace MoreColonists
                     Character.create(specialization, spawnPosition, Location.Exterior);
                 }
             }
-            if(MoreColonists.settings.botColonistsMode == true && Random.Range(0, 20) == 0)
+            if(MoreColonists.settings.botColonistsMode == true && Random.Range(0, 20) == 0) //handling extra bots in ColonistShip
             {
-                int max = Mathf.RoundToInt(Random.value);
-                for (int j = 0; j < max; j++)
+                int max = Mathf.RoundToInt(Random.Range(1,20));
+                if (max == 0)
                 {
-                    Specialization specializationCarrier = TypeList<Specialization, SpecializationList>.find<Carrier>();
-                    Specialization specializationConstructor = TypeList<Specialization, SpecializationList>.find<Constructor>();
-                    Specialization specializationDriller = TypeList<Specialization, SpecializationList>.find<Driller>();
-                    Character.create(specializationCarrier, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
-                    Character.create(specializationConstructor, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
-                    Character.create(specializationDriller, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
+                    max = 1;
+                }
+                int j;
+                for (j = 0; j < max; j++)
+                {
+                    List<Specialization> randomizer = new List<Specialization>
+                    {
+                        TypeList<Specialization, SpecializationList>.find<Driller>(),
+                        TypeList<Specialization, SpecializationList>.find<Constructor>(),
+                        TypeList<Specialization, SpecializationList>.find<Carrier>()
+                    };
+                    Specialization specialization = randomizer[Random.Range(0, randomizer.Count)];
+                    Character.create(specialization, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
+                    //Specialization specializationCarrier = TypeList<Specialization, SpecializationList>.find<Carrier>();
+                    //Specialization specializationConstructor = TypeList<Specialization, SpecializationList>.find<Constructor>();
+                    //Specialization specializationDriller = TypeList<Specialization, SpecializationList>.find<Driller>();
+
+                    //Character.create(specializationCarrier, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
+                    //Character.create(specializationConstructor, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
+                    //Character.create(specializationDriller, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
                 }
                 if (MoreColonists.settings.displayBotColonist == true)
                 {
-                    Message message = new(StringList.get("New colonists arrived with " + max.ToString() + " bots on board."), ResourceList.StaticIcons.Bot, 8);
+                    Message message = new(StringList.get("New colonists arrived with " + j.ToString() + " bots on board."), ResourceList.StaticIcons.Bot, 8);
                     Singleton<MessageLog>.getInstance().addMessage(message);
                 }
             }
