@@ -11,7 +11,7 @@ namespace BetterGuards
     public class Settings : ModSettings, IDrawable
     {
         [Draw("Enable gun drops?")] public bool EnableGunDrops = true;
-        [Draw("Intruders have better guns?")] public bool IntruderGunHighDurability = false;
+        [Draw("Intruders have better guns? (if true intruders will drop guns with higher durability)")] public bool IntruderGunHighDurability = false;
         [Draw("Health multiplier for guards")] public float Healthmult = 2f;
         public override void Save(ModEntry modEntry)
         {
@@ -60,24 +60,25 @@ namespace BetterGuards
             //nothing needed here
         }
     }
-    [HarmonyPatch(typeof(Character), nameof(Character.create))]
+    [HarmonyPatch(typeof(Character), nameof(Character.create), new[] { typeof(Specialization), typeof(Vector3), typeof(Location) })]
     public class GuardPatch
     {
         //replacing the default health bar with a larger one for guards
-        public static void Postfix(Character instance)
+        public static void Postfix(Character __instance)
         {
-            if (instance == null)
+            if (__instance == null)
             {
                 return;
             }
-            if (instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>())
+            if (__instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>())
             {
-                var indicators = instance.getIndicators();
+                var indicators = __instance.getIndicators();
                 Indicator indicator = (Indicator)indicators.Where(indicator => indicator.getSignType() == SignType.Health);
-                Debug.Log("The indicator before the changes is " + indicator);
+                //Debug.Log("BetterGuards - The indicator before the changes is " + indicator.getLevel() + indicator.getName());
                 indicator.setMax(indicator.getMax() * BetterGuards.settings.Healthmult);
-                Debug.Log("New indicator's levels " + indicator.getLevels());
+                //Debug.Log("BetterGuards - New indicator's levels " + indicator.getLevel() + indicator.getName());
                 indicator.setOrientation(IndicatorOrientation.Vertical);
+                //indicator.setLevels();
             }
         }
     }
@@ -85,15 +86,15 @@ namespace BetterGuards
     public class CharacterPatch
     {
         //make guards and intruders drop guns on death (vanilla = guns disappear with them)
-        public static void Postfix(Character instance)
+        public static void Postfix(Character __instance)
         {
-            if(BetterGuards.settings.EnableGunDrops && instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>() || instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
+            if(BetterGuards.settings.EnableGunDrops && __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>() || __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
             {
-                Vector3 position = instance.getPosition();
-                Location location = instance.getLocation();
+                Vector3 position = __instance.getPosition();
+                Location location = __instance.getLocation();
                 ResourceType gunType = TypeList<ResourceType, ResourceTypeList>.find<Gun>();
                 Resource droppedGun = Resource.create(gunType, position, location);
-                if(BetterGuards.settings.IntruderGunHighDurability && instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
+                if(BetterGuards.settings.IntruderGunHighDurability && __instance.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Intruder>())
                 {
                     droppedGun.setDurability(Resource.Durability.High);
                 }
