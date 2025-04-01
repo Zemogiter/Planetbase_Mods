@@ -12,11 +12,12 @@ namespace BetterStart
     {
         [Draw("Add extra resources to the Colony Ship for each planet type in the New Game menu (currently dosen't touch challenges)")] public bool addExtraResources = true;
         [Draw("Number of resources to add. Separate for every resource (i.e. 10 Metal, 10 Bioplastic etc)")] public int extraResourceCount = 15;
-        [Draw("Same as above but adds bots. Won't do anything if the addExtraResources is set to false.")] public bool addExtraBots = true;
+        [Draw("Add extra bots to the Colony Ship for each planet type in the New Game menu (currently dosen't touch challenges)")] public bool addExtraBots = true;
         [Draw("Number of bots to add. Separate for every bot type (i.e. 5 Carriers, 5 Drillers etc)")] public int extraBotCount = 5;
         [Draw("Unlock more modules to be available for construction right after landing. Affects challenges as well.")] public bool unlockMoreAtStart = true;
-        [Draw("Spawn ruins of previous settlement in an area around your landing position. Currently unimplemented.")] public bool spawnRuins = false;
+        [Draw("Spawn ruins of previous settlement in an area around your landing position. Currently untested.")] public bool spawnRuins = false;
         [Draw("Distance from your landing position in which ruins will spawn.")] public float ruinsSpawnDistance = 500f;
+        [Draw("Debug mode")] public bool debugMode = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
@@ -58,16 +59,17 @@ namespace BetterStart
 
         public override void OnInitialized(ModEntry modEntry)
         {
-            if(BetterStart.settings.addExtraResources)
+            var typesToChange = new[]
+            {
+                typeof(PlanetClassD),
+                typeof(PlanetClassF),
+                typeof(PlanetClassM),
+                typeof(PlanetClassS),
+            };
+            if (BetterStart.settings.addExtraResources)
             {
                 // adds extra resources to starting pool for each of the 4 main planet
-                var typesToChange = new[] 
-                {
-                    typeof(PlanetClassD),
-                    typeof(PlanetClassF),
-                    typeof(PlanetClassM),
-                    typeof(PlanetClassS),
-                };
+                
                 foreach (Type t in typesToChange)
                 {
                     Planet currPlanet = PlanetList.find(t.Name);
@@ -75,15 +77,35 @@ namespace BetterStart
                     currPlanet.getStartingResources().add(TypeList<ResourceType, ResourceTypeList>.find<Bioplastic>(), BetterStart.settings.extraResourceCount);
                     currPlanet.getStartingResources().add(TypeList<ResourceType, ResourceTypeList>.find<MedicalSupplies>(), BetterStart.settings.extraResourceCount);
                     currPlanet.getStartingResources().add(TypeList<ResourceType, ResourceTypeList>.find<Spares>(), BetterStart.settings.extraResourceCount);
-                    if(BetterStart.settings.addExtraBots) //need to check if this works
+
+                    if (BetterStart.settings.debugMode)
                     {
-                        CoreUtils.InvokeMethod<Planet>("addStartingSpecialization", currPlanet, new object[] { BetterStart.settings.extraBotCount });
-                        //CoreUtils.InvokeMethod<Planet>("addStartingSpecialization", currPlanet, new object[] { TypeList<Specialization, SpecializationList>.find<Constructor>(), BetterStart.settings.extraBotCount });
-                        //CoreUtils.InvokeMethod<Planet>("addStartingSpecialization", currPlanet, new object[] { TypeList<Specialization, SpecializationList>.find<Driller>(), BetterStart.settings.extraBotCount });
+                        foreach (var resource in currPlanet.getStartingResources())
+                        {
+                            Console.WriteLine("BetterStart - outputing the moddified starting resources list: " + resource.ToString() + " going to " + t.Name);
+                        }
                     }
                 }
             }
-            if(BetterStart.settings.unlockMoreAtStart)
+            if (BetterStart.settings.addExtraBots) //need to check if this works
+            {
+                foreach(Type t in typesToChange)
+                {
+                    Planet currPlanet = PlanetList.find(t.Name);
+                    currPlanet.getStartingSpecializations().Add(new SpecializationCount(TypeList<Specialization, SpecializationList>.find<Carrier>(), BetterStart.settings.extraBotCount));
+                    currPlanet.getStartingSpecializations().Add(new SpecializationCount(TypeList<Specialization, SpecializationList>.find<Constructor>(), BetterStart.settings.extraBotCount));
+                    currPlanet.getStartingSpecializations().Add(new SpecializationCount(TypeList<Specialization, SpecializationList>.find<Driller>(), BetterStart.settings.extraBotCount));
+
+                    if (BetterStart.settings.debugMode)
+                    {
+                        foreach (var specialization in currPlanet.getStartingSpecializations())
+                        {
+                            Console.WriteLine("BetterStart - outputing the moddified starting specialization list: " + specialization.getSpecialization().getName() + " , number of: " + specialization.getCount() + " going to " + t.Name);
+                        }
+                    }
+                }
+            }
+            if (BetterStart.settings.unlockMoreAtStart)
             {
                 //unlocks some modules to be available for construction right after landing
                 Type[] typesToEnable = new[] 
@@ -119,7 +141,7 @@ namespace BetterStart
         }
         public override void OnGameStart(GameStateGame gameStateGame)
         {
-            if (CameraManager.getInstance().isCinematic() == true && BetterStart.settings.spawnRuins && ChallengeManager.getInstance().isChallengeEnabled() == false) //checks if we are in the game, we're starting a new save, ruins are enabled and we're not in a challenge
+            if (CameraManager.getInstance().isCinematic() == true && ColonyShip.getFirstOfType<ColonyShip>() != null && BetterStart.settings.spawnRuins == true && ChallengeManager.getInstance().isChallengeEnabled() == false) //checks if we are in the game, we're starting a new save, ruins are enabled and we're not in a challenge
             {
                 System.Random random = new System.Random();
                 int numberOfBuildings = random.Next(1, 10); // Random number of buildings to spawn
@@ -157,14 +179,6 @@ namespace BetterStart
             Type buildingType = buildingTypes[random.Next(buildingTypes.Length)];
             ModuleType building = ModuleTypeList.find(buildingType.Name);
             Planetbase.Module.create(position,1,building).debugDamage(random.range(0f,1f));
-        }
-    }
-    [HarmonyLib.HarmonyPatch(typeof(ColonyShip), nameof(ColonyShip.update))]
-    public class ColonyShipPatch
-    {
-        public static void Postfix(ColonyShip __instance)
-        {
-
         }
     }
 }
