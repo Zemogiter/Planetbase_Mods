@@ -1,20 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
 using UnityEngine;
-using UnityEngine.Windows;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 
 namespace ColonistEviction
 {
-    [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     public class Settings : ModSettings, IDrawable
     {
         [Draw("Eviction Key bind")] public KeyCode EvictionKeybind = KeyCode.M;
         [Draw("Eviction quick mode (delete evicted colonist without animations)")] public bool EvictionQuickMode = true;
-        [Draw("Stuck rescue key bind")] public KeyCode StuckRescueKeybind = KeyCode.T;
+        [Draw("Stuck rescue key bind")] public KeyCode StuckRescueKeybind = KeyCode.Y;
         [Draw("Stuck rescue quick mode (teleport colonist to closest landing pad without animations)")] public bool StuckRescueQuickMode = true;
         public override void Save(ModEntry modEntry)
         {
@@ -64,9 +61,7 @@ namespace ColonistEviction
         }
         public void RegisterStrings()
         {
-            //To-do: get an instance of type Colonist that won't throw a NullReferenceException
-            //StringUtils.RegisterString("message_eviction", GetMessageContent(null));
-            StringUtils.RegisterString("message_eviction_error","Only colonists that aren't KOed can be evicted.");
+            StringUtils.RegisterString("message_eviction_error", "Only colonists that aren't KOed can be evicted.");
         }
         public static string GetMessageContent(Colonist colonist)
         {
@@ -79,10 +74,10 @@ namespace ColonistEviction
         {
             float num = float.MaxValue;
             Module result = null;
-            int count = mModules.Count;
+            int count = BuildableUtils.GetAllModules().Count;
             for (int i = 0; i < count; i++)
             {
-                Module module = mModules[i];
+                Module module = BuildableUtils.GetAllModules()[i];
                 float sqrMagnitude = (module.getPosition() - position).sqrMagnitude;
                 if (sqrMagnitude < num && module.getModuleType() is ModuleTypeLandingPad)
                 {
@@ -105,16 +100,27 @@ namespace ColonistEviction
     [HarmonyPatch(typeof(Character), nameof(Character.update))]
     public class ColonistEvictionPatch
     {
-        public static void Postfix(Character __instance, float timeStep)
+        //to-do: fix a crash upon pressing the colonist eviction button:
+        /*
+            ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
+            Parameter name: index
+            at System.Collections.Generic.List`1[T].get_Item (System.Int32 index) [0x00009] in <4b234520e36749be9cf6b053d911690f>:0 
+            at Planetbase.Character.updateAll (System.Single timeStep, System.Int32 frameIndex) [0x00017] in <862e82e2e7af470597713e33dab12dcd>:0 
+            at Planetbase.GameStateGame.fixedUpdate (System.Single timeStep, System.Int32 frameIndex) [0x0012a] in <862e82e2e7af470597713e33dab12dcd>:0 
+            at (wrapper dynamic-method) MonoMod.Utils.DynamicMethodDefinition.Planetbase.GameManager.fixedUpdate_Patch2(Planetbase.GameManager,single)
+            at Planetbase.GameBehaviour.FixedUpdate () [0x00011] in <862e82e2e7af470597713e33dab12dcd>:0 
+        */
+        public static void Postfix(Character __instance, float timeStep)  
         {
-            if(__instance.isSelected() && __instance.getState() != Character.State.Ko && __instance.getSpecialization() != SpecializationList.IntruderInstance && __instance.getSpecialization() != SpecializationList.VisitorInstance) //we want this to work on non-downed colonists only
+            //first of all, we need the character to be selected, not downed and to be a colonist
+            if(__instance.isSelected() && __instance.getState() != Character.State.Ko && __instance.getSpecialization() != SpecializationList.IntruderInstance && __instance.getSpecialization() != SpecializationList.VisitorInstance)
             {
-                if (InputAction.isValidKey(ColonistEviction.settings.EvictionKeybind))
+                if (Input.GetKeyDown(ColonistEviction.settings.EvictionKeybind))
                 {
                     //the part after || is there in case colonist is stuck in a dead space between modules and corridors
                     if (ColonistEviction.settings.EvictionQuickMode || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
-                        __instance.destroyInteractions();
+                        CoreUtils.InvokeMethod<Character>("destroyInteractions", __instance);
                         __instance.destroy();
                         Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance as Colonist)), ResourceList.StaticIcons.Disable, 8));
                     }
@@ -133,17 +139,17 @@ namespace ColonistEviction
                             colonistShipEviction.onTakeOff();
                             Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction", ColonistEviction.GetMessageContent(__instance as Colonist)), ResourceList.StaticIcons.Disable, 8));
                         }
-                    }    
+                    }
+                    else
+                    {
+                        Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction_error"), ResourceList.StaticIcons.Disable, 8));
+                    }
                 }
-                else
-                {
-                    Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_eviction_error"), ResourceList.StaticIcons.Disable, 8));
-                }
-                if (InputAction.isValidKey(ColonistEviction.settings.StuckRescueKeybind))
+                if (Input.GetKeyDown(ColonistEviction.settings.StuckRescueKeybind))
                 {
                     if(ColonistEviction.settings.StuckRescueQuickMode || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
                     {
-                        __instance.destroyInteractions();
+                        CoreUtils.InvokeMethod<Character>("destroyInteractions", __instance);
                         __instance.setPosition(CustomModule.FindClosestLandingPad(__instance.getPosition()).getPosition());
                     }
                     else if(ColonistEviction.settings.StuckRescueQuickMode == false || __instance.getState() == Character.State.Idle && __instance.getLocation() == Location.Exterior)
