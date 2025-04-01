@@ -66,42 +66,46 @@ namespace MoreColonists
             //nothing for now
         }
     }
-    [HarmonyPatch(typeof(VisitorShip), nameof(VisitorShip.setIntruders), MethodType.Constructor)]
+    [HarmonyPatch(typeof(LandingShip), nameof(LandingShip.update))]
     public class VisitorShipFixPatch
     {
         //fix for the issue that makes visitor ships not fly off once the counter reaches zero
         public static void Postfix(VisitorShip __instance)
         {
-            if (__instance != null && __instance.isLanded() && __instance.getPendingVisitorCount() == 0)
+            if (__instance != null && __instance.isLanded() && __instance.getName() == "VisitorShip" && (__instance.getPendingVisitorCount() <= 0 || __instance.getDescription() == null))
             {
-                __instance.onClosingDoor();
-                __instance.onTakeOff();
-                __instance.destroy();
+                Console.WriteLine("MoreColonists - state of the glitched VisitorShip: " + CoreUtils.GetMember<LandingShip, LandingShip.State>("mState", __instance) + " and the name (should be VisitorShip) is: " + __instance.getName());
+                CoreUtils.InvokeMethod<LandingShip>("setState", __instance, LandingShip.State.ClosingDoor);
+                CoreUtils.InvokeMethod<LandingShip>("setState", __instance, LandingShip.State.TakingOff);
             }
         }
     }
-    [HarmonyPatch(typeof(Character), nameof(Character.update))]
+    [HarmonyPatch(typeof(Human), nameof(Human.update))]
     public class VisitorPatch
     {
         //fix for the issue that makes visitors lose their ship ownership upon save load and occupy the base, this should set it to the nearest visitor ship
-        static void Postfix()
+        static void Postfix(Human __instance)
         {
             var visitorList = Character.getSpecializationCharacters(TypeList<Specialization, SpecializationList>.find<Visitor>());
-            if (MoreColonists.settings.debugMode)
-            {
-                foreach (var visitor in visitorList)
-                {
-                    Console.WriteLine(visitor);
-                }
-            }
+
             if (visitorList != null)
             {
-                foreach (var visitor in visitorList.Cast<Human>())
+                if (MoreColonists.settings.debugMode)
                 {
-                    if (visitor.getOwnedShip() == null && visitor.getState() != Character.State.Ko)
+                    foreach (var visitor in visitorList)
                     {
-                        VisitorShip newShip = (VisitorShip)Ship.getFirstOfType<Ship>();
-                        visitor.setOwnedShip(newShip);
+                        Console.WriteLine("MoreColonists - visitorList entry: " + visitor);
+                    }
+                }
+                foreach (Human visitor in visitorList.Cast<Human>())
+                {
+                    if (visitor != null && visitor.getOwnedShip() == null && visitor.getState() != Character.State.Ko)
+                    {
+                        VisitorShip newShip = Ship.getFirstOfType<VisitorShip>() as VisitorShip;
+                        if (newShip != null)
+                        {
+                            visitor.setOwnedShip(newShip);
+                        }
                     }
                 }
             }
@@ -219,21 +223,14 @@ namespace MoreColonists
                 int j;
                 for (j = 0; j < max; j++)
                 {
-                    List<Specialization> randomizer = new List<Specialization>
-                    {
+                    List<Specialization> randomizer =
+                    [
                         TypeList<Specialization, SpecializationList>.find<Driller>(),
                         TypeList<Specialization, SpecializationList>.find<Constructor>(),
                         TypeList<Specialization, SpecializationList>.find<Carrier>()
-                    };
+                    ];
                     Specialization specialization = randomizer[Random.Range(0, randomizer.Count)];
                     Character.create(specialization, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
-                    //Specialization specializationCarrier = TypeList<Specialization, SpecializationList>.find<Carrier>();
-                    //Specialization specializationConstructor = TypeList<Specialization, SpecializationList>.find<Constructor>();
-                    //Specialization specializationDriller = TypeList<Specialization, SpecializationList>.find<Driller>();
-
-                    //Character.create(specializationCarrier, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
-                    //Character.create(specializationConstructor, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
-                    //Character.create(specializationDriller, CoreUtils.InvokeMethod<LandingShip, Vector3>("getSpawnPosition", __instance, j), Location.Exterior);
                 }
                 if (MoreColonists.settings.displayBotColonist == true)
                 {

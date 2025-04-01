@@ -98,6 +98,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PauseMod", "PauseMod\PauseM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterStart", "BetterStart\BetterStart.csproj", "{9F7CE857-6CED-41A2-87A1-4714923D95EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterMilestones", "BetterMilestones\BetterMilestones.csproj", "{264D37D8-C632-4745-A295-7477A5AB3FEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -292,6 +294,10 @@ Global
 		{9F7CE857-6CED-41A2-87A1-4714923D95EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F7CE857-6CED-41A2-87A1-4714923D95EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F7CE857-6CED-41A2-87A1-4714923D95EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{264D37D8-C632-4745-A295-7477A5AB3FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{264D37D8-C632-4745-A295-7477A5AB3FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{264D37D8-C632-4745-A295-7477A5AB3FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{264D37D8-C632-4745-A295-7477A5AB3FEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -306,6 +312,7 @@ Global
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1b5e972d-ff2b-4611-8cd6-9033cb0d93c8}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1ed5bb4c-ebe7-4ef2-8b2c-284b3742ec26}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2629f166-f5f1-49e4-9b57-62544d3e6a77}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{264d37d8-c632-4745-a295-7477a5ab3feb}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2a2596f6-59d3-4f92-a33b-6e9bb2372bee}*SharedItemsImports = 13
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{2ec08df2-1d53-4ef0-b987-1ec9112cf42e}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{30c895a0-277c-4930-a37e-341367d5a8da}*SharedItemsImports = 4

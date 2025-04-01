@@ -77,7 +77,6 @@ namespace BetterStart
                     currPlanet.getStartingResources().add(TypeList<ResourceType, ResourceTypeList>.find<Spares>(), BetterStart.settings.extraResourceCount);
                     if(BetterStart.settings.addExtraBots) //need to check if this works
                     {
-                        //currPlanet.mStartingSpecializations.add();
                         CoreUtils.InvokeMethod<Planet>("addStartingSpecialization", currPlanet, new object[] { BetterStart.settings.extraBotCount });
                         //CoreUtils.InvokeMethod<Planet>("addStartingSpecialization", currPlanet, new object[] { TypeList<Specialization, SpecializationList>.find<Constructor>(), BetterStart.settings.extraBotCount });
                         //CoreUtils.InvokeMethod<Planet>("addStartingSpecialization", currPlanet, new object[] { TypeList<Specialization, SpecializationList>.find<Driller>(), BetterStart.settings.extraBotCount });
