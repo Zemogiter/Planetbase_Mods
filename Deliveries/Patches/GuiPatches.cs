@@ -104,7 +104,7 @@ namespace Deliveries.Patches
         public static void Postfix(GuiMenuSystem __instance)
         {
             //to-do: find a way to call this code without copy-pasting it
-            if (InputAction.isValidKey(Deliveries.settings.DeliveryKey))
+            if (Input.GetKeyDown(Deliveries.settings.DeliveryKey))
             {
                 
             }
