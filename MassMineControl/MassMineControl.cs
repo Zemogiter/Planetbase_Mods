@@ -94,7 +94,7 @@ namespace MassMineControl
                 {
                     mineList.Remove(mine);
                 }*/
-                if (InputAction.isValidKey(MassMineControl.settings.disableMines) && mine.isEnabled() == true)
+                if (Input.GetKeyDown(MassMineControl.settings.disableMines) && mine.isEnabled() == true)
                 {
                     mine.setEnabled(false);
                     if (MassMineControl.settings.displayMessages == true)
@@ -102,7 +102,7 @@ namespace MassMineControl
                         Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_mine_disable", MassMineControl.MESSAGE), ResourceList.StaticIcons.Disable, 1));
                     }
                 }
-                if (InputAction.isValidKey(MassMineControl.settings.enableMines) && mine.isEnabled() == false)
+                if (Input.GetKeyDown(MassMineControl.settings.enableMines) && mine.isEnabled() == false)
                 {
                     mine.setEnabled(true);
                     if (MassMineControl.settings.displayMessages == true)
@@ -110,7 +110,7 @@ namespace MassMineControl
                         Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_mine_enable", MassMineControl.MESSAGE2), ResourceList.StaticIcons.Enable, 1));
                     }
                 }
-                if (InputAction.isValidKey(MassMineControl.settings.highPriorityMines) && !mine.isHighPriority())
+                if (Input.GetKeyDown(MassMineControl.settings.highPriorityMines) && !mine.isHighPriority())
                 {
                     mine.setHighPriority(true);
                     if (MassMineControl.settings.displayMessages == true)
@@ -118,7 +118,7 @@ namespace MassMineControl
                         Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("message_mine_high_priority", MassMineControl.MESSAGE3), ResourceList.StaticIcons.PriorityUp, 1));
                     }
                 }
-                if (InputAction.isValidKey(MassMineControl.settings.normalPriorityMines) && mine.isHighPriority())
+                if (Input.GetKeyDown(MassMineControl.settings.normalPriorityMines) && mine.isHighPriority())
                 {
                     mine.setHighPriority(false);
                     if (MassMineControl.settings.displayMessages == true)
