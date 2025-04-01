@@ -11,7 +11,7 @@ namespace PauseMod
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Pause the game on window focus loss?")] public bool pauseOnFocusLoss = true;
-        [Draw("Pause keybind")] public KeyCode pauseKeybind = KeyCode.T;
+        [Draw("Pause keybind")] public KeyCode pauseKeybind = KeyCode.Space;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);
