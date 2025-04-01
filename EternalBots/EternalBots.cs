@@ -80,15 +80,7 @@ namespace EternalBots
             Indicator indicator = new Indicator(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
             var targetIndicator = __instance.getIndicators().ToList();
-            Console.WriteLine("EternalBots - Integrity indicator before: " + targetIndicator[7].getLevels());
             targetIndicator[7] = indicator;
-            Console.WriteLine("EternalBots - Integrity indicator after: " + targetIndicator[7].getLevels());
-            //var indicators = __instance.getIndicators().ToList();
-            //Indicator indicator = (Indicator)indicators.Where(indicator => indicator.getSignType() == SignType.Health);
-            //Indicator indicator = (Indicator)indicators.Where(indicator => indicator.getName() == "Integrity");
-            //indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
-            //indicator.setOrientation(IndicatorOrientation.Vertical);
-            //indicator.setValue(indicator.getMax());
 
             if (CoreUtils.InvokeMethod<Bot, bool>("shouldDecay", __instance))
             {
@@ -106,7 +98,7 @@ namespace EternalBots
             }
             CoreUtils.InvokeMethod<Bot>("updateDustParticles", __instance, timeStep);
 
-            return false;
+            return true;
         }
     }
 }
