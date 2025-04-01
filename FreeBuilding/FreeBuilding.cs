@@ -98,7 +98,7 @@ namespace FreeBuilding
                     return;
 
                 connectionCount = Math.Min(connectionCount, connectionPositions.Count - 1);
-                if (InputAction.isValidKey(settings.ConstructionRotation))
+                if (Input.GetKeyDown(settings.ConstructionRotation))
                 {
                     connectionCount = ++connectionCount % connectionPositions.Count;
                 }
