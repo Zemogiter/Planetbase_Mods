@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Planetbase;
+using PlanetbaseModUtilities;
 using UnityEngine;
 
 namespace PowerSaver
@@ -25,18 +26,25 @@ namespace PowerSaver
             this.mPrefabName = "PrefabRadioConsole";
 
             string language = Profile.getInstance().getLanguage();
+            var stringGetter = CoreUtils.GetMember<Dictionary<string,string>>("mStrings",this.GetType());
             if (language == "en")
             {
-                StringList.mStrings.Add("component_" + Util.camelCaseToLowercase(this.GetType().Name), NAME);
-                StringList.mStrings.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
+                stringGetter.Add("component_" + Util.camelCaseToLowercase(this.GetType().Name), NAME);
+                stringGetter.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
+                //StringList.mStrings.Add("component_" + Util.camelCaseToLowercase(this.GetType().Name), NAME);
+                //StringList.mStrings.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
             }
             // this is needed because the game doesn't use the fallback strings for tooltips
             else if (!StringList.exists("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name)))
             {
-                StringList.mStrings.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
+                stringGetter.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
+                //StringList.mStrings.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
             }
-            StringList.mFallbackStrings.Add("component_" + Util.camelCaseToLowercase(this.GetType().Name), NAME);
-            StringList.mFallbackStrings.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
+            var fallbackStringGetter = CoreUtils.GetMember<Dictionary<string, string>>("mStrings", this.GetType());
+            fallbackStringGetter.Add("component_" + Util.camelCaseToLowercase(this.GetType().Name), NAME);
+            //StringList.mFallbackStrings.Add("component_" + Util.camelCaseToLowercase(this.GetType().Name), NAME);
+            fallbackStringGetter.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
+            //StringList.mFallbackStrings.Add("tooltip_" + Util.camelCaseToLowercase(this.GetType().Name), DESCRIPTION);
 
             this.initStrings();
 

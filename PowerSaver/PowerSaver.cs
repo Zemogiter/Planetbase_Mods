@@ -192,7 +192,8 @@ namespace PowerSaver
             ModuleTypeControlCenter controlCenter = TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeControlCenter>() as ModuleTypeControlCenter;
             List<ComponentType> components = [.. controlCenter.GetComponentTypes()];
             components.Insert(3, TypeList<ComponentType, ComponentTypeList>.find<GridManagementConsole>());
-            controlCenter.mComponentTypes = [.. components];
+            //controlCenter.mComponentTypes = [.. components];
+            controlCenter.SetComponentTypes(components);
 
             Debug.Log("[MOD] PowerSaver activated");
         }
@@ -200,9 +201,11 @@ namespace PowerSaver
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
             bool consoleExists = false;
+            var components = CoreUtils.GetMember<List<ConstructionComponent>>("mComponents",);
+
             foreach (ConstructionComponent component in ConstructionComponent.mComponents)
             {
-                bool lowCondition = component.mConditionIndicator.isValidValue() && component.mConditionIndicator.isExtremelyLow();
+                bool lowCondition = component.getIndicators().isValidValue() && component.getIndicators().isExtremelyLow();
                 if (component.getComponentType().GetType() == typeof(GridManagementConsole) && component.isBuilt() && !lowCondition && component.isEnabled() &&
                     component.mParentConstruction.isBuilt() && component.mParentConstruction.isEnabled() && !component.mParentConstruction.isExtremelyDamaged())
                 {

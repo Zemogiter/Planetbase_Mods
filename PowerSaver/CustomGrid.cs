@@ -68,8 +68,7 @@ namespace PowerSaver
                 }
             }
 
-            GridResourceData resourceData = get(gridResource);
-            //resourceData.setCollector(findCollector(gridResource, resourceBalance));
+            GridResourceData resourceData = CoreUtils.InvokeMethod<Grid, GridResourceData>("getData", this, gridResource);
             resourceData.setBalance(resourceBalance);
             resourceData.setGeneration(amountCreated);
             resourceData.setConsumption(amountConsumed);
