@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "BetterMilestones.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Better Milestones",
+  "EntryMethod": "BetterMilestones.BetterMilestones.Init",
+  "GameVersion": "1.4.0",
+  "HomePage": "",
+  "ID": "BetterMilestones",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0"
+}
