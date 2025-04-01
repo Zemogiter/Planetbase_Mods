@@ -245,7 +245,7 @@ namespace BetterAI
 
             Resource storable;
             
-            foreach (ResourceType resourceType in ResourceTypeList.getInstance())
+            foreach (ResourceType resourceType in )
             {
                 ConstructionComponent storageComponent = Module.findStorageComponent(mCharacter, resourceType);
                 if (storageComponent != null)
