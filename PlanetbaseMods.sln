@@ -308,6 +308,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{021003b9-d4fa-432c-97a3-35838f7ca298}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{0263144f-b6f2-4b18-ba97-ea2754916272}*SharedItemsImports = 4
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1811783c-2853-4886-8e0b-5197d30f0bb0}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{187bfab8-c4b7-4e41-a0e5-80024ada77f3}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1b5e972d-ff2b-4611-8cd6-9033cb0d93c8}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1ed5bb4c-ebe7-4ef2-8b2c-284b3742ec26}*SharedItemsImports = 4
