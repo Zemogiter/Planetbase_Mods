@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="BetterMilestones.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TranspilerOld.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.json">
