@@ -82,19 +82,11 @@ namespace MoreSpeed
             List<float> list = (instance.GetPrivateFieldValue<object>("TimeScales") as IEnumerable<float>).ToList();
             list.Add(6f);
             list.Add(8f);
-            //10 speed glitches out ship landing, making them hover over landing pads/starports indefinitly, therefore it's not avaialble by default
-            /*if (MoreSpeed.settings.UnsafeMode)
-            {
-                list.Add(10f);
-            }
-            if(!MoreSpeed.settings.UnsafeMode && list.Contains(10f))
-            {
-                list.Remove(10f);
-            }*/
             instance.SetPrivateFieldValue("TimeScales", list.ToArray());
             instance.GetPrivateFieldValue<object>("TimeScales");
         }
     }
+
     public static class ModExtensions
     {
         public static readonly BindingFlags BindingFlagsEverything = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
