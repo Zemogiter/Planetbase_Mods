@@ -66,12 +66,10 @@ namespace FreeBuilding
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
             //allows module rotation pre-placement
-            if (GameManager.getInstance().getGameState() is GameStateGame gameState)
+            var managerInstance = GameManager.getInstance();
+            if (managerInstance != null && managerInstance.getGameState() is GameStateGame gameState)
             {
-                var managerInstance = GameManager.getInstance();
-                if (managerInstance == null)
-                    return;
-                if(FreeBuilding.settings.DebugMode)Console.WriteLine("FreeBuilding - The value of managerInstance is: " + managerInstance);
+                if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - The value of managerInstance is: " + managerInstance);
                 var state = CoreUtils.GetMember<GameManager, State>("mState", managerInstance);
                 if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - The value of state is: " + state);
                 if (state != GameManager.State.Updating)
@@ -82,10 +80,10 @@ namespace FreeBuilding
                     return;
                 if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - Curently trying to place: " + activeModule.getModuleType().getName());
                 List<Vector3> connectionPositions = [];
-                for (int i = 0; i < Construction.getCount(); ++i)
+                var constructionList = BuildableUtils.GetAllModules();
+                for (int i = 0; i < Construction.getCount()-1; i++)
                 {
-                    var constructionList = BuildableUtils.GetAllModules();
-                    if (constructionList[i] != null && activeModule != null && constructionList[i] != activeModule && Connection.canLink(activeModule, constructionList[i]))
+                    if (constructionList != null && constructionList[i] != null && activeModule != null && constructionList[i] != activeModule && Connection.canLink(activeModule, constructionList[i]))
                     {
                         connectionPositions.Add(constructionList[i].getPosition());
                     }
@@ -104,6 +102,10 @@ namespace FreeBuilding
                 }
 
                 activeModule.getGameObject().transform.localRotation = Quaternion.LookRotation((connectionPositions[connectionCount] - activeModule.getPosition()).normalized);
+            }
+            else
+            {
+                return;
             }
         }
     }
