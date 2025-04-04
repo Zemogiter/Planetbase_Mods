@@ -21,7 +21,7 @@ namespace Deliveries.Patches
         {
             //obtaining the necessary variables to be used in the new button
             int colonyShipResourcesValue = PlanetManager.getCurrentPlanet().getStartingResources().getValue();
-            int colonyCoins = Resource.getCountOfType(TypeList<ResourceType,ResourceTypeList>.find<Coins>());
+            int colonyCoins = Resource.getCountOfType(TypeList<ResourceType, ResourceTypeList>.find<Coins>());
 
             if (Deliveries.ActiveDeliveryShip) return; //if there is already a delivery ship active, dont do anything)
             if (LandingCheck() == null) //checking if we have free Landing Pad/Starport on map
@@ -39,13 +39,18 @@ namespace Deliveries.Patches
             if (Deliveries.settings.cheatMode == false)
             {
                 int coinsAfterDelivery = colonyCoins - colonyShipResourcesValue;
-                if(Deliveries.settings.debugMode) Console.WriteLine("Coins after delivery: " + coinsAfterDelivery);
+                if (Deliveries.settings.debugMode) Console.WriteLine("Coins after delivery: " + coinsAfterDelivery);
                 ResourceAmount resourceAmount = new ResourceAmount(TypeList<ResourceType, ResourceTypeList>.find<Coins>(), colonyShipResourcesValue);
                 if (Deliveries.settings.debugMode) Console.WriteLine("The value of resourceAmount: " + resourceAmount);
                 Resource.removeInmaterialResource(resourceAmount); //removing the coins from the player, needs further testing
 
             }
             Vector3 startPosition = LandingCheck().getPosition();
+            if (startPosition != null)
+            {
+                Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("delivery_error", Deliveries.DeliveryErrorMessage), ButtonIconFunction(), 1));
+                return;
+            } 
             if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - The value of startPosition: " + startPosition);
             if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - Colony ship average position: " + ColonyShip.getAveragePosition());
             if (startPosition == null) return;
