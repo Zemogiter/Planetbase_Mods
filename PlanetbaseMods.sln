@@ -100,6 +100,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterStart", "BetterStart\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterMilestones", "BetterMilestones\BetterMilestones.csproj", "{264D37D8-C632-4745-A295-7477A5AB3FEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrestigeMod", "PrestigeMod\PrestigeMod.csproj", "{0119A394-D0F1-433E-90C2-6EE954E6DE4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -298,6 +300,10 @@ Global
 		{264D37D8-C632-4745-A295-7477A5AB3FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{264D37D8-C632-4745-A295-7477A5AB3FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{264D37D8-C632-4745-A295-7477A5AB3FEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0119A394-D0F1-433E-90C2-6EE954E6DE4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0119A394-D0F1-433E-90C2-6EE954E6DE4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0119A394-D0F1-433E-90C2-6EE954E6DE4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0119A394-D0F1-433E-90C2-6EE954E6DE4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -306,6 +312,7 @@ Global
 		SolutionGuid = {948ED42E-2F8C-418E-9002-0B67ED758A4B}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{0119a394-d0f1-433e-90c2-6ee954e6de4d}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{021003b9-d4fa-432c-97a3-35838f7ca298}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{0263144f-b6f2-4b18-ba97-ea2754916272}*SharedItemsImports = 4
 		PlanetbaseModUtilities\PlanetbaseModUtilities.projitems*{1811783c-2853-4886-8e0b-5197d30f0bb0}*SharedItemsImports = 4

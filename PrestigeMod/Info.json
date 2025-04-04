@@ -1,0 +1,12 @@
+{
+  "AssemblyName": "PrestigeMod.dll",
+  "Author": "Zemogiter",
+  "DisplayName": "Prestige Mod",
+  "EntryMethod": "PrestigeMod.PrestigeMod.Init",
+  "GameVersion": "1.4.1",
+  "HomePage": "",
+  "ID": "PrestigeMod",
+  "Repository": "",
+  "Requirements": [],
+  "Version": "1.0.0"
+}
