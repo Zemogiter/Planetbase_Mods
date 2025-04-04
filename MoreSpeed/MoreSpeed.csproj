@@ -64,7 +64,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MoreSpeed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

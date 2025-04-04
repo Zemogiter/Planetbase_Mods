@@ -3,7 +3,7 @@
   "Author": "Zemogiter",
   "DisplayName": "Remove Tutorial From Menu",
   "EntryMethod": "RemoveTutorialFromMenu.RemoveTutorialFromMenu.Init",
-  "GameVersion": "1.4.0",
+  "GameVersion": "1.4.1",
   "HomePage": "",
   "ID": "RemoveTutorialFromMenu",
   "Repository": "",
