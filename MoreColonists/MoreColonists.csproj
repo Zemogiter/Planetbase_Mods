@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MoreColonists.cs" />
+    <Compile Include="Patches\ColonistShipPatch.cs" />
+    <Compile Include="Patches\VisitorShipPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
