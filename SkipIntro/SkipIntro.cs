@@ -3,6 +3,7 @@ using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 using PlanetbaseModUtilities;
 using UnityEngine;
+using System;
 
 namespace SkipIntro
 {
@@ -20,7 +21,7 @@ namespace SkipIntro
     }
     public class SkipIntro : ModBase
     {
-        private IntroCinemetic m_intro;
+        IntroCinemetic m_intro;
         public static bool enabled;
         public static Settings settings;
 
@@ -55,41 +56,59 @@ namespace SkipIntro
 
         public override void OnUpdate(ModEntry modEntry, float timeStep)
         {
-            if (m_intro == null)
+            //main code
+            //to-do: fix an issue that prevents going to the pause menu while the ship is landing and it's passangers are getting off
+            if(GameManager.getInstance().getGameState() is GameStateGame gameStateGame)
             {
-                m_intro = CameraManager.getInstance().getCinematic() as IntroCinemetic;
                 if (m_intro == null)
                 {
+                    m_intro = CameraManager.getInstance().getCinematic() as IntroCinemetic;
+                    if (m_intro == null)
+                    {
+                        return;
+                    }
+                }
+                ColonyShip colonyShip = CoreUtils.GetMember<IntroCinemetic, ColonyShip>("mColonyShip", m_intro);
+                Console.WriteLine("SkipIntro - ColonyShip: " + colonyShip);
+                if (colonyShip.isDone())
+                {
+                    m_intro = null;
                     return;
                 }
-            }
-            ColonyShip colonyShip = ColonyShip.getFirstOfType<ColonyShip>();
-            if (colonyShip.isDone())
-            {
-                m_intro = null;
-                return;
-            }
 
-            GameStateGame gameStateGame = GameManager.getInstance().getGameState() as GameStateGame;
-            var instance = MenuUtils.GetMenuSystem(gameStateGame);
-            if (MenuUtils.GetMenu(instance,gameStateGame.ToString()) is GuiGameMenu) //this line needs to be changes
-		    {
-                MenuUtils.SetMenu(gameStateGame.GetMenuSystem(), null, null);
-                //gameStateGame.mGameGui.setWindow(null);
-            }
-            
-            if (InputAction.isValidKey(SkipIntro.settings.SkipIntroButton) && CameraManager.getInstance().getCinematic() != null && gameStateGame.inTutorial() == false)
-            {
-                PhysicsUtil.findFloor(colonyShip.getPosition(), out var terrainPosition);
-                terrainPosition.y += 21f;
-                Transform transform = CameraManager.getInstance().getTransform();
-                transform.position = terrainPosition + colonyShip.getDirection().flatDirection() * 50f;
-                transform.LookAt(terrainPosition);
-                Vector3 eulerAngles = transform.eulerAngles;
-                eulerAngles.x = 25f;
-                transform.rotation = Quaternion.Euler(eulerAngles);
-                //m_intro.mBlackBars = 0f;
-                CameraManager.getInstance().setCinematic(null);
+                GameStateGame gameState = GameManager.getInstance().getGameState() as GameStateGame;
+                Console.WriteLine("SkipIntro - GameState: " + gameState);
+                var gameGui = CoreUtils.GetMember<GameStateGame, GameGui>("mGameGui", gameState);
+                Console.WriteLine("SkipIntro - GameGui: " + gameGui);
+                Console.WriteLine("SkipIntro - GameGui Window: " + gameGui.getWindow());
+
+                if (gameGui.getWindow() == null)
+                {
+                    // Set a valid GuiWindow instance
+                    gameGui.setWindow(new GuiGameMenu());
+                    Console.WriteLine("SkipIntro - GameGui Window after setting: " + gameGui.getWindow());
+                }
+
+                if (gameGui.getWindow() is GuiGameMenu)
+                {
+                    gameGui.setWindow(null);
+                    Console.WriteLine("SkipIntro - GameGui Window: " + gameGui.getWindow());
+                }
+
+                if (Input.GetKeyDown(KeyCode.Escape) && CameraManager.getInstance().getCinematic() != null)
+                {
+                    Console.WriteLine("SkipIntro - Escape key pressed and we're in a cinematic");
+                    PhysicsUtil.findFloor(colonyShip.getPosition(), out Vector3 shipLandingPosition, 256);
+                    shipLandingPosition.y = CameraManager.DefaultHeight;
+                    Transform transform = CameraManager.getInstance().getTransform();
+                    transform.position = shipLandingPosition + colonyShip.getDirection().flatDirection() * 50f;
+                    transform.LookAt(shipLandingPosition);
+                    Vector3 eulerAngles = transform.eulerAngles;
+                    eulerAngles.x = 25f; //it's the same as VerticalAngles property in CameraManager
+                    transform.rotation = Quaternion.Euler(eulerAngles);
+                    CoreUtils.SetMember<IntroCinemetic, float>("mBlackBars", m_intro, 0f);
+                    CameraManager.getInstance().setCinematic(null);
+                }
             }
         }
     }
