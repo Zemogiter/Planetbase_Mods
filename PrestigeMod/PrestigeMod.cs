@@ -19,6 +19,7 @@ namespace PrestigeMod
     {
         [Draw("Resource calculation number (smaller number = more prestige). Game default is 3.")] public int resCalcNumber = 3;
         [Draw("Should we add a colony's total coins to prestige calculations?")] public bool includeCoins = true;
+        //[Draw("Should we add a colony's total bots to prestige calculations?")] public bool includeBots = true;
         [Draw("Debug mode")] public bool debugMode = true;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -77,7 +78,7 @@ namespace PrestigeMod
                 if (PrestigeMod.settings.debugMode) Console.WriteLine("Values of num num2 num3: " + num.ToString() + " " + num2.ToString() + " " + num3.ToString());
                 int extraPrestige = CoreUtils.GetMember<Colony, int>("mExtraPrestige", colonyInstance);
                 int num4 = Mathf.Min(extraPrestige, 200);
-                int num5 = Mathf.Min(Resource.getCountOfType(TypeList<ResourceType, ResourceTypeList>.find<Coins>()) / 300, 200);
+                int num5 = Resource.getCountOfType(TypeList<ResourceType, ResourceTypeList>.find<Coins>()) / num2;
                 if (PrestigeMod.settings.debugMode) Console.WriteLine("Values of extraPrestige num4 num5: " + extraPrestige.ToString() + " " + num4.ToString() + " " + num5.ToString());
                 var prestigeIndicator = CoreUtils.GetMember<Colony, Indicator>("mPrestigeIndicator", colonyInstance);
 
@@ -93,55 +94,12 @@ namespace PrestigeMod
                     prestigeIndicator.setValue(num + num2 + num3 + num + num4 + num5);
                     if (PrestigeMod.settings.debugMode) Console.WriteLine("Prestige after changes (including coins): " + prestigeIndicator.getValue().ToString());
                 }
-            }
-        }
-    }
-    //HarmonyPatch that 
-    [HarmonyPatch(typeof(Colony), "calculatePrestige")]
-    public class ResourceCalculationPatch
-    {
-        /*static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = new List<CodeInstruction>(instructions);
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].opcode == OpCodes.Ldc_I4_3 && PrestigeMod.settings.resCalcNumber != 0)
+                if (colonyInstance.getPrestigeIndicator().getValue() > 1000)
                 {
-                    // Replace the integer constant with a float constant
-                    codes[i].opcode = OpCodes.Ldc_R4;
-                    codes[i].operand = PrestigeMod.settings.resCalcNumber;
-
-                    // Ensure the division operation is performed with float values
-                    if (i + 1 < codes.Count && codes[i + 1].opcode == OpCodes.Div)
-                    {
-                        // Insert a conversion to float before the division
-                        codes.Insert(i + 1, new CodeInstruction(OpCodes.Conv_R4));
-                    }
-                    // Ensure the division operation is performed with float values
-                    /*if (i + 1 < codes.Count && codes[i + 1].opcode == OpCodes.Div)
-                    {
-                        // Replace the division opcode with float division
-                        codes[i + 1].opcode = OpCodes.Div;
-                    }
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("PrestigeMod - couldn't patch the method. Either the game's code changed or user tried to divide by zero.");
+                    colonyInstance.getPrestigeIndicator().setValue(1000);
+                    if (PrestigeMod.settings.debugMode) Console.WriteLine("Prestige capped at 1000");
                 }
             }
-            return codes.AsEnumerable();
-        }*/
-        /*
-        public static void Postfix()
-        {
-            if (PrestigeMod.settings.includeCoins)
-            {
-                float prestigeIndicator = Colony.getInstance().getPrestigeIndicator().getValue();
-                int colonyCoins = Resource.getCountOfType(TypeList<ResourceType, ResourceTypeList>.find<Coins>()) / 10;
-                Colony.getInstance().getPrestigeIndicator();
-            }
         }
-        */
     }
 }
