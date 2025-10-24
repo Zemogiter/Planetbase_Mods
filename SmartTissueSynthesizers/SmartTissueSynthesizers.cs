@@ -63,7 +63,7 @@ namespace SmartTissueSynthesizers
 
         }
     }
-    [HarmonyPatch(typeof(ConstructionComponent), nameof(ConstructionComponent.updateProduction))]
+    [HarmonyPatch(typeof(ConstructionComponent), "updateProduction")]
     public class TissueSynthesizerPatch
     {
         //main method
