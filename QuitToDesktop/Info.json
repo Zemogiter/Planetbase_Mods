@@ -3,10 +3,10 @@
   "Author": "Zemogiter",
   "DisplayName": "Quit To Desktop",
   "EntryMethod": "QuitToDesktop.QuitToDesktop.Init",
-  "GameVersion": "1.4.1",
+  "GameVersion": "1.4.2",
   "HomePage": "",
   "ID": "QuitToDesktop",
   "Repository": "",
   "Requirements": [],
-  "Version": "1.0.0"
+  "Version": "1.1.0"
 }
