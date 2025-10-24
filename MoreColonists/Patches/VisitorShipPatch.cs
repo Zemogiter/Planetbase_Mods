@@ -72,7 +72,7 @@ namespace MoreColonists.Patches
         //fix for the issue that makes visitor ships not fly off once the counter reaches zero
         public static void Postfix(VisitorShip __instance)
         {
-            if (__instance != null && __instance.isLanded() && __instance.getName() == "VisitorShip" && (__instance.getPendingVisitorCount() <= 0 || __instance.getDescription() == null))
+            if (__instance != null && __instance.isLanded() && (__instance.getPendingVisitorCount() <= 0 || __instance.getDescription() == null))
             {
                 Console.WriteLine("MoreColonists - state of the glitched VisitorShip: " + CoreUtils.GetMember<LandingShip, LandingShip.State>("mState", __instance) + " and the name (should be VisitorShip) is: " + __instance.getName());
                 CoreUtils.InvokeMethod<LandingShip>("setState", __instance, LandingShip.State.ClosingDoor);
