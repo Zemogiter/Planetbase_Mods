@@ -85,15 +85,9 @@ namespace MassMineControl
             var originalList = BuildableUtils.GetAllModules();
             var mineType = BuildableUtils.FindModuleType<ModuleTypeMine>();
             var mineList = originalList.Where(a => a.getModuleType() == mineType).ToList();
-            //var gameManager = GameManager.getInstance().getGameState() as GameStateGame;
-            //var currentlySelected = GameStateUtils.GetPlacedModuleType(gameManager);
 
             foreach (Module mine in mineList)
             {
-                /*if (MassMineControl.settings.ignoreSelected == true && currentlySelected == BuildableUtils.FindModuleType<ModuleTypeMine>())
-                {
-                    mineList.Remove(mine);
-                }*/
                 if (Input.GetKeyDown(MassMineControl.settings.disableMines) && mine.isEnabled() == true)
                 {
                     mine.setEnabled(false);
