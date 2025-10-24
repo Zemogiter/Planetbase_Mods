@@ -81,9 +81,9 @@ namespace FreeBuilding
                 if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - Curently trying to place: " + activeModule.getModuleType().getName());
                 List<Vector3> connectionPositions = new List<Vector3>();
                 var constructionList = BuildableUtils.GetAllModules();
-                for (int i = 0; i < Construction.getCount(); i++)
+                for (int i = 0; i <= Construction.getCount(); i++)
                 {
-                    if (constructionList != null && constructionList[i] != null && activeModule != null && constructionList[i] != activeModule && Connection.canLink(activeModule, constructionList[i]))
+                    if (constructionList[i] != null && activeModule != null && constructionList[i] != activeModule && Connection.canLink(activeModule, constructionList[i], activeModule.getPosition(), constructionList[i].getPosition()))
                     {
                         connectionPositions.Add(constructionList[i].getPosition());
                     }
