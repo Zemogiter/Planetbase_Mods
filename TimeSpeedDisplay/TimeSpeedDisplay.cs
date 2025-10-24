@@ -48,25 +48,4 @@ namespace TimeSpeedDisplay
             return mTimeSinceUpdate;
         }
     }
-    /*[HarmonyPatch(typeof(GuiGeneralPanel), nameof(GuiGeneralPanel.update))]
-    public class GuiGeneralPanelPatch : CustomGeneralPanel
-    {
-        static bool Prefix(InteractionAirlock __instance, ref bool __result, float timeStep)
-        {
-            __result = ReplacementMethod(__instance, timeStep);
-            return false;
-        }
-        public static bool ReplacementMethod(InteractionAirlock __instance, float timeStep)
-        {
-            mTimeSinceUpdate -= timeStep;
-            if (mTimeSinceUpdate < 0f)
-            {
-                mColonistCountString = Singleton<Colony>.getInstance().getColonistCount().ToString();
-                mBotCountString = Character.getCountOfType<Bot>().ToString();
-                mCurrentTimeScaleString = Singleton<TimeManager>.getInstance().getTimeScale().ToString();
-                mTimeSinceUpdate = 1f;
-            }
-            return false;
-        }
-    }*/
 }
