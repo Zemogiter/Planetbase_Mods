@@ -1,9 +1,6 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
-using UnityEngine;
-using UnityEngine.UI;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 
@@ -11,7 +8,7 @@ namespace FastAirlock
 {
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
-        [Draw("Speed multiplier for airlock animations")] public float speedmult = 3;
+        [Draw("Speed multiplier for airlock animations")] public float speedmult = 2;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             Save(this, modEntry);

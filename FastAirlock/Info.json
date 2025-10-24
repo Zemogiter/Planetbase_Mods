@@ -1,12 +1,12 @@
 {
   "EntryMethod": "FastAirlock.FastAirlock.Init",
-  "Version": "1.0.0.0",
+  "Version": "1.0.0.1",
   "Requirements": [],
   "ID": "FastAirlock",
   "DisplayName": "Fast Airlock",
   "AssemblyName": "FastAirlock.dll",
   "Author": "Zemogiter",
-  "GameVersion": "1.4.1",
+  "GameVersion": "1.4.2",
   "HomePage": "",
   "Repository": ""
 }
