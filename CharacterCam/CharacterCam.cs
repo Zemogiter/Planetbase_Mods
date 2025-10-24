@@ -29,15 +29,6 @@ namespace CharacterCam
             StringUtils.RegisterString("CharacterCam", "Character Cam");
         }
     }
-    [HarmonyPatch(typeof(Character), nameof(Character.isCloseCameraAvailable))]
-    public class CharacterPatch //to-do: research how to make the original function return true
-    {
-        public static bool Prefix(ref bool __result)
-        {
-            __result = true;
-            return false;
-        }
-    }
     [HarmonyPatch(typeof(CloseCameraCinematic), nameof(CloseCameraCinematic.updateCharacter))]
     public class CloseCameraCinematicPatch
     {

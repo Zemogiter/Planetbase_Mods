@@ -69,16 +69,13 @@ namespace FreeBuilding
             var managerInstance = GameManager.getInstance();
             if (managerInstance != null && managerInstance.getGameState() is GameStateGame gameState)
             {
-                if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - The value of managerInstance is: " + managerInstance);
                 var state = CoreUtils.GetMember<GameManager, State>("mState", managerInstance);
-                if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - The value of state is: " + state);
                 if (state != GameManager.State.Updating)
                     return;
 
                 Module activeModule = CoreUtils.GetMember<GameStateGame, Module>("mActiveModule", gameState);
                 if (activeModule == null)
                     return;
-                if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - Curently trying to place: " + activeModule.getModuleType().getName());
                 List<Vector3> connectionPositions = new List<Vector3>();
                 var constructionList = BuildableUtils.GetAllModules();
                 for (int i = 0; i < constructionList.Count; i++)
@@ -87,10 +84,6 @@ namespace FreeBuilding
                     {
                         connectionPositions.Add(constructionList[i].getPosition());
                     }
-                }
-                foreach (var connection in connectionPositions)
-                {
-                    if (FreeBuilding.settings.DebugMode) Console.WriteLine("FreeBuilding - Outputing connectionPositions: " + connection);
                 }
                 if (connectionPositions.Count == 0)
                     return;
