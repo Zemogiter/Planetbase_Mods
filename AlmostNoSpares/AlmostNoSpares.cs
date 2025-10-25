@@ -22,7 +22,6 @@ namespace AlmostNoSpares
     public class AlmostNoSpares : ModBase
     {
         public static bool enabled;
-        // ReSharper disable once MemberCanBePrivate.Global
         public static Settings settings;
         public new static void Init(ModEntry modEntry)
         {
