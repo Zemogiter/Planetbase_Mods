@@ -1,6 +1,0 @@
-﻿{
-  "Id": "CheatTools",
-  "DisplayName": "CheatTools",
-  "Version": "1.1.1",
-  "EntryMethod": "CheatTools.CheatTools.Init"
-}

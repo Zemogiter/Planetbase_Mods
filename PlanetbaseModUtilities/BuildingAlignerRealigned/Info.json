@@ -1,6 +1,0 @@
-﻿{
-  "Id": "BuildingAlignerRealigned",
-  "DisplayName": "BuildingAligner",
-  "Version": "1.0",
-  "EntryMethod": "BuildingAligner.BuildingAlignerMod.Init"
-}

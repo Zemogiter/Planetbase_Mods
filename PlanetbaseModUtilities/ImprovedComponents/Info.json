@@ -1,6 +1,0 @@
-﻿{
-  "Id": "ImprovedComponents",
-  "DisplayName": "Improved Components",
-  "Version": "1.1.0",
-  "EntryMethod": "ImprovedComponents.ImprovedComponentsMod.Init"
-}
