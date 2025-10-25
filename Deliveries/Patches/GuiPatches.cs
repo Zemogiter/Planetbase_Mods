@@ -39,9 +39,9 @@ namespace Deliveries.Patches
             if (Deliveries.settings.cheatMode == false)
             {
                 int coinsAfterDelivery = colonyCoins - colonyShipResourcesValue;
-                if (Deliveries.settings.debugMode) Console.WriteLine("Coins after delivery: " + coinsAfterDelivery);
+                //if (Deliveries.settings.debugMode) Console.WriteLine("Coins after delivery: " + coinsAfterDelivery);
                 ResourceAmount resourceAmount = new ResourceAmount(TypeList<ResourceType, ResourceTypeList>.find<Coins>(), colonyShipResourcesValue);
-                if (Deliveries.settings.debugMode) Console.WriteLine("The value of resourceAmount: " + resourceAmount);
+                //if (Deliveries.settings.debugMode) Console.WriteLine("The value of resourceAmount: " + resourceAmount);
                 Resource.removeInmaterialResource(resourceAmount); //removing the coins from the player, needs further testing
 
             }
@@ -51,8 +51,8 @@ namespace Deliveries.Patches
                 Singleton<MessageLog>.getInstance().addMessage(new Message(StringList.get("delivery_error", Deliveries.DeliveryErrorMessage), ButtonIconFunction(), 1));
                 return;
             } 
-            if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - The value of startPosition: " + startPosition);
-            if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - Colony ship average position: " + ColonyShip.getAveragePosition());
+            //if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - The value of startPosition: " + startPosition);
+            //if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - Colony ship average position: " + ColonyShip.getAveragePosition());
             if (startPosition == null) return;
             if (startPosition == ColonyShip.getAveragePosition())
             {
@@ -76,9 +76,9 @@ namespace Deliveries.Patches
             var landingpad = TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeLandingPad>();
             var starport = TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeStarport>();
             Module landingZone = BuildableUtils.GetAllModules().FirstOrDefault((Module module) => module.getModuleType() == landingpad || module.getModuleType() == starport);
-            if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - Initially choosen landing faility: " + landingZone.getName() + landingZone.getLocation());
+            //if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - Initially choosen landing faility: " + landingZone.getName() + landingZone.getLocation());
             Module freeLandingZone = BuildableUtils.GetAllModules().FirstOrDefault(module => (module.getModuleType() == landingpad || module.getModuleType() == starport) && module.isTargeter(landingZone) == false);
-            if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - Free landing facility: " + freeLandingZone.getName() + freeLandingZone.getLocation());
+            //if (Deliveries.settings.debugMode) Console.WriteLine("Deliveries - Free landing facility: " + freeLandingZone.getName() + freeLandingZone.getLocation());
 
             if (freeLandingZone == null)
             {

@@ -74,11 +74,50 @@ namespace BetterGuards
             {
                 var indicators = __instance.getIndicators();
                 Indicator indicator = (Indicator)indicators.Where(indicator => indicator.getSignType() == SignType.Health);
-                //Debug.Log("BetterGuards - The indicator before the changes is " + indicator.getLevel() + indicator.getName());
                 indicator.setMax(indicator.getMax() * BetterGuards.settings.Healthmult);
-                //Debug.Log("BetterGuards - New indicator's levels " + indicator.getLevel() + indicator.getName());
                 indicator.setOrientation(IndicatorOrientation.Vertical);
-                //indicator.setLevels();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Character), nameof(Character.update))]
+    public class GuardPatchExisting
+    {
+        // Tracks which Character instances have already been adjusted.
+        private static readonly System.Collections.Generic.HashSet<int> adjustedGuards = new System.Collections.Generic.HashSet<int>();
+
+        //make sure existing guards also get the larger health bar (only once per character)
+        public static void Postfix(Character __instance)
+        {
+            var characterList = CharacterUtils.GetAllCharacters();
+            if (characterList == null)
+                return;
+
+            foreach (Character character in characterList)
+            {
+                if (character == null)
+                    continue;
+
+                if (character.getSpecialization() == TypeList<Specialization, SpecializationList>.find<Guard>())
+                {
+                    int id = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(character);
+                    if (adjustedGuards.Contains(id))
+                        continue;
+
+                    var indicators = character.getIndicators();
+                    if (indicators == null)
+                    {
+                        adjustedGuards.Add(id); // avoid retrying characters with no indicators
+                        continue;
+                    }
+
+                    // Use FirstOrDefault to get a single Indicator instead of casting an IEnumerable to Indicator (IEnumerable causes invalid cast exception in this scenario)
+                    Indicator indicator = indicators.FirstOrDefault(ind => ind.getSignType() == SignType.Health);
+                    indicator.setMax(indicator.getMax() * BetterGuards.settings.Healthmult);
+                    indicator.setOrientation(IndicatorOrientation.Vertical);
+
+                    adjustedGuards.Add(id);
+                }
             }
         }
     }
