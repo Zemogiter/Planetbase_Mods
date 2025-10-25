@@ -70,7 +70,7 @@ namespace EarthlikePlanet
     public class CustomPlanet : Planet
     {
         //Method to set colonist models outside of bases as the same as inside (i.e. no spacesuits)
-        //To-do: test this
+        //To-do: test this once the mDefinition is completed
         public void OxygenRichPlanet()
         {
             if(PlanetManager.getInstance().getCurrentPlanetIndex() == 5)
@@ -111,7 +111,7 @@ namespace EarthlikePlanet
         }
 
         //Method that should remove oxygen requirement outside of bases
-        //To-do: test this 
+        //To-do: test this once the mDefinition is completed
         public bool RequiresOxygen()
         { 
             if(PlanetManager.getInstance().getCurrentPlanetIndex() == 5)
