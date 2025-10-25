@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>d73f072c-0f36-4639-a5ce-cf1599e1318a</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>PlanetbaseModUtilities</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)SampleMod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\BuildableUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CoreUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CameraUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CharacterUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\DebugRendererUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\GameStateUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\GuiUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\MenuUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ModBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patches\GameManagerPatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TypeListUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Patches\" />
+  </ItemGroup>
+</Project>
