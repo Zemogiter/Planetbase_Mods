@@ -2,6 +2,7 @@
 using BetterAI.Tasks;
 using Planetbase;
 using PlanetbaseModUtilities;
+using System.Collections.Generic;
 
 namespace BetterAi.Tasks
 {
@@ -12,8 +13,9 @@ namespace BetterAi.Tasks
             Character character = ai.mCharacter;
 
             Resource storable;
-
-            foreach (ResourceType resourceType in )
+            var resourceTypes = ResourceTypeList.getInstance();
+            // Fix: ResourceTypeList is not enumerable, use its static get() method to get a List<ResourceType>
+            foreach (ResourceType resourceType in ResourceTypeList.get())
             {
                 ConstructionComponent storageComponent = Module.findStorageComponent(character, resourceType);
                 if (storageComponent != null)

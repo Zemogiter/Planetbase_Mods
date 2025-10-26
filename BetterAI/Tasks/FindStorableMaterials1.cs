@@ -1,4 +1,5 @@
 ﻿using Planetbase;
+using System.Collections.Generic; 
 
 namespace BetterAI.Tasks
 {
@@ -10,7 +11,7 @@ namespace BetterAI.Tasks
 
             Resource storable;
 
-            foreach (ResourceType resourceType in ResourceTypeList.getInstance().mTypeList)
+            foreach (ResourceType resourceType in TypeList<ResourceType, ResourceTypeList>.get())
             {
                 ConstructionComponent storageComponent = Module.findStorageComponent(character, resourceType);
                 if (storageComponent != null)
