@@ -88,37 +88,4 @@ namespace MoreColonists
            
         }
     }
-    /*
-    [HarmonyPatch(typeof(Human), nameof(Human.update))]
-    public class VisitorPatch
-    {
-        //fix for the issue that makes visitors lose their ship ownership upon save load and occupy the base, this should set it to the nearest visitor ship
-        static void Postfix(Human __instance)
-        {
-            var visitorList = Character.getSpecializationCharacters(TypeList<Specialization, SpecializationList>.find<Visitor>());
-
-            if (visitorList != null)
-            {
-                if (MoreColonists.settings.debugMode)
-                {
-                    foreach (var visitor in visitorList)
-                    {
-                        Console.WriteLine("MoreColonists - visitorList entry: " + visitor);
-                    }
-                }
-                foreach (Human visitor in visitorList.Cast<Human>())
-                {
-                    if (visitor != null && visitor.getOwnedShip() == null && visitor.getState() != Character.State.Ko)
-                    {
-                        VisitorShip newShip = Ship.getFirstOfType<VisitorShip>();
-                        if (newShip != null)
-                        {
-                            visitor.setOwnedShip(newShip);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    */
 }
