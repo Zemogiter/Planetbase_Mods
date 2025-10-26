@@ -1,11 +1,10 @@
 ﻿using HarmonyLib;
 using Planetbase;
 using PlanetbaseModUtilities;
-using System;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
+using System.Collections.Generic;
 
 namespace EternalBots
 {
@@ -15,7 +14,6 @@ namespace EternalBots
        
 		public override void OnInitialized(ModEntry modEntry)
 		{
-            //TypeList<ModuleType, ModuleTypeList>.find<ModuleTypeMine>().mFlags |= 32768;
             Debug.Log("[MOD] EternalBots activated");
         }
 		
@@ -39,11 +37,16 @@ namespace EternalBots
             if (__instance.getUsageAnimations() != null)
             {
                 var animationTime = CoreUtils.GetMember<Character, float>("mAnimationQueueTime", __instance);
-                CoreUtils.SetMember<Character, float>("mAnimationQueueTime", __instance, animationTime - timeStep);
-                if (animationTime < 0f)
+                // decrement then test the new value
+                animationTime -= timeStep;
+                CoreUtils.SetMember<Character, float>("mAnimationQueueTime", __instance, animationTime);
+                if (animationTime <= 0f)
                 {
                     var queuedAnimation = CoreUtils.GetMember<Character, CharacterAnimation>("mQueuedAnimation", __instance);
-                    __instance.playAnimation(queuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
+                    if (queuedAnimation != null)
+                    {
+                        __instance.playAnimation(queuedAnimation, WrapMode.Loop, CharacterAnimation.PlayMode.Immediate);
+                    }
                     if (__instance.getAnchorPoint() != null)
                     {
                         CoreUtils.SetMember<Character, SimpleTransform>("mQueuedAnchorPoint", __instance, null);
@@ -74,13 +77,44 @@ namespace EternalBots
     {
         public static bool Prefix(Bot __instance, float timeStep)
 		{
-            //PrivateUpdate
+            // Run our custom update and skip the original to avoid duplicate updates.
             CustomBot.PrivateUpdate(__instance, timeStep);
 
             Indicator indicator = new Indicator(StringList.get("integrity"), ResourceList.StaticIcons.Bot, IndicatorType.Condition, 1f, 1f, SignType.Condition);
             indicator.setLevels(0.05f, 0.1f, 0.15f, 0.2f);
-            var targetIndicator = __instance.getIndicators().ToList();
-            targetIndicator[7] = indicator;
+
+            // Replace index 7 safely: handle arrays and IList, avoid out-of-range.
+            var indicatorsEnum = __instance.getIndicators();
+            if (indicatorsEnum != null)
+            {
+                // If it's an IList<Indicator> we can set directly
+                if (indicatorsEnum is IList<Indicator> ilist)
+                {
+                    if (ilist.Count > 7) ilist[7] = indicator;
+                }
+                // If it's an array
+                else if (indicatorsEnum is Indicator[] arr)
+                {
+                    if (arr.Length > 7) arr[7] = indicator;
+                }
+                // Otherwise try a safe fallback: convert to list and try to assign back if possible
+                else
+                {
+                    try
+                    {
+                        var tmp = indicatorsEnum.ToList();
+                        if (tmp.Count > 7)
+                        {
+                            tmp[7] = indicator;
+                            // There's no generic setter known for indicators here; best effort only.
+                        }
+                    }
+                    catch
+                    {
+                        // ignore — avoid throwing during update
+                    }
+                }
+            }
 
             if (CoreUtils.InvokeMethod<Bot, bool>("shouldDecay", __instance))
             {
@@ -92,13 +126,14 @@ namespace EternalBots
                 __instance.decayIndicator(CharacterIndicator.Condition, timeStep * stormInProgress.getIntensity() / 600f);
             }
             SolarFlare solarFlare = Singleton<DisasterManager>.getInstance().getSolarFlare();
-            if (solarFlare.isInProgress() && !__instance.isProtected())
+            if (solarFlare != null && solarFlare.isInProgress() && !__instance.isProtected())
             {
                 __instance.decayIndicator(CharacterIndicator.Condition, timeStep * solarFlare.getIntensity() / 180f);
             }
             CoreUtils.InvokeMethod<Bot>("updateDustParticles", __instance, timeStep);
 
-            return true;
+            // We handled the update — prevent the original Bot.update from also running.
+            return false;
         }
     }
 }
