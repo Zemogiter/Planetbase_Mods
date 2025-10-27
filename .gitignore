@@ -344,3 +344,5 @@ healthchecksdb
 /*/obj
 *.cache
 /XMLModLoader
+*.bak
+*.sh
